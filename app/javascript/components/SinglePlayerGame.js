@@ -1,0 +1,58 @@
+import React from 'react';
+import GameLayout from './GameLayout';
+import SnippetCard from './SnippetCard';
+import ExpandedSnippet from './ExpandedSnippet';
+import GameProgressCard from './GameProgressCard';
+
+function SinglePlayerGame({
+  snippets,
+  loading,
+  error,
+  selectedSnippet,
+  setSelectedSnippet,
+  gameData,
+  roundHistory,
+  handleSubmit,
+  handleNextSnippet,
+  game_session_id
+}) {
+  if (error) return <div>Error loading snippets: {error.message} </div>
+  if (loading) return <div>Loading Snippets...</div>
+
+  return (
+    <GameLayout
+      mainContent={
+        selectedSnippet ? (
+          <ExpandedSnippet
+            snippet={selectedSnippet}
+            onSubmit={handleSubmit}
+            game_session_id={game_session_id}
+            onNext={handleNextSnippet}
+          />
+        ) : (
+          <div className="row">
+            {snippets.map(snippet =>(
+              <div key={snippet.id} className="col-md-6 mb-4">
+                <SnippetCard
+                  snippet={snippet}
+                  onClick={() => setSelectedSnippet(snippet)}
+                />
+              </div>
+            ))}
+          </div>
+        )
+      }
+      sideContent={
+        <GameProgressCard
+          totalScore={gameData.totalScore}
+          roundsPlayed={gameData.roundsPlayed}
+          successfulRoundsCount={gameData.successfulRoundsCount}
+          roundHistory={roundHistory}
+        />
+      }
+      showSidePanel={true}
+    />
+  );
+}
+
+export default SinglePlayerGame;

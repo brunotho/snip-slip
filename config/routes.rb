@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get "game_sessions/new"
-  get "game_sessions/create"
-  get "game_sessions/show"
   devise_for :users
 
   get "welcome/home"

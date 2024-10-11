@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import SnippetCard from './SnippetCard';
-import ExpandedSnippet from './ExpandedSnippet';
-import GameProgressCard from './GameProgressCard';
+// import SnippetCard from './SnippetCard';
+// import ExpandedSnippet from './ExpandedSnippet';
+// import GameProgressCard from './GameProgressCard';
+import QuickPlayGame from './QuickPlayGame';
+import SinglePlayerGame from './SinglePlayerGame';
+import MultiPlayerGame from './MultiPlayerGame';
 
-function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
+function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'quick' }) {
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -147,48 +150,75 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
     return meta && meta.getAttribute('content');
   };
 
-  if (error) return <div>Error loading snippets: {error.message}</div>;
-  if (loading) return <div>Loading snippets...</div>;
+  const gameProps = {
+    snippets,
+    loading,
+    error,
+    selectedSnippet,
+    setSelectedSnippet,
+    gameData,
+    roundHistory: gameMode === 'quick' ? [] : roundHistory,
+    handleSubmit: gameMode === 'quick' ? null : handleSubmit,
+    handleNextSnippet: gameMode === 'quick' ? handleNextSnippet : null,
+    game_session_id: gameMode === 'quick' ? null : game_session_id,
+  };
 
-  return (
-    <div className="container-fluid mt-4">
-      <div className="row">
-        <div className="col-md-9">
-          {selectedSnippet ? (
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-              <ExpandedSnippet
-                snippet={selectedSnippet}
-                onSubmit={handleSubmit}
-                game_session_id={game_session_id}
-                onNext={handleNextSnippet}
-              />
-            </div>
-          ) : (
-            <div className="row">
-              {snippets.map(snippet => (
-                <div key={snippet.id} className="col-md-6 mb-4">
-                  <SnippetCard
-                    snippet={snippet}
-                    onClick={() => setSelectedSnippet(snippet)}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="col-md-3">
-          <div className="sticky-top" style={{ top: '20px' }}>
-            <GameProgressCard
-              totalScore={gameData.totalScore}
-              roundsPlayed={gameData.roundsPlayed}
-              successfulRoundsCount={gameData.successfulRoundsCount}
-              roundHistory={roundHistory}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // if (error) return <div>Error loading snippets: {error.message}</div>;
+  // if (loading) return <div>Loading snippets...</div>;
+
+  const renderGameMode = () => {
+    switch(gameMode) {
+      case 'single':
+        return <SinglePlayerGame {...gameProps} />;
+      case 'multi':
+        return <MultiPlayerGame { ...gameProps} />;
+      case 'quick':
+      default:
+        return <QuickPlayGame {...gameProps} />;
+    }
+  };
+
+  return renderGameMode();
+
+//   return (
+//     <div className="container-fluid mt-4">
+//       <div className="row">
+//         <div className="col-md-9">
+//           {selectedSnippet ? (
+//             <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+//               <ExpandedSnippet
+//                 snippet={selectedSnippet}
+//                 onSubmit={handleSubmit}
+//                 game_session_id={game_session_id}
+//                 onNext={handleNextSnippet}
+//               />
+//             </div>
+//           ) : (
+//             <div className="row">
+//               {snippets.map(snippet => (
+//                 <div key={snippet.id} className="col-md-6 mb-4">
+//                   <SnippetCard
+//                     snippet={snippet}
+//                     onClick={() => setSelectedSnippet(snippet)}
+//                   />
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//         <div className="col-md-3">
+//           <div className="sticky-top" style={{ top: '20px' }}>
+//             <GameProgressCard
+//               totalScore={gameData.totalScore}
+//               roundsPlayed={gameData.roundsPlayed}
+//               successfulRoundsCount={gameData.successfulRoundsCount}
+//               roundHistory={roundHistory}
+//             />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
 }
 
 export default SnippetsGame;
