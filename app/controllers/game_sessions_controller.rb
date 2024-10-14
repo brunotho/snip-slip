@@ -35,7 +35,8 @@ class GameSessionsController < ApplicationController
       total_score: current_user.total_score,
       successful_rounds_count: game_session.rounds.where(user: current_user, success: true).count,
       rounds_played: game_session.rounds.where(user_id: current_user.id).count,
-      status: game_session.status
+      status: game_session.status,
+      players: game_session.game_session_participants
     }
   end
 end

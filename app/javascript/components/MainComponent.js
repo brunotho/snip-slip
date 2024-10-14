@@ -6,10 +6,12 @@ import GameOver from './GameOver';
 function MainComponent({ gameSessionId = null }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameData, setGameData] = useState(null);
+  const [gameMode, setGameMode] = useState(null);
 
   const handlePlay = () => {
     setGameStarted(true);
     setGameData(null);
+    setGameMode("quick");
   };
 
   const handleSnippetCompletion = (data) => {
@@ -20,12 +22,30 @@ function MainComponent({ gameSessionId = null }) {
   useEffect(() => {
     if (gameSessionId) {
       setGameStarted(true);
+
+      fetch(`/game_sessions/${gameSessionId}.json`, {
+        headers: {
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.players && data.players.length > 1) {
+            setGameMode("multi");
+          } else {
+            setGameMode("single");
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching game sessions details (gameMode):", error);
+        });
     }
   }, [gameSessionId]);
 
   return (
     <div>
-      {!gameStarted && !gameData && (
+      {!gameStarted && !gameData && !gameSessionId && (
         <>
           <HeroSection onPlay={handlePlay} />
           <div className="d-flex justify-content-center">
@@ -43,11 +63,16 @@ function MainComponent({ gameSessionId = null }) {
       )}
 
       {gameStarted && (
-        <SnippetsGame game_session_id={gameSessionId} onSnippetComplete={handleSnippetCompletion} />
+        <SnippetsGame
+          game_session_id={gameSessionId}
+          gameMode={gameMode}
+          onSnippetComplete={handleSnippetCompletion} />
       )}
 
       {gameData && (
-        <GameOver gameData={gameData} onPlayAgain={handlePlay} />
+        <GameOver
+          gameData={gameData}
+          onPlayAgain={handlePlay} />
       )}
     </div>
   );

@@ -1,9 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import SnippetCard from './SnippetCard';
-import ExpandedSnippet from './ExpandedSnippet';
-import GameProgressCard from './GameProgressCard';
+import QuickPlayGame from './QuickPlayGame';
+import SinglePlayerGame from './SinglePlayerGame';
+import MultiPlayerGame from './MultiPlayerGame';
 
-function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
+/**
+ * SnippetsGame Component
+ *
+ * This component acts as a controller for different game modes in the app.
+ * It handles fetching snippets and game session data, managing the current
+ * selected snippet, and determining which game mode to display (quick play,
+ * single player, or multiplayer).
+ *
+ * Props:
+ * - `game_session_id` (String): The ID of the current game session, passed from the backend.
+ * - `onSnippetComplete` (Function): Callback to handle actions when a snippet is completed.
+ * - `gameMode` (String): The current mode of the game, which can be 'quick', 'single', or 'multi'.
+ *
+ * State:
+ * - `snippets` (Array): The list of lyric snippets available for the game.
+ * - `loading` (Boolean): Whether the snippet data is currently being fetched.
+ * - `error` (Object): Holds any error information during snippet fetching.
+ * - `selectedSnippet` (Object): The snippet currently selected by the player.
+ * - `gameData` (Object): Contains key game metrics like total score, rounds played, and status.
+ * - `roundHistory` (Array): The history of rounds played by the player in the game.
+ *
+ * Usage:
+ * - Fetches and manages snippets data for different game modes.
+ * - Depending on the game mode, renders either QuickPlay, SinglePlayer, or MultiPlayer.
+ */
+
+function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'quick' }) {
+  // State for managing snippets, loading state, errors, selected snippet, and game data
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,6 +43,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
   });
   const [roundHistory, setRoundHistory] = useState([]);
 
+  // Fetch available snippets from the server
   const fetchSnippets = () => {
     setLoading(true);
     fetch('/fetch_snippets', {
@@ -37,6 +65,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
       });
   };
 
+  // Fetch game session data from the server
   const fetchGameSessionData = () => {
     if (!game_session_id) return;
 
@@ -56,11 +85,12 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
           status: data.status
         });
       })
-    .catch(error => {
-      console.error("Error fetching game session data:", error);
-    });
+      .catch(error => {
+        console.error("Error fetching game session data:", error);
+      });
   };
 
+  // Fetch snippets when the component mounts or game session ID changes
   useEffect(() => {
     console.log("SnippetsGame component mounted");
     if (game_session_id) {
@@ -69,11 +99,13 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
     fetchSnippets();
   }, [game_session_id]);
 
+  // Handle advancing to the next snippet in Quick Play
   const handleNextSnippet = () => {
     setSelectedSnippet(null);
     fetchSnippets();
   };
 
+  // Handle submission of a snippet round (success/fail)
   const handleSubmit = async (snippet_id, success) => {
     if (!game_session_id || snippet_id === null) {
       setSelectedSnippet(null);
@@ -97,7 +129,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
       });
 
       if (!response.ok) {
-        throw new Error("Round submission failed!!")
+        throw new Error("Round submission failed!!");
       }
 
       const data = await response.json();
@@ -115,14 +147,14 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
         lyric_snippet: selectedSnippet,
         score: data.round.score,
         success: data.round.success
-      }
+      };
       const updatedHistory = [...roundHistory, newRound];
       setRoundHistory(updatedHistory);
 
+      // Check if the game is over and handle completion
       if (!data.status || data.rounds_played >= 5) {
         console.log("Exit Snippetgame.js with data for game over component", newGameData);
         console.log(updatedHistory);
-        console.log("😎");
 
         onSnippetComplete({
           totalScore: data.total_score,
@@ -142,53 +174,40 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete }) {
     }
   };
 
+  // Fetch the CSRF token for secure API requests
   const getCSRFToken = () => {
     const meta = document.querySelector('meta[name="csrf-token"]');
     return meta && meta.getAttribute('content');
   };
 
-  if (error) return <div>Error loading snippets: {error.message}</div>;
-  if (loading) return <div>Loading snippets...</div>;
+  // Props shared across game modes
+  const gameProps = {
+    snippets,
+    loading,
+    error,
+    selectedSnippet,
+    setSelectedSnippet,
+    gameData,
+    roundHistory: gameMode === 'quick' ? [] : roundHistory,
+    handleSubmit: gameMode === 'quick' ? null : handleSubmit,
+    handleNextSnippet: gameMode === 'quick' ? handleNextSnippet : null,
+    game_session_id: gameMode === 'quick' ? null : game_session_id,
+  };
 
-  return (
-    <div className="container-fluid mt-4">
-      <div className="row">
-        <div className="col-md-9">
-          {selectedSnippet ? (
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-              <ExpandedSnippet
-                snippet={selectedSnippet}
-                onSubmit={handleSubmit}
-                game_session_id={game_session_id}
-                onNext={handleNextSnippet}
-              />
-            </div>
-          ) : (
-            <div className="row">
-              {snippets.map(snippet => (
-                <div key={snippet.id} className="col-md-6 mb-4">
-                  <SnippetCard
-                    snippet={snippet}
-                    onClick={() => setSelectedSnippet(snippet)}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="col-md-3">
-          <div className="sticky-top" style={{ top: '20px' }}>
-            <GameProgressCard
-              totalScore={gameData.totalScore}
-              roundsPlayed={gameData.roundsPlayed}
-              successfulRoundsCount={gameData.successfulRoundsCount}
-              roundHistory={roundHistory}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // Render the appropriate game mode component based on `gameMode` prop
+  const renderGameMode = () => {
+    switch (gameMode) {
+      case 'single':
+        return <SinglePlayerGame {...gameProps} />;
+      case 'multi':
+        return <MultiPlayerGame {...gameProps} />;
+      case 'quick':
+      default:
+        return <QuickPlayGame {...gameProps} />;
+    }
+  };
+
+  return renderGameMode();
 }
 
 export default SnippetsGame;

@@ -36,6 +36,9 @@
             <%= link_to 'Add Snippet', new_snippet_path, data: { turbolinks: false }, class: 'nav-link' if user_signed_in? %>
           </li>
           <li class="nav-item">
+            <%= link_to "Manage Friends", friendships_path, data: { turbolinks: false }, class: "nav-link" if user_signed_in? %>
+          </li>
+          <li class="nav-item">
             <div id="invite-friend"></div>
           </li>
           <li class="nav-item">
@@ -49,6 +52,7 @@
               <%= link_to "Sign Up", new_user_registration_path, class: "nav-link" %>
             <% end %>
           </li>
+
 
           <!-- dropdown -->
           <li class="nav-item dropdown">

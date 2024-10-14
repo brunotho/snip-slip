@@ -26,9 +26,7 @@
     <p class="alert"><%= alert %></p>
 
 
-    <div class="container">
-      <%= yield %>
-    </div>
+    <%= yield %>
 
     <div class="flash-container">
       <% flash.each do |key, value| %>

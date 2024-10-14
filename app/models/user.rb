@@ -8,8 +8,33 @@ class User < ApplicationRecord
   has_many :game_sessions, through: :game_session_participants
   has_many :rounds, dependent: :destroy
 
-  # validates :language, inclusion: { in: %w[English German] }
+  # Updated friendship associations
+  has_many :friendships, dependent: :destroy
+  has_many :friends, -> { where(friendships: { status: :accepted }) }, through: :friendships, source: :friend
+  has_many :pending_sent_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'user_id'
+  has_many :pending_received_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'friend_id'
 
+  def send_friend_request(friend)
+    friendships.create(friend: friend, status: :pending)
+  end
+
+  def accept_friend_request(friendship)
+    friendship.update(status: :accepted) if pending_received_requests.include?(friendship)
+  end
+
+  def decline_friend_request(friendship)
+    friendship.destroy if pending_received_requests.include?(friendship)
+  end
+
+  def remove_friend(friend)
+    friendship = friendships.find_by(friend: friend)
+    reverse_friendship = friend.friendships.find_by(friend: self)
+
+    friendship.destroy if friendship
+    reverse_friendship.destroy if reverse_friendship
+  end
+
+  # validates :language, inclusion: { in: %w[English German] }
 
   def total_score
     if (session = game_sessions.last)
@@ -18,23 +43,4 @@ class User < ApplicationRecord
       0
     end
   end
-
-
-  # def total_score
-  #   rounds = rounds_in_active_session
-  #   rounds.joins(:lyric_snippet).sum("lyric_snippets.difficulty")
-  # end
-
-  # private
-
-  # def active_game_session
-  #   game_sessions.where(status: true).last
-  # end
-
-  # def rounds_in_active_session
-  #   active_session = active_game_session
-  #   return Round.none unless active_session
-
-  #   active_session.rounds.where(user_id: id)
-  # end
 end

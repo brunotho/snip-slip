@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  get "game_sessions/new"
-  get "game_sessions/create"
-  get "game_sessions/show"
+  # get "friendships/index"
+  # get "friendships/create"
+  # get "friendships/update"
+  # get "friendships/destroy"
   devise_for :users
 
   get "welcome/home"
@@ -27,4 +28,6 @@ Rails.application.routes.draw do
   root "welcome#home"
   resources :snippets, only: [ :index, :create, :new ]
   get "fetch_snippets", to: "snippets#fetch_snippets"
+
+  resources :friendships, only: [:index, :create, :update, :destroy]
 end
