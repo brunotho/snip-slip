@@ -8,6 +8,7 @@ import MainComponent from '../components/MainComponent';
 import DifficultySlider from '../components/DifficultySlider';
 import InviteFriend from "../components/InviteFriend";
 import SnippetCard from "../components/SnippetCard";
+import FriendshipManager from "../components/FriendshipManager";
 
 import "bootstrap/dist/css/bootstrap";
 import "bootstrap";
@@ -47,6 +48,13 @@ document.addEventListener('turbolinks:load', () => {
         onClick={() => {}}
       />
     )
+  }
+
+  const friendshipManagerContainer = document.getElementById('friendship-manager');
+  if (friendshipManagerContainer) {
+    console.log('Mounting FriendshipManager component');
+    const root = createRoot(friendshipManagerContainer);
+    root.render(<FriendshipManager />);
   }
 });
 
