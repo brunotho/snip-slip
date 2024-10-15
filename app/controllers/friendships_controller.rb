@@ -20,7 +20,7 @@ class FriendshipsController < ApplicationController
 
   def create
     friend = User.find(params[:friend_id])
-    friendship = current_user.seend_friend_request(friend)
+    friendship = current_user.send_friend_request(friend)
     if friendship.persisted?
       render json: friendship, status: 201
     else
