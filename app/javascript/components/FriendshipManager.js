@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
+import ConstrainedLayout from './ConstrainedLayout';
 
 const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");
@@ -172,69 +173,72 @@ const FriendshipManager = () => {
   console.log("Received Requests:", receivedRequests);
 
   return (
-    <div className="container mt-4">
-      <div className="card mb-4">
-        <div className="card-header">Search Users</div>
-        <div className="card-body">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => {
-                const newTerm = e.target.value;
-                setSearchTerm(newTerm);
-                debouncedSearch(newTerm);
-              }}
-            />
-          </div>
-
-          {searchResults.map((user) => (
-            <div key={user.id} className="d-flex justify-content-between align-items-center mb-2">
-              <span>{user.name} ({user.email})</span>
-              <button className="btn btn-primary btn-sm" onClick={() => sendFriendRequest(user.id)}>Send Friend Request</button>
+    <ConstrainedLayout>
+      <h3 className="text-center">Manage Friendships</h3>
+      <div className="container mt-4">
+        <div className="card mb-4">
+          <div className="card-header">Search Users</div>
+          <div className="card-body">
+            <div className="input-group mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => {
+                  const newTerm = e.target.value;
+                  setSearchTerm(newTerm);
+                  debouncedSearch(newTerm);
+                }}
+              />
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="card mb-4">
-        <div className="card-header">Friends</div>
-        <div className="card-body">
-          {friends.map((friend) => (
-            <div key={friend.id} className="d-flex justify-content-between align-items-center mb-2">
-              <span>{friend.name}</span>
-              <button className="btn btn-danger btn-sm" onClick={() => removeFriend(friend.id)}>Remove Friend</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="card mb-4">
-        <div className="card-header">Pending Friend Requests</div>
-        <div className="card-body">
-          {pendingRequests.map((request) => (
-            <div key={request.id} className="mb-2">{request.name}</div>
-          ))}
-        </div>
-      </div>
-
-      <div className="card mb-4">
-        <div className="card-header">Received Friend Requests</div>
-        <div className="card-body">
-          {receivedRequests.map((request) => (
-            <div key={request.id} className="d-flex justify-content-between align-items-center mb-2">
-              <span>{request.name}</span>
-              <div>
-                <button className="btn btn-success btn-sm me-2" onClick={() => acceptFriendRequest(request.id)}>Accept</button>
-                <button className="btn btn-secondary btn-sm" onClick={() => declineFriendRequest(request.id)}>Decline</button>
+            {searchResults.map((user) => (
+              <div key={user.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{user.name} ({user.email})</span>
+                <button className="btn btn-primary btn-sm" onClick={() => sendFriendRequest(user.id)}>Send Friend Request</button>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Friends</div>
+          <div className="card-body">
+            {friends.map((friend) => (
+              <div key={friend.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{friend.name}</span>
+                <button className="btn btn-danger btn-sm" onClick={() => removeFriend(friend.id)}>Remove Friend</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Pending Friend Requests</div>
+          <div className="card-body">
+            {pendingRequests.map((request) => (
+              <div key={request.id} className="mb-2">{request.name}</div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Received Friend Requests</div>
+          <div className="card-body">
+            {receivedRequests.map((request) => (
+              <div key={request.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{request.name}</span>
+                <div>
+                  <button className="btn btn-success btn-sm me-2" onClick={() => acceptFriendRequest(request.id)}>Accept</button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => declineFriendRequest(request.id)}>Decline</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ConstrainedLayout>
   );
 };
 

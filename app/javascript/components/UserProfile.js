@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ConstrainedLayout from './ConstrainedLayout';
 
 export default function UserProfile({ initialUser = {}, languages = [] }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -53,7 +54,8 @@ export default function UserProfile({ initialUser = {}, languages = [] }) {
   };
 
   return (
-    <div className="container mt-4" style={{ maxWidth: '50vh' }}>
+    <ConstrainedLayout>
+
       {isEditing ? (
         <form onSubmit={handleSubmit} className="border p-4 rounded">
           <h3 className="mb-3">Edit Profile</h3>
@@ -138,6 +140,6 @@ export default function UserProfile({ initialUser = {}, languages = [] }) {
           <button className="btn btn-primary" onClick={() => setIsEditing(true)}>Edit Profile</button>
         </div>
       )}
-    </div>
+    </ConstrainedLayout>
   );
 }

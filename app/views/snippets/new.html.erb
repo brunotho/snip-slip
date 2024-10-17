@@ -1,12 +1,13 @@
-
-<div class="container" style="width: 50vh">
-  <h3 class="mb-4 mt-4">Add a New Snippet</h3>
-  <%= simple_form_for @lyric_snippet, url: snippets_path do |f| %>
-    <%= f.input :snippet, as: :text, input_html: { rows: 2 } %>
-    <%= f.input :artist %>
-    <%= f.input :song %>
-    <%= f.input :language, collection: LyricSnippet.languages, selected: "English" %>
-    <div id="difficulty-slider"></div>
-    <%= f.button :submit, 'Create Snippet', class: 'btn btn-primary mt-4' %>
-  <% end %>
+<div id="add-snippet-form-wrapper">
+  <div id="add-snippet-form-content">
+    <h3 class="mb-4 mt-4">Add a New Snippet</h3>
+    <%= simple_form_for @lyric_snippet, url: snippets_path do |f| %>
+      <%= f.input :snippet, as: :text, input_html: { rows: 2 } %>
+      <%= f.input :artist %>
+      <%= f.input :song %>
+      <%= f.input :language, collection: LyricSnippet.languages, selected: "English" %>
+      <div id="difficulty-slider-container"></div>
+      <%= f.button :submit, 'Create Snippet', class: 'btn btn-primary mt-4' %>
+    <% end %>
+  </div>
 </div>
