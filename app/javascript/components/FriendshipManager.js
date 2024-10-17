@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
+import ConstrainedLayout from './ConstrainedLayout';
 
 const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");
@@ -11,6 +13,8 @@ const FriendshipManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  const debouncedSearch = debounce((term) => searchUsers(term), 300);
+
   useEffect(() => {
   }, []);
 
@@ -21,6 +25,8 @@ const FriendshipManager = () => {
 
   const fetchFriendships = async () => {
     try {
+      console.log("fetching friendships");
+
       const response = await fetch('/friendships', {
         headers: {
           "Accept": "application/json",
@@ -31,6 +37,8 @@ const FriendshipManager = () => {
         throw new Error('Failed to fetch friendships');
       }
       const data = await response.json();
+      console.log("fetched friendship data:", data);
+
       setFriends(data.friends);
       setPendingRequests(data.pending_requests);
       setReceivedRequests(data.received_requests);
@@ -39,14 +47,31 @@ const FriendshipManager = () => {
     }
   };
 
-  const searchUsers = async () => {
-    if (searchTerm.length < 2) return;
+  const searchUsers = async (term) => {
+    if (term.length < 2) {
+      setSearchResults([]);
+      return;
+    }
     try {
-      const response = await fetch(`/users/search?q${searchTerm}`);
+      console.log("Sending search request for:", term);
+      const response = await fetch(`/users/search?q=${encodeURIComponent(term)}`, {
+        headers: {
+          "Accept": "application/json",
+          "X-CSRF-Token": getCSRFToken(),
+        },
+      });
+      console.log("Search response status:", response.status);
+      if (!response.ok) {
+        // const text = await response.text();
+        // console.error("Server response:", text);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
+      console.log("Search results:", data);
       setSearchResults(data);
     } catch (error) {
       console.error("Error searching users:", error);
+      setSearchResults([]);
     }
   };
 
@@ -69,7 +94,9 @@ const FriendshipManager = () => {
 
   const acceptFriendRequest = async (friendshipId) => {
     try {
-      await fetch(`/friendships/${friendshipId}`, {
+      console.log("accepting friend request for id:", friendshipId);
+
+      const response = await fetch(`/friendships/${friendshipId}`, {
         method: "PATCH",
         headers: {
           "Accept": 'application/json',
@@ -78,14 +105,20 @@ const FriendshipManager = () => {
         },
         body: JSON.stringify({ status: "accepted" }),
       });
+      console.log("Response status:", response.status);
+
       if (response.ok) {
         const data = await response.json();
         console.log(data.message);
         if (data.updated_data) {
+          console.log("updating state with new data");
+
           setFriends(data.updated_data.friends);
           setPendingRequests(data.updated_data.pending_requests);
           setReceivedRequests(data.updated_data.received_requests);
         } else {
+          console.log("no updated data, fetching friendships");
+
           await fetchFriendships();
         }
       } else {
@@ -134,68 +167,78 @@ const FriendshipManager = () => {
     }
   };
 
+  console.log("Rendering FriendshipManager");
+  console.log("Friends:", friends);
+  console.log("Pending Requests:", pendingRequests);
+  console.log("Received Requests:", receivedRequests);
+
   return (
-    <div className="container mt-4">
-      <div className="card mb-4">
-        <div className="card-header">Search Users</div>
-        <div className="card-body">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && searchUsers()}
-            />
-            <button className="btn btn-outline-secondary" type="button" onClick={searchUsers}>Search</button>
-          </div>
-
-          {searchResults.map((user) => (
-            <div key={user.id} className="d-flex justiify-content-between align-items-center mb-2">
-              <span>{user.name}</span>
-              <button className="btn btn-primaty btn-sm" onClick={() => sendFriendRequest(user.id)}>Send Friend Request</button>
+    <ConstrainedLayout>
+      <h3 className="text-center">Manage Friendships</h3>
+      <div className="container mt-4">
+        <div className="card mb-4">
+          <div className="card-header">Search Users</div>
+          <div className="card-body">
+            <div className="input-group mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => {
+                  const newTerm = e.target.value;
+                  setSearchTerm(newTerm);
+                  debouncedSearch(newTerm);
+                }}
+              />
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="card mb-4">
-        <div className="card-header">Friends</div>
-        <div className="card-body">
-          {friends.map((friend) => (
-            <div key={friend.id} className="d-flex justify-content-between align-items-center mb-2">
-              <span>{friend.name}</span>
-              <button className="btn btn-danger btn-sm" onClick={() => removeFriend(friend.id)}>Remove Friend</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="card mb-4">
-        <div className="card-header">Pending Friend Requests</div>
-        <div className="card-body">
-          {pendingRequests.map((request) => (
-            <div key={request.id} className="mb-2">{request.name}</div>
-          ))}
-        </div>
-      </div>
-
-      <div className="card mb-4">
-        <div className="card-header">Received Friend Requests</div>
-        <div className="card-body">
-          {receivedRequests.map((request) => (
-            <div key={request.id} className="d-flex justify-content-between align-items-center mb-2">
-              <span>{request.name}</span>
-              <div>
-                <button className="btn btn-success btn-sm me-2" onClick={() => acceptFriendRequest(request.id)}>Accept</button>
-                <button className="btn btn-secondary btn-sm" onClick={() => declineFriendRequest(request.id)}>Decline</button>
+            {searchResults.map((user) => (
+              <div key={user.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{user.name} ({user.email})</span>
+                <button className="btn btn-primary btn-sm" onClick={() => sendFriendRequest(user.id)}>Send Friend Request</button>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Friends</div>
+          <div className="card-body">
+            {friends.map((friend) => (
+              <div key={friend.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{friend.name}</span>
+                <button className="btn btn-danger btn-sm" onClick={() => removeFriend(friend.id)}>Remove Friend</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Pending Friend Requests</div>
+          <div className="card-body">
+            {pendingRequests.map((request) => (
+              <div key={request.id} className="mb-2">{request.name}</div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">Received Friend Requests</div>
+          <div className="card-body">
+            {receivedRequests.map((request) => (
+              <div key={request.id} className="d-flex justify-content-between align-items-center mb-2">
+                <span>{request.name}</span>
+                <div>
+                  <button className="btn btn-success btn-sm me-2" onClick={() => acceptFriendRequest(request.id)}>Accept</button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => declineFriendRequest(request.id)}>Decline</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ConstrainedLayout>
   );
 };
 

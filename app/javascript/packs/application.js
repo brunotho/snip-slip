@@ -14,6 +14,8 @@ import "bootstrap/dist/css/bootstrap";
 import "bootstrap";
 
 import "../stylesheets/application.scss";
+import AddSnippetFormWrapper from "../components/AddSnippetForm";
+import ConstrainedLayout from "../components/ConstrainedLayout";
 
 Rails.start();
 Turbolinks.start();
@@ -43,10 +45,12 @@ document.addEventListener('turbolinks:load', () => {
     const snippetData = JSON.parse(snippetLastElement.dataset.snippet)
     const root = createRoot(snippetLastElement);
     root.render(
-      <SnippetCard
-        snippet={snippetData}
-        onClick={() => {}}
-      />
+      <ConstrainedLayout maxWidth="800px">
+        <SnippetCard
+          snippet={snippetData}
+          onClick={() => {}}
+        />
+      </ConstrainedLayout>
     )
   }
 
@@ -68,11 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
     root.render(<MainComponent gameSessionId={gameSessionId} />);
   }
 
-  // Mount DifficultySlider
-  const sliderElement = document.getElementById('difficulty-slider');
-  if (sliderElement) {
-    console.log('Mounting DifficultySlider component');
-    const root = createRoot(sliderElement);
-    root.render(<DifficultySlider />);
+  const wrapperElement = document.getElementById('add-snippet-form-wrapper');
+  if (wrapperElement) {
+    console.log('Mounting AddSnippetFormWrapper component');
+    const wrapperRoot = createRoot(wrapperElement);
+    const content = wrapperElement.innerHTML;
+    wrapperElement.innerHTML = '';
+    wrapperRoot.render(
+      <AddSnippetFormWrapper>
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </AddSnippetFormWrapper>
+    );
   }
+
+  // Mount DifficultySlider
+  // const sliderElement = document.getElementById('difficulty-slider');
+  // if (sliderElement) {
+  //   console.log('Mounting DifficultySlider component');
+  //   const root = createRoot(sliderElement);
+  //   root.render(<DifficultySlider />);
+  // }
 });

@@ -24,49 +24,63 @@ german_snippets = [
 # Create lyric snippets
 LyricSnippet.create!(english_snippets + german_snippets)
 
+# Create users
 users = [
-  { name: "Alice", email: "alice@example.com", password: "password123", language: "English" },
+  { name: "Alice", email: "alice@example.com", password: "123123", language: "English" },
   { name: "Bob", email: "bob@example.com", password: "password123", language: "English" },
   { name: "Charlie", email: "charlie@example.com", password: "password123", language: "English" },
   { name: "David", email: "david@example.com", password: "password123", language: "German" },
   { name: "Eva", email: "eva@example.com", password: "password123", language: "German" },
   { name: "Frank", email: "frank@example.com", password: "password123", language: "English" },
-  { name: "Grace", email: "grace@example.com", password: "password123", language: "German" }
+  { name: "Grace", email: "grace@example.com", password: "password123", language: "German" },
+  { name: "Henry", email: "henry@example.com", password: "password123", language: "English" },
+  { name: "Ivy", email: "ivy@example.com", password: "password123", language: "German" },
+  { name: "Jack", email: "jack@example.com", password: "password123", language: "English" }
 ]
 
 created_users = User.create!(users)
 
 # Assign users to variables
-alice, bob, charlie, david, eva, frank, grace = created_users
+alice, bob, charlie, david, eva, frank, grace, henry, ivy, jack = created_users
 
-# Create friendships centered around Alice
+# Create friendships
+def create_bidirectional_friendship(user1, user2, status)
+  Friendship.create!(user: user1, friend: user2, status: status)
+  Friendship.create!(user: user2, friend: user1, status: status) if status == :accepted
+end
 
-# 1. Accepted friendships (mutual)
-Friendship.create!(user: alice, friend: bob, status: :accepted)
-Friendship.create!(user: bob, friend: alice, status: :accepted)
+# Accepted friendships
+create_bidirectional_friendship(alice, bob, :accepted)
+create_bidirectional_friendship(alice, charlie, :accepted)
+create_bidirectional_friendship(alice, david, :accepted)
+create_bidirectional_friendship(bob, eva, :accepted)
+create_bidirectional_friendship(charlie, frank, :accepted)
 
-Friendship.create!(user: alice, friend: charlie, status: :accepted)
-Friendship.create!(user: charlie, friend: alice, status: :accepted)
+# Pending friend requests sent
+Friendship.create!(user: alice, friend: eva, status: :pending)
+Friendship.create!(user: bob, friend: grace, status: :pending)
+Friendship.create!(user: charlie, friend: henry, status: :pending)
+Friendship.create!(user: david, friend: ivy, status: :pending)
+Friendship.create!(user: eva, friend: jack, status: :pending)
 
-# 2. Pending friend request sent by Alice
-Friendship.create!(user: alice, friend: david, status: :pending)
+# Pending friend requests received
+Friendship.create!(user: frank, friend: alice, status: :pending)
+Friendship.create!(user: grace, friend: bob, status: :pending)
+Friendship.create!(user: henry, friend: charlie, status: :pending)
+Friendship.create!(user: ivy, friend: david, status: :pending)
+Friendship.create!(user: jack, friend: eva, status: :pending)
 
-# 3. Pending friend request received by Alice
-Friendship.create!(user: eva, friend: alice, status: :pending)
-
-# 4. Declined friend request sent by Alice
-Friendship.create!(user: alice, friend: frank, status: :declined)
-
-# 5. Declined friend request received by Alice
-Friendship.create!(user: grace, friend: alice, status: :declined)
-
-# Additional friendships not involving Alice (for testing search functionality)
-Friendship.create!(user: bob, friend: eva, status: :accepted)
-Friendship.create!(user: eva, friend: bob, status: :accepted)
-
-Friendship.create!(user: charlie, friend: david, status: :pending)
+# Declined friend requests
+Friendship.create!(user: alice, friend: grace, status: :declined)
+Friendship.create!(user: bob, friend: henry, status: :declined)
+Friendship.create!(user: charlie, friend: ivy, status: :declined)
+Friendship.create!(user: david, friend: jack, status: :declined)
+Friendship.create!(user: eva, friend: frank, status: :declined)
 
 p "Seed done 😍"
 p "Created #{LyricSnippet.count} lyric snippets"
 p "Created #{User.count} users"
 p "Created #{Friendship.count} friendships"
+p "Accepted friendships: #{Friendship.where(status: :accepted).count}"
+p "Pending friendships: #{Friendship.where(status: :pending).count}"
+p "Declined friendships: #{Friendship.where(status: :declined).count}"

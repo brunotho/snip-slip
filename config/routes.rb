@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
-  # get "friendships/index"
-  # get "friendships/create"
-  # get "friendships/update"
-  # get "friendships/destroy"
   devise_for :users
 
   get "welcome/home"
 
+  get '/users/test', to: 'users#test'
+  get "/users/search", to: "users#search", as: :users_search
+
   get "profile", to: "users#show", as: :user_profile
+
   resources :users, only: [ :show, :update ]
 
   namespace :api do
