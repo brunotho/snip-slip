@@ -25,10 +25,6 @@ class GameSessionsController < ApplicationController
 
   private
 
-  def successful_rounds_count
-    @game_session.rounds.where(user: current_user, success: true).count
-  end
-
   def game_session_data(game_session)
     {
       game_session_id: game_session.id,

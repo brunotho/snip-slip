@@ -75,3 +75,5 @@ gem 'webpacker', '~> 5.0'
 gem 'simple_form'
 
 gem 'devise'
+
+# gem 'actioncable'
