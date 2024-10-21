@@ -3,6 +3,14 @@ Friendship.destroy_all
 LyricSnippet.destroy_all
 User.destroy_all
 
+
+LyricSnippet.find_or_create_by!(
+  snippet: "Dummy snippet for failed rounds",
+  artist: "System",
+  song: "Failed Round",
+  difficulty: 0,
+  language: "English"
+)
 # English lyric snippets
 english_snippets = [
   { snippet: "Hey, Shawty, we could be friends", artist: "50 Cent", song: "Poor Lil Rich", difficulty: 300, language: "English" },
