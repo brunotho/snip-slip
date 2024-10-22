@@ -7,16 +7,22 @@ function MainComponent({ gameSessionId = null }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameData, setGameData] = useState(null);
   const [gameMode, setGameMode] = useState(null);
+  const [multiplayerSessionOver, setMultiplayerSessionOver] = useState(false);
 
   const handlePlay = () => {
     setGameStarted(true);
     setGameData(null);
+    setMultiplayerSessionOver(false);
     setGameMode("quick");
   };
 
   const handleSnippetCompletion = (data) => {
     setGameStarted(false);
     setGameData(data);
+
+    if (gameMode === "multi") {
+      setMultiplayerSessionOver(data.gameOver);
+    }
   };
 
   useEffect(() => {
@@ -42,6 +48,14 @@ function MainComponent({ gameSessionId = null }) {
         });
     }
   }, [gameSessionId]);
+
+  const shouldShowGameOver = () => {
+    if (gameMode === "multi") {
+      return multiplayerSessionOver && gameData;
+    } else {
+      return !gameStarted && gameData;
+    }
+  };
 
   return (
     <div>
@@ -69,10 +83,11 @@ function MainComponent({ gameSessionId = null }) {
           onSnippetComplete={handleSnippetCompletion} />
       )}
 
-      {gameData && (
+      {shouldShowGameOver() && gameData && (
         <GameOver
           gameData={gameData}
-          onPlayAgain={handlePlay} />
+          onPlayAgain={handlePlay}
+        />
       )}
     </div>
   );

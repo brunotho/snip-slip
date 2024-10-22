@@ -136,10 +136,10 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
       console.log("Round submission response:", data);
 
       const newGameData = {
-        totalScore: data.total_score,
-        roundsPlayed: data.rounds_played,
-        successfulRoundsCount: data.successful_rounds_count,
-        status: data.status
+        totalScore: data.game_session.total_score,
+        roundsPlayed: data.game_session.rounds_played,
+        successfulRoundsCount: data.game_session.successful_rounds_count,
+        status: data.game_session.status
       };
       setGameData(newGameData);
 
@@ -152,15 +152,14 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
       setRoundHistory(updatedHistory);
 
       // Check if the game is over and handle completion
-      if (!data.status || data.rounds_played >= 5) {
-        console.log("Exit Snippetgame.js with data for game over component", newGameData);
-        console.log(updatedHistory);
-
+      if (data.game_session.player_game_over) {
         onSnippetComplete({
-          totalScore: data.total_score,
-          roundsPlayed: data.rounds_played,
-          successfulRoundsCount: data.successful_rounds_count,
-          roundHistory: updatedHistory
+          // totalScore: data.game_session.total_score,
+          // roundsPlayed: data.game_session.rounds_played,
+          // successfulRoundsCount: data.game_session.successful_rounds_count,
+          ...newGameData,
+          roundHistory: updatedHistory,
+          gameOver: data.game_session.game_over
         });
         return;
       }

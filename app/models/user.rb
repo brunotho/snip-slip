@@ -34,6 +34,10 @@ class User < ApplicationRecord
     reverse_friendship.destroy if reverse_friendship
   end
 
+  def invitable_friend?(friend)
+    friendships.where(friend: friend, status: [:pending, :accepted]).exists?
+  end
+
   # validates :language, inclusion: { in: %w[English German] }
 
   def total_score

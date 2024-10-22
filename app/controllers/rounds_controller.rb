@@ -15,7 +15,7 @@ class RoundsController < ApplicationController
     if @round.save
       @game_session.check_game_session_status
 
-      render json: {
+      response_data = {
         message: "Round created successfully",
         round: {
           id: @round.id,
@@ -25,13 +25,35 @@ class RoundsController < ApplicationController
             snippet: @round.lyric_snippet.snippet
           }
         },
-        total_score: current_user.total_score,
-        rounds_played: @game_session.rounds.where(user_id: current_user.id).count,
-        successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
-        status: @game_session.status?
-      }, status: 201
+        game_session: {
+          total_score: @game_session.total_score(current_user),
+          rounds_played: @game_session.rounds.where(user: current_user).count,
+          successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
+          status: @game_session.status, #redundant?
+          player_game_over: player_game_over?,
+          game_over: !@game_session.status
+        }
+      }
+
+      if @game_session.multiplayer?
+        ActionCable.server.broadcast(
+          "game_session_#{@game_session.id}",
+          {
+            action: "round_completed",
+            player: {
+              id: current_user.id,
+              name: current_user.name,
+              rounds_played: @game_session.rounds.where(user: current_user).count,
+              successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
+              total_score: @game_session.total_score(current_user)
+            }
+          }
+        )
+      end
+
+      render json: response_data, status: 201
     else
-      render json: { errors: @round.errors.full_messages }, status: 422
+      render json: { errors: @round.errors.full_messages }, status: 4222
     end
   end
 
@@ -46,4 +68,19 @@ class RoundsController < ApplicationController
   def round_params
     params.require(:round).permit(:lyric_snippet_id, :success)
   end
+
+  def player_game_over?
+    @game_session.player_completed?(current_user)
+  end
 end
+
+
+
+# used to be in #create
+#     total_score: current_user.total_score,
+#     rounds_played: @game_session.rounds.where(user_id: current_user.id).count,
+#     successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
+#     status: @game_session.status?
+#   }, status: 201
+# else
+#   render json: { errors: @round.errors.full_messages }, status: 422

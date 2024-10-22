@@ -15,10 +15,21 @@
             data: { turbolinks: false },
             method: :post
         %>
+        <%= button_to "Play with Friends",
+            start_multiplayer_game_sessions_path,
+            class: "btn btn-primary",
+            data: { turbolinks: false },
+            method: :post
+        %>
       <% else %>
         <%= link_to "Start Single Player Game",
             new_user_session_path,
             class: "btn btn-success me-2",
+            data: { turbolinks: false, target: "_blank" }
+        %>
+        <%= link_to "Play with Friends",
+            new_user_session_path,
+            class: "btn btn-primary",
             data: { turbolinks: false, target: "_blank" }
         %>
       <% end %>
