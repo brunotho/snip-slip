@@ -12,22 +12,22 @@ class GameSessionsController < ApplicationController
 
   def start_single_player
     ActiveRecord::Base.transaction do
-      @game_session = current_user.game_sessions.create!
-      # @game_session.game_session_participants.create!(user: current_user)
+      @game_session = GameSession.create!
+      @game_session.game_session_participants.create!(user: current_user)
+      redirect_to game_session_path(@game_session)
     end
-    redirect_to snippets_path
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to root_path, alert: "Failed to start session: #{e.message}"
+    redirect_to root_path, alert: "Failed to start singleplayer session: #{e.message}"
   end
 
   def start_multiplayer
     ActiveRecord::Base.transaction do
-      @game_session = current_user.game_sessions.create!
+      @game_session = GameSession.create!
       @game_session.game_session_participants.create!(user: current_user)
+      redirect_to game_session_path(@game_session)
     end
-    render json: game_session_data(@game_session)
   rescue ActiveRecord::RecordInvalid => e
-    render json: { error: "Failed to start multiplayer session: #{e.message}" }, status: 422
+    redirect_to root_path, alert: "Failed to start multiplayer session: #{e.message}"
   end
 
   def invite_friend

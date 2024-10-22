@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   resources :game_sessions, only: [ :new, :create, :show ] do
     collection do
       post "start_single_player"
+      post "start_multiplayer"
     end
     resources :rounds, only: [ :create ]
   end
