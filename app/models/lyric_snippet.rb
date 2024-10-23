@@ -4,7 +4,7 @@ class LyricSnippet < ApplicationRecord
   validates :snippet, presence: true
   validates :artist, presence: true
   validates :song, presence: true
-  validates :difficulty, presence: true, inclusion: { in: 1..1000 }
+  validates :difficulty, presence: true, inclusion: { in: 0..1000 }
   validates :language, inclusion: { in: %w[English German] }
 
   def self.languages

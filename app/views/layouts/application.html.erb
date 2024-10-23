@@ -18,8 +18,11 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-
+  <body data-current-user-id="<%= current_user&.id %>">
+    <h1>qwe</h1>
+    <h1>qwe</h1>
+    <h1>qwe</h1>
+    <h1><%= current_user&.id %></h1>
     <%= render "layouts/header" %>
 
     <p class="notice"><%= notice %></p>

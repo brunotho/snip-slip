@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import GameLayout from "./GameLayout";
 import SnippetCard from "./SnippetCard";
 import ExpandedSnippet from "./ExpandedSnippet";
@@ -6,7 +6,7 @@ import GameProgressCard from "./GameProgressCard";
 import { createGameSessionChannel } from "../channels/game_session_channel";
 
 function MultiPlayerGame({
-  snippepts,
+  snippets,
   loading,
   error,
   selectedSnippet,
@@ -17,63 +17,31 @@ function MultiPlayerGame({
   game_session_id
 }) {
   const [players, setPlayers] = useState({});
-  const [channel, setChannel] = useState(null);
 
   useEffect(() => {
     if (game_session_id) {
       const gameChannel = createGameSessionChannel(game_session_id);
 
-      const enhancedChannel = {
-        ...gameChannel,
-        received: (data) => {
-          console.log("Received game update:", data);
-          handleGameUpdate(data);
+      gameChannel.received = (data) => {
+        console.log("MultiPlayerGame received update:", data);
+        if (data.type === "round_completed") {
+          setPlayers(prevPlayers => ({
+            ...prevPlayers,
+            [data.player.id]: {
+              ...prevPlayers[data.player.id],
+              rounds_played: data.player.rounds_played,
+              successful_rounds_count: data.player.successful_rounds_count,
+              total_score: data.player.total_score
+            }
+          }));
         }
       };
-
-      setChannel(enhancedChannel);
 
       return () => {
         gameChannel.unsubscribe();
       };
     }
   }, [game_session_id]);
-
-
-  const handleGameUpdate = (data) => {
-    switch (data.action) {
-      case 'player_joined':
-        setPlayers(prevPlayers => ({
-          ...prevPlayers,
-          [data.player.id]: data.player
-        }));
-        break;
-
-      case 'player_left':
-        setPlayers(prevPlayers => {
-          const updatedPlayers = { ...prevPlayers };
-          delete updatedPlayers[data.player_id];
-          return updatedPlayers;
-        });
-        break;
-
-      case 'round_completed':
-        setPlayers(prevPlayers => ({
-          ...prevPlayers,
-          [data.player.id]: {
-            ...prevPlayers[data.player.id],
-            rounds_played: data.player.rounds_played,
-            successful_rounds_count: data.player.successful_rounds_count,
-            total_score: data.palyer.total_score
-          }
-        }));
-        break;
-
-      default:
-        console.log("Unknown game update type:", data);
-    }
-  };
-
 
   const handleMultiplayerSubmit = async (snippet_id, success) => {
     try {
@@ -93,7 +61,7 @@ function MultiPlayerGame({
         selectedSnippet ? (
           <ExpandedSnippet
             snippet={selectedSnippet}
-            onsubmit={handleMultiplayerSubmit}
+            onSubmit={handleMultiplayerSubmit}
             game_session_id={game_session_id}
           />
         ) : (

@@ -1,3 +1,5 @@
-import { createConsumer } from "@rails/actioncable"
+import "./consumer"
+import "./notifications_channel"
+import "./game_session_channel"
 
-export default createConsumer()
+console.log("Channel index loaded")

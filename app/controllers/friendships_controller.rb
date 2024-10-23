@@ -12,10 +12,6 @@ class FriendshipsController < ApplicationController
       format.html
       format.json { render json: @friendships_data }
     end
-
-    p "👻 Friendships Data:"
-    p @friendships_data
-    p "😄"
   end
 
   def create

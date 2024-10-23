@@ -19,6 +19,12 @@ Rails.application.routes.draw do
       post "start_single_player"
       post "start_multiplayer"
     end
+    member do
+      get "invite"
+      post "invite_friend"
+      post "start"
+      post "accept_invitation"
+    end
     resources :rounds, only: [ :create ]
   end
 
