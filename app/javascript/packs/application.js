@@ -11,14 +11,18 @@ import SnippetCard from "../components/SnippetCard";
 import FriendshipManager from "../components/FriendshipManager";
 
 import "bootstrap/dist/css/bootstrap";
-import "bootstrap";
+import * as bootstrap from "bootstrap";
 
 import "../stylesheets/application.scss";
 import AddSnippetFormWrapper from "../components/AddSnippetForm";
 import ConstrainedLayout from "../components/ConstrainedLayout";
+import GameInviteManager from "../components/GameInviteManager";
+
+import "../channels/notifications_channel"
 
 Rails.start();
 Turbolinks.start();
+window.bootstrap = bootstrap;
 
 document.addEventListener('turbolinks:load', () => {
   // Mount SnippetsGame
@@ -52,6 +56,12 @@ document.addEventListener('turbolinks:load', () => {
         />
       </ConstrainedLayout>
     )
+  }
+
+  const inviteManagerContainer = document.getElementById("game-invite-manager");
+  if (inviteManagerContainer) {
+    const root = createRoot(inviteManagerContainer);
+    root.render(<GameInviteManager />);
   }
 
   const friendshipManagerContainer = document.getElementById('friendship-manager');

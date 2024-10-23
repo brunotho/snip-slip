@@ -36,19 +36,16 @@ class RoundsController < ApplicationController
       }
 
       if @game_session.multiplayer?
-        ActionCable.server.broadcast(
-          "game_session_#{@game_session.id}",
-          {
-            action: "round_completed",
-            player: {
-              id: current_user.id,
-              name: current_user.name,
-              rounds_played: @game_session.rounds.where(user: current_user).count,
-              successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
-              total_score: @game_session.total_score(current_user)
-            }
+        GameSessionChannel.broadcast_to(@game_session, {
+          type: "round_completed",
+          player: {
+            id: current_user.id,
+            name: current_user.name,
+            rounds_played: @game_session.rounds.where(user: current_user).count,
+            successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
+            total_score: @game_session.total_score(current_user)
           }
-        )
+        })
       end
 
       render json: response_data, status: 201

@@ -3,18 +3,24 @@ class GameSessionsController < ApplicationController
   before_action :set_game_session, only: [:show, :invite_friend, :leave_game]
 
   def show
-    if @game_session
-      render json: game_session_data(@game_session)
+    @game_session = GameSession.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: game_session_data(@game_session) }
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "Game session not found" }, status: 404
+    respond_to do |format|
+      format.html { redirect_to root_path, alert: "Game session not found" }
+      format.json { render json: { error: "Game session not found" }, status: 404 }
+    end
   end
 
   def start_single_player
     ActiveRecord::Base.transaction do
       @game_session = GameSession.create!
       @game_session.game_session_participants.create!(user: current_user)
-      redirect_to game_session_path(@game_session)
+      redirect_to snippets_path
     end
   rescue ActiveRecord::RecordInvalid => e
     redirect_to root_path, alert: "Failed to start singleplayer session: #{e.message}"
@@ -24,21 +30,78 @@ class GameSessionsController < ApplicationController
     ActiveRecord::Base.transaction do
       @game_session = GameSession.create!
       @game_session.game_session_participants.create!(user: current_user)
-      redirect_to game_session_path(@game_session)
+      redirect_to invite_game_session_path(@game_session)
     end
   rescue ActiveRecord::RecordInvalid => e
     redirect_to root_path, alert: "Failed to start multiplayer session: #{e.message}"
   end
 
+  def invite
+    @game_session = GameSession.find(params[:id])
+  rescue
+    redirect_to root_path, alert: "Game session not found"
+  end
+
   def invite_friend
+    p "🤡🤡🤡🤡🤡🤡"
+    puts "===================="
+    puts "Params received: #{params.inspect}"
+    puts "Friend ID received: #{params[:friend_id]}"
+    puts "===================="
+    # raise
     friend = User.find(params[:friend_id])
     if current_user.invitable_friend?(friend)
-      @game_session.game_session_participants.create!(user: friend)
-      broadcast_player_joined(friend)
+      broadcast_game_invitation(friend)
       render json: { message: "Friend invited successfully" }
     else
       render json: { error: "You can only invite friends with pending or accepted status" }, status: 422
     end
+  end
+
+  def broadcast_game_invitation(user)
+    p "😎😎😎😎😎"
+    Rails.logger.info "=== Broadcasting invitation ==="
+    Rails.logger.info "Game Session: #{@game_session.id}"
+    Rails.logger.info "To user: #{user.inspect}"
+    ActionCable.server.broadcast(
+      "user_notifications",
+      {
+        type: "game_invitation",
+        game_session_id: @game_session.id,
+        player: {
+          id: user.id,
+          name: user.name
+        },
+        inviter: {
+          id: current_user.id,
+          name: current_user.name
+        }
+      }
+    )
+  end
+
+  def accept_invitation
+    Rails.logger.info "=== Accept Invitation ==="
+    Rails.logger.info "Game Session ID: #{params[:id]}"
+    Rails.logger.info "Current User: #{current_user.inspect}"
+
+    @game_session = GameSession.find(params[:id])
+    Rails.logger.info "Game Session found: #{@game_session.inspect}"
+    Rails.logger.info "Current participants: #{@game_session.game_session_participants.map(&:user_id)}"
+
+    begin
+      participant = @game_session.game_session_participants.create!(user: current_user)
+      Rails.logger.info "Participant created: #{participant.inspect}"
+      broadcast_player_joined(current_user)
+      render json: { message: "Successfully joined game" }, status: :ok
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error "Failed to create participant: #{e.message}"
+      Rails.logger.error e.record.errors.full_messages
+      render json: { error: e.message }, status: 422
+    end
+  end
+
+  def start
   end
 
   def leave_game
@@ -81,14 +144,14 @@ class GameSessionsController < ApplicationController
   def broadcast_player_joined(user)
     GameSessionChannel.broadcast_to(@game_session, {
       type: "player_joined",
-      user: { id: user.id, name: user.name }
+      player: { id: user.id, name: user.name }
     })
   end
 
   def broadcast_player_left
     GameSessionChannel.broadcast_to(@game_session, {
       type: "player_left",
-      user: { id: user.id, name: user.name }
+      player: { id: user.id, name: user.name }
     })
   end
 
