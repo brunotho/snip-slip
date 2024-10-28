@@ -29,7 +29,7 @@ import MultiPlayerGame from './MultiPlayerGame';
  * - Depending on the game mode, renders either QuickPlay, SinglePlayer, or MultiPlayer.
  */
 
-function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'quick' }) {
+function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'quick', players, setPlayers }) {
   // State for managing snippets, loading state, errors, selected snippet, and game data
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,12 +77,16 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
     })
       .then(response => response.json())
       .then(data => {
-        console.log('game session data:', data);
+        console.log('fetchGameSessionData (SnippetsGame):', data);
         setGameData({
           totalScore: data.total_score,
           roundsPlayed: data.rounds_played,
           successfulRoundsCount: data.successful_rounds_count,
-          status: data.status
+          status: data.status,
+          currentPlayerId: data.current_player_id,
+          currentPlayerName: data.current_player_name,
+          players: data.players,
+          game_session_id: data.game_session_id
         });
       })
       .catch(error => {
@@ -92,7 +96,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
 
   // Fetch snippets when the component mounts or game session ID changes
   useEffect(() => {
-    console.log("SnippetsGame component mounted");
+    console.log("SnippetsGame from inside ☑");
     if (game_session_id) {
       fetchGameSessionData();
     }
@@ -136,6 +140,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
       console.log("Round submission response:", data);
 
       const newGameData = {
+        ...gameData,
         totalScore: data.game_session.total_score,
         roundsPlayed: data.game_session.rounds_played,
         successfulRoundsCount: data.game_session.successful_rounds_count,
@@ -159,7 +164,8 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
           // successfulRoundsCount: data.game_session.successful_rounds_count,
           ...newGameData,
           roundHistory: updatedHistory,
-          gameOver: data.game_session.game_over
+          gameOver: data.game_session.game_over,
+          playerGameOver: data.game_session.player_game_over
         });
         return;
       }
@@ -172,6 +178,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
       alert("Error while submitting round!!");
     }
   };
+  // end of handleSubmit
 
   // Fetch the CSRF token for secure API requests
   const getCSRFToken = () => {
@@ -191,7 +198,9 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
     handleSubmit: gameMode === 'quick' ? null : handleSubmit,
     handleNextSnippet: gameMode === 'quick' ? handleNextSnippet : null,
     game_session_id: gameMode === 'quick' ? null : game_session_id,
+    ...(gameMode === 'multi' ? { players, setPlayers } : {} )
   };
+
 
   // Render the appropriate game mode component based on `gameMode` prop
   const renderGameMode = () => {

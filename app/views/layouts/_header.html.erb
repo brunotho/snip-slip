@@ -9,25 +9,25 @@
     <%# game session start %>
     <div class="d-flex">
       <% if user_signed_in? %>
-        <%= button_to "Start Single Player Game",
+        <%= button_to "Play Alone :<",
             start_single_player_game_sessions_path,
             class: "btn btn-success me-2",
             data: { turbolinks: false },
             method: :post
         %>
-        <%= button_to "Play with Friends",
+        <%= button_to "Play with Friends :>",
             start_multiplayer_game_sessions_path,
             class: "btn btn-primary",
             data: { turbolinks: false },
             method: :post
         %>
       <% else %>
-        <%= link_to "Start Single Player Game",
+        <%= link_to "Play Alone :<",
             new_user_session_path,
             class: "btn btn-success me-2",
             data: { turbolinks: false, target: "_blank" }
         %>
-        <%= link_to "Play with Friends",
+        <%= link_to "Play with Friends :>",
             new_user_session_path,
             class: "btn btn-primary",
             data: { turbolinks: false, target: "_blank" }

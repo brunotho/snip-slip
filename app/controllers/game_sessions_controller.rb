@@ -81,27 +81,39 @@ class GameSessionsController < ApplicationController
   end
 
   def accept_invitation
-    Rails.logger.info "=== Accept Invitation ==="
-    Rails.logger.info "Game Session ID: #{params[:id]}"
-    Rails.logger.info "Current User: #{current_user.inspect}"
+    # Rails.logger.info "=== Accept Invitation ==="
+    # Rails.logger.info "Game Session ID: #{params[:id]}"
+    # Rails.logger.info "Current User: #{current_user.inspect}"
 
     @game_session = GameSession.find(params[:id])
-    Rails.logger.info "Game Session found: #{@game_session.inspect}"
-    Rails.logger.info "Current participants: #{@game_session.game_session_participants.map(&:user_id)}"
+    # Rails.logger.info "Game Session found: #{@game_session.inspect}"
+    # Rails.logger.info "Current participants: #{@game_session.game_session_participants.map(&:user_id)}"
 
     begin
       participant = @game_session.game_session_participants.create!(user: current_user)
-      Rails.logger.info "Participant created: #{participant.inspect}"
+      # Rails.logger.info "Participant created: #{participant.inspect}"
       broadcast_player_joined(current_user)
-      render json: { message: "Successfully joined game" }, status: :ok
+      render json: {
+        message: "Successfully joined game",
+        redirect_url: invite_game_session_path(@game_session)
+      }, status: :ok
     rescue ActiveRecord::RecordInvalid => e
-      Rails.logger.error "Failed to create participant: #{e.message}"
-      Rails.logger.error e.record.errors.full_messages
+      # Rails.logger.error "Failed to create participant: #{e.message}"
+      # Rails.logger.error e.record.errors.full_messages
       render json: { error: e.message }, status: 422
     end
   end
 
   def start
+    @game_session = GameSession.find(params[:id])
+
+    if @game_session.game_session_participants.exists?(user: current_user)
+      @game_session.update!(started: true)
+      broadcast_game_start
+      render json: { message: "Game started successfully" }
+    else
+      render json: { error: "Not authorized to start this game" }, status: :unauthorized
+    end
   end
 
   def leave_game
@@ -123,8 +135,13 @@ class GameSessionsController < ApplicationController
   end
 
   def game_session_data(game_session)
+    first_participant = game_session.game_session_participants.order(:created_at).first
+
     {
       game_session_id: game_session.id,
+      current_player_id: current_user.id,
+      current_player_name: current_user.name,
+      is_host: first_participant.user_id == current_user.id,
       total_score: current_user.total_score,
       successful_rounds_count: game_session.rounds.where(user: current_user, success: true).count,
       rounds_played: game_session.rounds.where(user_id: current_user.id).count,
@@ -134,10 +151,10 @@ class GameSessionsController < ApplicationController
           name: participant.user.name,
           total_score: participant.user.total_score,
           successful_rounds_count: game_session.rounds.where(user: participant.user, success: true).count,
-          rounds_played: game_session.rounds.where(user_id: participant.user.id).count
+          rounds_played: game_session.rounds.where(user_id: participant.user.id).count,
         }
       end,
-      multiplayer:game_session.multiplayer?
+      multiplayer: game_session.multiplayer?
     }
   end
 
@@ -153,6 +170,13 @@ class GameSessionsController < ApplicationController
       type: "player_left",
       player: { id: user.id, name: user.name }
     })
+  end
+
+  def broadcast_game_start
+    GameSessionChannel.broadcast_to(@game_session, {
+        type: "game_start",
+        game_session_id: @game_session.id
+      })
   end
 
   def default_remaining_rounds_to_failed
