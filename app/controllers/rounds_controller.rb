@@ -16,7 +16,7 @@ class RoundsController < ApplicationController
       @game_session.check_game_session_status
 
       response_data = {
-        message: "Round created successfully",
+        message: "Round created successfully // MP:#{@game_session.multiplayer?}",
         round: {
           id: @round.id,
           success: @round.success,
@@ -29,23 +29,31 @@ class RoundsController < ApplicationController
           total_score: @game_session.total_score(current_user),
           rounds_played: @game_session.rounds.where(user: current_user).count,
           successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
-          status: @game_session.status, #redundant?
+          status: @game_session.status,
           player_game_over: player_game_over?,
           game_over: !@game_session.status
         }
       }
 
       if @game_session.multiplayer?
-        GameSessionChannel.broadcast_to(@game_session, {
+        p "🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡"
+        broadcast_data = {
           type: "round_completed",
           player: {
             id: current_user.id,
             name: current_user.name,
             rounds_played: @game_session.rounds.where(user: current_user).count,
             successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
-            total_score: @game_session.total_score(current_user)
+            total_score: @game_session.total_score(current_user),
+            round_history: @game_session.rounds.where(user_id: current_user.id).map do |round|
+              {
+                success: round.success,
+                lyric_snippet: { snippet: round.lyric_snippet.snippet }
+              }
+            end
           }
-        })
+        }
+        GameSessionChannel.broadcast_to(@game_session, broadcast_data)
       end
 
       render json: response_data, status: 201
@@ -70,14 +78,3 @@ class RoundsController < ApplicationController
     @game_session.player_completed?(current_user)
   end
 end
-
-
-
-# used to be in #create
-#     total_score: current_user.total_score,
-#     rounds_played: @game_session.rounds.where(user_id: current_user.id).count,
-#     successful_rounds_count: @game_session.rounds.where(user: current_user, success: true).count,
-#     status: @game_session.status?
-#   }, status: 201
-# else
-#   render json: { errors: @round.errors.full_messages }, status: 422

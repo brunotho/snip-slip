@@ -5,6 +5,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
 export default function GameProgressCard({
+  playerName="",
   totalScore = 0,
   roundsPlayed = 0,
   successfulRoundsCount = 0,
@@ -14,6 +15,7 @@ export default function GameProgressCard({
   return (
     <div className="border p-4 rounded-lg">
       <div className="d-flex justify-content-between align-items-center">
+        <div>Name: {playerName}</div>
         <div className="font-bold">Score: {totalScore}</div>
         <div>Rounds: {roundsPlayed}/{maxRounds}</div>
       </div>

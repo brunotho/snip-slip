@@ -21,7 +21,11 @@ class SnippetsController < ApplicationController
 
   def fetch_snippets
     user_language = current_user&.language || "English"
-    snippets = LyricSnippet.where(language: user_language).order("RANDOM()").limit(4)
+    snippets = LyricSnippet
+                .where(language: user_language)
+                .where.not(snippet: "Dummy snippet for failed rounds")
+                .order("RANDOM()")
+                .limit(4)
     render json: snippets
   end
 

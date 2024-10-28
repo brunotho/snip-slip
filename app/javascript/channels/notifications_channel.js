@@ -2,7 +2,7 @@ import consumer from "./consumer";
 
 consumer.subscriptions.create("NotificationsChannel", {
   connected() {
-    console.log("Connected to notifications channel");
+    console.log("Notifications Channel ☑");
   },
 
   disconnected() {
@@ -20,8 +20,9 @@ consumer.subscriptions.create("NotificationsChannel", {
   showGameInvitation(data) {
     const acceptInvitation = () => {
       const token = document.querySelector('[name="csrf-token"]').content;
+      const gameSessionId = data.game_session_id;
 
-      fetch(`/game_sessions/${data.game_session_id}/accept_invitation`, {
+      fetch(`/game_sessions/${gameSessionId}/accept_invitation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +31,12 @@ consumer.subscriptions.create("NotificationsChannel", {
       })
       .then(response => {
         if (response.ok) {
-          window.location.href = `/game_sessions/${data.game_session_id}`;
+          return response.json().then(responseData => {
+            console.log("Accepting invitation succeeded:", responseData)
+            window.location.href = `/game_sessions/${gameSessionId}/invite`;
+          });
+        } else {
+          throw new Error("Failed to accept invitation");
         }
       })
       .catch(error => console.error('Error accepting invitation:', error));

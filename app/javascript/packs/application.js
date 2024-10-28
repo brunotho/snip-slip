@@ -37,7 +37,6 @@ document.addEventListener('turbolinks:load', () => {
   // Mount InviteFriend
   const inviteFriendElement = document.getElementById('invite-friend');
   if (inviteFriendElement) {
-    console.log('Mounting InviteFriend component');
     const root = createRoot(inviteFriendElement);
     root.render(<InviteFriend />);
   }
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mount MainComponent
   const rootElement = document.getElementById('root');
   if (rootElement) {
-    console.log('Mounting MainComponent');
+    console.log('MainComponent ☑');
     const gameSessionId = rootElement.dataset.gameSessionId;
     const root = createRoot(rootElement);
     root.render(<MainComponent gameSessionId={gameSessionId} />);

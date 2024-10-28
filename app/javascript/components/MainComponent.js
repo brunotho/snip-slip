@@ -8,6 +8,8 @@ function MainComponent({ gameSessionId = null }) {
   const [gameData, setGameData] = useState(null);
   const [gameMode, setGameMode] = useState(null);
   const [multiplayerSessionOver, setMultiplayerSessionOver] = useState(false);
+  const [players, setPlayers] = useState({});
+
 
   const handlePlay = () => {
     setGameStarted(true);
@@ -49,9 +51,27 @@ function MainComponent({ gameSessionId = null }) {
     }
   }, [gameSessionId]);
 
+  // const shouldShowGameOver = () => {
+  //   console.log("Checking game over with:", {
+  //     gameMode,
+  //     gameData,
+  //     playerGameOver: gameData && gameData.player_game_over,
+  //     gameStarted
+  //   });
+
+  //   if (gameMode === "multi") {
+  //     const shouldShow = gameData && gameData.player_game_over;
+  //     console.log("Multi result:", shouldShow);
+  //     return shouldShow;
+  //   } else {
+  //     const shouldShow = !gameStarted && gameData;
+  //     console.log("Single result:", shouldShow);
+  //     return shouldShow;
+  //   }
+  // };
   const shouldShowGameOver = () => {
     if (gameMode === "multi") {
-      return multiplayerSessionOver && gameData;
+      return gameData && gameData.playerGameOver;
     } else {
       return !gameStarted && gameData;
     }
@@ -80,13 +100,18 @@ function MainComponent({ gameSessionId = null }) {
         <SnippetsGame
           game_session_id={gameSessionId}
           gameMode={gameMode}
-          onSnippetComplete={handleSnippetCompletion} />
+          onSnippetComplete={handleSnippetCompletion}
+          players={players}
+          setPlayers={setPlayers}
+        />
       )}
 
       {shouldShowGameOver() && gameData && (
         <GameOver
           gameData={gameData}
-          onPlayAgain={handlePlay}
+          players={players}
+          setPlayers={setPlayers}
+          gameComplete={gameData.gameOver}
         />
       )}
     </div>
