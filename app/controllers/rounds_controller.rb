@@ -39,6 +39,7 @@ class RoundsController < ApplicationController
         p "🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡🤡"
         broadcast_data = {
           type: "round_completed",
+          game_over: multiplayer_game_over?,
           player: {
             id: current_user.id,
             name: current_user.name,
@@ -76,5 +77,11 @@ class RoundsController < ApplicationController
 
   def player_game_over?
     @game_session.player_completed?(current_user)
+  end
+
+  def multiplayer_game_over?
+    @game_session.game_session_participants.all? { |participant|
+      @game_session.player_completed?(participant.user)
+    }
   end
 end

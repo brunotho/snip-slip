@@ -5,9 +5,9 @@ import GameOver from './GameOver';
 
 function MainComponent({ gameSessionId = null }) {
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameData, setGameData] = useState(null);
+  const [gameData, setGameData] = useState({});
   const [gameMode, setGameMode] = useState(null);
-  const [multiplayerSessionOver, setMultiplayerSessionOver] = useState(false);
+  // const [multiplayerSessionOver, setMultiplayerSessionOver] = useState(false);
   const [players, setPlayers] = useState({});
 
 
@@ -22,9 +22,9 @@ function MainComponent({ gameSessionId = null }) {
     setGameStarted(false);
     setGameData(data);
 
-    if (gameMode === "multi") {
-      setMultiplayerSessionOver(data.gameOver);
-    }
+    // if (gameMode === "multi") {
+    //   setMultiplayerSessionOver(data.gameOver);
+    // }
   };
 
   useEffect(() => {
@@ -100,6 +100,8 @@ function MainComponent({ gameSessionId = null }) {
         <SnippetsGame
           game_session_id={gameSessionId}
           gameMode={gameMode}
+          gameData={gameData}
+          setGameData={setGameData}
           onSnippetComplete={handleSnippetCompletion}
           players={players}
           setPlayers={setPlayers}
@@ -109,10 +111,10 @@ function MainComponent({ gameSessionId = null }) {
       {shouldShowGameOver() && gameData && (
         <GameOver
           gameData={gameData}
+          setGameData={setGameData}
           players={players}
           setPlayers={setPlayers}
-          gameComplete={gameData.gameOver}
-        />
+          />
       )}
     </div>
   );
