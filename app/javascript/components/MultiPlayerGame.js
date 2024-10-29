@@ -12,21 +12,19 @@ function MultiPlayerGame({
   selectedSnippet,
   setSelectedSnippet,
   gameData,
+  setGameData,
   roundHistory,
   handleSubmit,
   game_session_id,
   players,
   setPlayers
 }) {
-  // const [players, setPlayers] = useState({});
   const initialized = useRef(false);
 
   useEffect(() => {
     if (!game_session_id) return;
     console.log("initial gameData:", gameData)
     console.log("🤡🤡🤡🤡");
-    console.log(selectedSnippet);
-    console.log(roundHistory);
     const gameChannel = createGameSessionChannel(game_session_id);
 
     // updating gameData on every round_submit
@@ -53,6 +51,16 @@ function MultiPlayerGame({
           console.log("newState:", JSON.stringify(newState, null, 2));
           return newState;
         });
+
+        console.log("SETGAMEDATA IN MULTIPLAYER");
+        console.log(data);
+        console.log(data.game_over);
+
+
+        setGameData(prevGameData => ({
+          ...prevGameData,
+          gameOver: data.game_over
+        }));
       }
     };
     ///////////////////////////////////////
@@ -96,6 +104,9 @@ function MultiPlayerGame({
   if (error) return <div>Error loading snippets: {error.message}</div>;
   if (loading) return <div>Loading snippets... </div>;
 
+  console.log("😪😯🤐😯🤐😫😪😯🤐");
+  console.log(gameData);
+
   return (
     <GameLayout
       mainContent={
@@ -121,7 +132,6 @@ function MultiPlayerGame({
       sideContent={
         <div className="multiplayer-progress">
           <div className="mb-4">
-            <h4>Your Progress</h4>
             <GameProgressCard
               playerName={gameData.currentPlayerName}
               totalScore={gameData.totalScore}
@@ -132,7 +142,6 @@ function MultiPlayerGame({
           </div>
 
           <div>
-            <h4>Other Players</h4>
             {Object.values(players)
               .filter(player => player.id !== gameData.currentPlayerId)
               .map(player => (

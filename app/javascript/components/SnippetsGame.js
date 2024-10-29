@@ -29,18 +29,26 @@ import MultiPlayerGame from './MultiPlayerGame';
  * - Depending on the game mode, renders either QuickPlay, SinglePlayer, or MultiPlayer.
  */
 
-function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'quick', players, setPlayers }) {
+function SnippetsGame({
+  game_session_id = null,
+  onSnippetComplete,
+  gameMode = 'quick',
+  gameData,
+  setGameData,
+  players,
+  setPlayers
+}) {
   // State for managing snippets, loading state, errors, selected snippet, and game data
   const [snippets, setSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedSnippet, setSelectedSnippet] = useState(null);
-  const [gameData, setGameData] = useState({
-    totalScore: 0,
-    roundsPlayed: 0,
-    successfulRoundsCount: 0,
-    status: true
-  });
+  // const [gameData, setGameData] = useState({
+  //   totalScore: 0,
+  //   roundsPlayed: 0,
+  //   successfulRoundsCount: 0,
+  //   status: true
+  // });
   const [roundHistory, setRoundHistory] = useState([]);
 
   // Fetch available snippets from the server
@@ -79,6 +87,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
       .then(data => {
         console.log('fetchGameSessionData (SnippetsGame):', data);
         setGameData({
+          // ...prevGameData,
           totalScore: data.total_score,
           roundsPlayed: data.rounds_played,
           successfulRoundsCount: data.successful_rounds_count,
@@ -194,6 +203,7 @@ function SnippetsGame({ game_session_id = null, onSnippetComplete, gameMode = 'q
     selectedSnippet,
     setSelectedSnippet,
     gameData,
+    setGameData,
     roundHistory: gameMode === 'quick' ? [] : roundHistory,
     handleSubmit: gameMode === 'quick' ? null : handleSubmit,
     handleNextSnippet: gameMode === 'quick' ? handleNextSnippet : null,
