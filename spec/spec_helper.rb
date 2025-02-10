@@ -14,8 +14,8 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require "simplecov"
-SimpleCov.start "rails" do
+# require "simplecov"
+# SimpleCov.start "rails" do
 end
 
 RSpec.configure do |config|
