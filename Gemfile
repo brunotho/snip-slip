@@ -53,7 +53,7 @@ end
 group :test do
   gem "capybara"
   gem "shoulda-matchers"
-  gem "simplecov", require: false
+  # gem "simplecov", require: false
 end
 
 group :development do
@@ -67,6 +67,6 @@ gem 'simple_form'
 gem 'react-rails'
 gem 'cloudinary'
 gem 'httparty'
-gem "sidekiq"
+# gem "sidekiq"
 
 ruby '3.2.2'

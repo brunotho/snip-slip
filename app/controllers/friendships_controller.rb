@@ -27,9 +27,6 @@ class FriendshipsController < ApplicationController
   def update
     friendship = Friendship.find(params[:id])
 
-    p "🤝 Friendship found:"
-    p friendship.inspect
-
     if friendship && (friendship.user_id == current_user.id || friendship.friend_id == current_user.id)
       case params[:status]
       when "accepted"
@@ -73,15 +70,8 @@ class FriendshipsController < ApplicationController
     if friendship && (friendship.user_id == current_user.id || friendship.friend_id == current_user.id)
       friendship.destroy
       render json: { success: true }, status: :ok
-      # respond_to do |format|
-      #   format.html { redirect_to friendships_path, notice: 'Friend removed successfully.' }
-      #   format.json { render json: { success: true }, status: :ok }
-      # end
     else
       render json: { error: "Friendship not found or unauthorized :<" }, status: 422
-      # respond_to do |format|
-      #   format.html { redirect_to friendships_path, alert: 'Friendship not found.' }
-      #   format.json { render json: { error: 'Friendship not found' }, status: :unprocessable_entity }
     end
   end
 end

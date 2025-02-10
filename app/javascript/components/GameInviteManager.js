@@ -180,7 +180,6 @@ const GameInviteManager = () => {
         </h3>
 
         <div className="row">
-          {/* Only show friends list for host */}
           {isHost && (
             <div className="col-md-6">
               <div className="card mb-4">

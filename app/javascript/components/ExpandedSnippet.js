@@ -1,5 +1,4 @@
 import React from 'react';
-// import '../stylesheets/_button_styles.scss';
 
 function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
   const handleSuccess = () => {

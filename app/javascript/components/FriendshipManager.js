@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import ConstrainedLayout from './ConstrainedLayout';
 
@@ -19,9 +19,6 @@ const FriendshipManager = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   const debouncedSearch = debounce((term) => searchUsers(term), 300);
-
-  // useEffect(() => {
-  // }, []);
 
   const getCSRFToken = () => {
     const meta = document.querySelector('meta[name="csrf-token"]');

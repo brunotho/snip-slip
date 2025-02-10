@@ -1,6 +1,6 @@
 class GameSessionsController < ApplicationController
   before_action :store_user_location!, if: :storable_location?
-  before_action :authenticate_user! #, only: [ :start_single_player ]
+  before_action :authenticate_user!
   before_action :set_game_session, only: [:show, :invite_friend, :leave_game]
 
   def show

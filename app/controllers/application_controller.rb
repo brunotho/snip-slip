@@ -18,8 +18,6 @@ class ApplicationController < ActionController::Base
   private
 
   def store_user_location!
-    Rails.logger.debug "🎯 Attempting to store location: #{request.fullpath}"
-    Rails.logger.debug "🎯 Storable?: #{storable_location?}"
     store_location_for(:user, request.fullpath) if storable_location?
   end
 
@@ -29,7 +27,6 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     stored_path = stored_location_for(resource)
-    Rails.logger.debug "🎯 After sign in - Stored path: #{stored_path}"
     stored_path || root_path
   end
 

@@ -79,16 +79,8 @@ consumer.subscriptions.create("NotificationsChannel", {
 
     setTimeout(() => {
       const bsModal = new bootstrap.Modal(modalElement)
-
-      // Add event listener for accept button
       document.getElementById('acceptButton').addEventListener('click', acceptInvitation)
-
-      // Show modal
       bsModal.show()
-
-      // Debug logs
-      console.log('Modal element:', modalElement)
-      console.log('Bootstrap Modal instance:', bsModal)
     }, 0)
   }
 });

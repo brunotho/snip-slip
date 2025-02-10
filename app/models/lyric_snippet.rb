@@ -5,11 +5,11 @@ class LyricSnippet < ApplicationRecord
   has_many :users_who_played, through: :user_played_snippets, source: :user
 
   validates :snippet, presence: true
-  validates :snippet, length: { minimum: 5, maximum: 70}
+  validates :snippet, length: { minimum: 5, maximum: 70 }
   validates :artist, presence: true
-  validates :artist, length: { minimum: 2, maxium: 20}
+  validates :artist, length: { minimum: 2, maxium: 20 }
   validates :song, presence: true
-  validates :song, length: { minimum: 2, maxium: 30}
+  validates :song, length: { minimum: 2, maxium: 30 }
   validates :difficulty, presence: true
   validates :difficulty, inclusion: { in: 0..1000 }
   validates :language, inclusion: { in: %w[English German] }
@@ -79,14 +79,11 @@ class LyricSnippet < ApplicationRecord
     )
 
     p "🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰 START #{artist_name} -- #{song_name}"
-    # p "Full URL with query: #{response.request.last_uri}"
-    # p "Base URI: #{response.request.uri}"
-    # p "Path: #{response.request.path}"
     p "Query string: #{response.request.uri.query}"
     p "HTT🥳 encoded params: #{URI.decode_www_form(response.request.uri.query).to_h}"
     p "😶 full response START:"
     # p response
-    puts JSON.pretty_generate(response.parsed_response)
+    p JSON.pretty_generate(response.parsed_response)
     p "😶 full response END"
     # response["albums"]["items"][0]["images"][0]["url"]
     response
