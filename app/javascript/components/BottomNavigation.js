@@ -51,30 +51,20 @@ const BottomNavigation = ({ userSignedIn = false }) => {
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark fixed-bottom d-flex justify-content-around py-2">
+    <div className="bottom-nav-buttons">
       <button
         onClick={handleSinglePlayerClick}
-        className="btn btn-accent flex-fill mx-1"
-        style={{
-          fontSize: 'clamp(0.875rem, 3vw, 1rem)',
-          padding: '0.75rem 0.5rem',
-          borderRadius: '0.375rem'
-        }}
+        className="btn btn-accent btn-pill btn-md"
       >
-Play Alone :{'<'}
+        Play Alone :{'<'}
       </button>
       <button
         onClick={handleMultiPlayerClick}
-        className="btn btn-accent flex-fill mx-1"
-        style={{
-          fontSize: 'clamp(0.875rem, 3vw, 1rem)',
-          padding: '0.75rem 0.5rem',
-          borderRadius: '0.375rem'
-        }}
+        className="btn btn-accent btn-pill btn-md"
       >
-Play with Friends :{'>'}
+        Play with Friends :{'>'}
       </button>
-    </nav>
+    </div>
   );
 };
 

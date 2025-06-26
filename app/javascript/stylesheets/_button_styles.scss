@@ -1,15 +1,15 @@
 @import './variables';
 
-// // // // // button styles:
+// =============================================================================
+// BUTTON VARIANTS (Color & State)
+// =============================================================================
+
 @mixin button-variant($bg-color, $text-color) {
   color: $text-color;
   background-color: $bg-color;
   border-color: $bg-color;
 
-  // for muted-teal:
-  // $hover-bg: darken($bg-color, 10%);
-  // $active-bg: darken($bg-color, 15%);
-  // for dark purple:
+  // Hover and focus states
   $hover-bg: lighten($bg-color, 10%);
   $active-bg: lighten($bg-color, 15%);
 
@@ -49,10 +49,10 @@
   }
 }
 
+// Primary button styles
 .btn-accent {
   @include button-variant($color-brand-accent, $color-brand-primary);
-
-  text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+  
   &:disabled,
   &.disabled {
     opacity: 0.5;
@@ -83,25 +83,85 @@
   @include button-variant((lighten($color-brand-secondary, 40%)), $color-brand-primary);
 }
 
-// .btn-positive {
-//   @include button-variant($color-action-positive, $color-brand-primary);
-// }
-
-// .btn-negative {
-//   @include button-variant($color-action-negative, $color-brand-primary);
-// }
-
-// .btn-submit {
-//   @include button-variant($color-action-submit, $color-brand-primary)
-// }
-
 .btn-login {
   @extend .btn-accent;
   width: 100%;
 }
 
+// =============================================================================
+// BUTTON SHAPES & SIZES
+// =============================================================================
+
+// Border radius variants
+.btn-rounded {
+  border-radius: 0.5rem;
+}
+
+.btn-pill {
+  border-radius: 50px;
+}
+
+.btn-square {
+  border-radius: 0.25rem;
+}
+
+// Size variants
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+}
+
+.btn-md {
+  padding: 0.6rem 1.2rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+}
+
+// =============================================================================
+// SPECIALIZED BUTTON TYPES
+// =============================================================================
+
+// Neutral/secondary buttons (like in ExpandedSnippet)
+.btn-neutral {
+  background-color: #ffffff;
+  color: #374151;
+  border: 2px solid #9ca3af;
+  transition: all 0.2s ease;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #6b7280;
+    color: #374151;
+  }
+
+  &:active {
+    background-color: #f3f4f6;
+    border-color: #4b5563;
+    color: #374151;
+  }
+}
+
+// Floating action buttons
+.btn-floating {
+  position: fixed;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+// Icon buttons
 .btn-icon {
-  width: 44px; // Minimum touch target for mobile
+  width: 44px;
   height: 44px;
   border-radius: 50%;
   display: flex;
@@ -116,12 +176,10 @@
 
     .fa-plus {
       color: $color-success !important;
-
     }
     .fa-check {
       color: $color-success !important;
     }
-
     .fa-xmark {
       color: $color-error !important;
     }
@@ -141,73 +199,33 @@
   }
 }
 
+// =============================================================================
+// BUTTON CONTAINERS & GROUPS
+// =============================================================================
 
-
-.button-fancy {
-  --b: 3px;
-  --s: .45em;
-  --color: #373B44;
-
-  padding: calc(.5em + var(--s)) calc(.9em + var(--s));
-  color: var(--color);
-  --_p: var(--s);
-  background:
-  conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
-  var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
-  transition: .2s linear, color 0s, background-color 0s;
-  outline: var(--b) solid #0000;
-  outline-offset: .6em;
-  font-size: 16px;
-  min-height: 44px; // Ensure minimum touch target
-  min-width: 120px; // Ensure adequate touch area
-
-  border: 0;
-
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-
-  aspect-ratio: 4 / 1;
-  margin: 3%;
-  
-  // Mobile-specific adjustments
-  @media (max-width: 767px) {
-    font-size: 14px;
-    margin: 2%;
-    padding: calc(.4em + var(--s)) calc(.8em + var(--s));
-  }
-}
-
-.button-fancy:hover,
-.button-fancy:focus-visible{
-  --_p: 0px;
-  outline-color: var(--color);
-  outline-offset: .05em;
-}
-
-.button-fancy:active {
-  background: var(--color);
-  color: #fff;
-}
-
-// // // // // button divs:
 .button-container {
   display: flex;
-  // gap: 10px;
-  // gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .button-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 0.5rem;
+}
 
-  form {
-    width: 100%;
-  }
+// Bottom navigation specific
+.bottom-nav-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 1000;
 
   .btn {
-    width: 100%;
-    white-space: nowrap;
+    flex: 1;
+    max-width: 48%;
   }
 }

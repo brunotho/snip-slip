@@ -136,16 +136,7 @@ function HeroSection({ onPlay }) {
                 <div style={{ textAlign: 'center' }}>
                   <button
                     onClick={toggleRules}
-                    style={{
-                      padding: '0.75rem 1.5rem',
-                      backgroundColor: '#f8fafc',
-                      border: '2px solid #e2e8f0',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className="btn btn-neutral btn-rounded"
                   >
                     Got it!
                   </button>

@@ -96,34 +96,20 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
           {game_session_id ? (
             <>
               <button 
-                className="px-4 py-2" 
+                className="btn btn-neutral btn-rounded"
                 onClick={handleSuccess}
                 style={{ 
-                  fontSize: "0.9rem",
-                  fontWeight: "500",
-                  borderRadius: "0.5rem",
                   minWidth: "120px",
-                  backgroundColor: "#ffffff",
-                  color: "#374151",
-                  border: "2px solid #9ca3af",
-                  transition: "all 0.2s ease",
                   whiteSpace: "nowrap"
                 }}
               >
                 Got it! 😎
               </button>
               <button 
-                className="px-4 py-2" 
+                className="btn btn-neutral btn-rounded"
                 onClick={handleFailure}
                 style={{ 
-                  fontSize: "0.9rem",
-                  fontWeight: "500", 
-                  borderRadius: "0.5rem",
                   minWidth: "120px",
-                  backgroundColor: "#ffffff",
-                  color: "#374151",
-                  border: "2px solid #9ca3af",
-                  transition: "all 0.2s ease",
                   whiteSpace: "nowrap"
                 }}
               >
@@ -132,17 +118,10 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
             </>
           ) : (
             <button 
-              className="px-4 py-2" 
+              className="btn btn-neutral btn-rounded"
               onClick={handleNext}
               style={{ 
-                fontSize: "0.9rem",
-                fontWeight: "500",
-                borderRadius: "0.5rem",
                 minWidth: "120px",
-                backgroundColor: "#ffffff",
-                color: "#374151",
-                border: "2px solid #9ca3af",
-                transition: "all 0.2s ease",
                 whiteSpace: "nowrap"
               }}
             >
