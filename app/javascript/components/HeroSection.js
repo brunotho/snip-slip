@@ -7,26 +7,41 @@ function HeroSection({ onPlay }) {
     <div>
       <div
         className="jumbotron text-center d-flex flex-column justify-content-center"
-        style={{ height: '20vh', marginTop: '7rem' }}
-        >
-        <h1 className="display-4">Welcome playa!</h1>
+        style={{ 
+          height: '15vh', 
+          marginTop: '2rem',
+          minHeight: '200px' // Ensure minimum height on mobile
+        }}
+      >
+        <h1 className="display-4" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)' }}>
+          Welcome playa!
+        </h1>
         <div
-          className="mt-4"
+          className="mt-3 mt-md-4"
           style={{ cursor: "pointer" }}
           onClick={onPlay}
-          >
+        >
           <FontAwesomeIcon
             icon={faPlay}
-            size="4x"
+            size="3x"
+            className="d-md-none" // Smaller icon on mobile
             style={{ color: "black" }}
             aria-label="Play"
             beat
-            />
+          />
+          <FontAwesomeIcon
+            icon={faPlay}
+            size="4x"
+            className="d-none d-md-block" // Larger icon on desktop
+            style={{ color: "black" }}
+            aria-label="Play"
+            beat
+          />
         </div>
       </div>
       <div className="rules-section d-flex justify-content-center">
         <div className="container d-flex flex-column align-items-center">
-          <ul className="list-unstyled" style={{ marginTop: "4rem" }}>
+          <ul className="list-unstyled" style={{ marginTop: "2rem" }}>
             <div className="rules-container">
               <li className="basic-rule">Press Play</li>
             </div>

@@ -170,12 +170,11 @@ function SnippetsGame({
         onNext={handleNextSnippet}
       />
     ) : (
-      <div className="row align-self-center gx-1 gy-4" style={{ marginTop: "10vh" }}>
+      <div className="row align-self-center gx-1 gy-4" style={{ marginTop: "2vh" }}>
         {snippets.map(snippet => (
           <div
             key={snippet.id}
-            className="col-md-6"
-            style={{ minWidth: '400px' }}
+            className="col-12 col-md-6"
           >
             <SnippetCard
               snippet={snippet}
