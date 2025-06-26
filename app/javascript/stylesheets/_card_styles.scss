@@ -42,6 +42,18 @@
   }
 }
 
+// New clean expanded snippet layout
+.expanded-snippet-new {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  
+  @media (max-width: 576px) {
+    padding: 1rem;
+  }
+}
+
+// Legacy expanded snippet (keeping for now in case we need to revert)
 .expanded-snippet {
   $border-style: 3.5px solid black;
   box-shadow: 0 0 15px $color-brand-accent;

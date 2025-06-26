@@ -112,7 +112,7 @@ function MultiPlayerGame({
           </div>
         </div>
       }
-      showSidePanel={true}
+      showSidePanel={false}
     />
   );
 }

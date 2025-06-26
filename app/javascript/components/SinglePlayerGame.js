@@ -53,7 +53,7 @@ function SinglePlayerGame({
           roundHistory={gameData.roundHistory}
         />
       }
-      showSidePanel={true}
+      showSidePanel={false}
     />
   );
 }
