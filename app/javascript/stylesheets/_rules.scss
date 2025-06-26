@@ -10,10 +10,21 @@
   left: 12rem;
   top: 0;
   opacity: 0;
-  white-space: nowrap;
+  max-width: calc(100vw - 12rem - 2rem);
   color: lighten($color-brand-secondary, 35%);
   font-size: .9rem;
   transition: opacity 0.3s ease;
+  overflow-wrap: break-word;
+  
+  @media (max-width: 768px) {
+    position: static;
+    left: auto;
+    max-width: 100%;
+    margin-top: 0.25rem;
+    margin-left: 1rem;
+    font-style: italic;
+    opacity: 1; /* Always show on mobile */
+  }
 }
 
 .rules-section:hover .extended-rule {

@@ -1,5 +1,72 @@
 @import './variables';
 
+// =============================================================================
+// GLOBAL TYPOGRAPHY & BASE STYLES
+// =============================================================================
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; // Base font size
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: 1.6;
+  color: $color-brand-secondary;
+  background-color: $color-brand-primary;
+  margin: 0;
+}
+
+// Typography Hierarchy
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-display;
+  font-weight: $font-weight-semibold;
+  line-height: 1.3;
+  margin: 0 0 $spacing-md 0;
+  color: $color-brand-secondary;
+}
+
+h1 { font-size: $font-size-4xl; }
+h2 { font-size: $font-size-3xl; }
+h3 { font-size: $font-size-2xl; }
+h4 { font-size: $font-size-xl; }
+h5 { font-size: $font-size-lg; }
+h6 { font-size: $font-size-base; }
+
+p {
+  margin: 0 0 $spacing-md 0;
+  font-size: $font-size-base;
+}
+
+// Links
+a {
+  color: $color-brand-accent;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Lists
+ul, ol {
+  margin: 0 0 $spacing-md 0;
+  padding-left: $spacing-lg;
+}
+
+li {
+  margin-bottom: $spacing-xs;
+}
+
+// =============================================================================
+
 @import './_button_styles';
 @import './_difficulty_slider';
 @import './_devise_alerts';
@@ -9,11 +76,7 @@
 @import './containers';
 @import './rules';
 
-body {
-  background-color: $color-brand-primary;
-}
-
 .page-without-header {
-  margin-top: 59.58px;
+  margin-top: max(7vh, 60px); // Use the larger of 7vh or 60px to ensure proper clearance
   // padding-top: .25rem;
 }

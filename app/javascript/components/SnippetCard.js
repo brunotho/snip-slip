@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 
 function SnippetCard({ snippet, onClick }) {
-  const [fontSize, setFontSize] = useState(1.2)
+  const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -18,15 +18,17 @@ function SnippetCard({ snippet, onClick }) {
     const text = textRef.current;
     const container = containerRef.current;
 
+    // Start with responsive base size - increased from 1.1 to 1.2
     let currentSize = 1.2;
     text.style.fontSize = `${currentSize}rem`;
 
-    while (isOverflowing(container) && currentSize > 0.7) {
+    // Only scale down if really necessary, and not too aggressively - increased minimum from 0.85 to 0.95
+    while (isOverflowing(container) && currentSize > 0.95) {
       currentSize -= 0.05;
       text.style.fontSize = `${currentSize}rem`;
     }
 
-    setFontSize(currentSize);
+    setFontSize(`${currentSize}rem`);
   }
 
   useEffect(() => {
@@ -40,46 +42,53 @@ function SnippetCard({ snippet, onClick }) {
       className="card snippet-card shadow"
       onClick={onClick}
     >
-      <div className="row h-100">
-        <div className="col">
+      <div className="d-flex h-100">
+        <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>
           <div className="card-body d-flex flex-column h-100">
             <div
               ref={containerRef}
-              className="flex-grow-1"
+              className="flex-grow-1 d-flex align-items-center"
               style={{
-                height: "3.6rem",
-                overflow: "hidden"
+                minHeight: "3rem",
+                maxHeight: "4rem",
+                overflow: "hidden",
+                padding: "0.25rem 0"
               }}
             >
               <p
                 ref={textRef}
-                className="card-text m-0"
+                className="card-text m-0 w-100"
                 style={{
-                  fontSize: `${fontSize}`,
-                  lineHeight: "1.5",
-                  // minHeight: '3.6rem',
-                  // maxHeight: '20%',
-                  // overflow: 'hidden',
+                  fontSize: fontSize,
+                  lineHeight: "1.3",
+                  fontWeight: "600",
+                  color: "#1e293b",
+                  textAlign: "left"
                 }}>
                 {snippet.snippet}
               </p>
             </div>
-            <div className="d-flex justify-content-between">
-              <small className="text-muted align-self-end">
+            <div className="d-flex justify-content-between align-items-end mt-1" style={{ opacity: "0.75" }}>
+              <small className="text-muted" style={{ fontSize: "0.75rem", fontWeight: "400" }}>
                 Points: {snippet.difficulty}
               </small>
-              <small className="text-muted align-self-end text-right">
+              <small className="text-muted text-end" style={{ lineHeight: "1.2", fontSize: "0.75rem", fontWeight: "400" }}>
                 <div>{snippet.song}</div>
                 <div>{snippet.artist}</div>
               </small>
             </div>
           </div>
         </div>
-        <div className="col-auto h-100">
+        <div style={{ height: "100%", aspectRatio: "1/1", flexShrink: "0" }}>
           <img
             src={snippet.image_url}
             alt={`${snippet.song} Album Cover`}
-            style={{ height: '100%', objectFit: 'cover', borderRadius: '0 0.25rem 0.25rem 0' }}
+            style={{ 
+              height: '100%', 
+              width: '100%',
+              objectFit: 'cover', 
+              borderRadius: '0 0.375rem 0.375rem 0' 
+            }}
             />
         </div>
       </div>
