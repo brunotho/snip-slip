@@ -16,9 +16,30 @@
 
 .snippet-card {
   cursor: pointer;
-  height: 150px;
+  // Increased height to accommodate square image at 1/3 ratio
+  // Need ~115px height to ensure 113x113 square image
+  height: clamp(115px, 16vh, 145px);
   width: 100%;
   max-width: 450px;
+  
+  .card-body {
+    padding: 0.75rem;
+    
+    @media (max-width: 576px) {
+      padding: 0.6rem;
+    }
+  }
+  
+  .card-text {
+    line-height: 1.4;
+    
+    font-size: clamp(0.85rem, 2.5vw, 1.2rem) !important;
+  }
+  
+  small {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
 }
 
 .expanded-snippet {

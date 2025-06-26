@@ -170,7 +170,7 @@ function SnippetsGame({
         onNext={handleNextSnippet}
       />
     ) : (
-      <div className="row align-self-center gx-0 gx-md-2 gy-4" style={{ marginTop: "2vh", width: "100%", maxWidth: "100%" }}>
+      <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
         {snippets.map(snippet => (
           <div
             key={snippet.id}

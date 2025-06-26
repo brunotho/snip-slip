@@ -115,15 +115,15 @@
     background-color: rgba(0, 0, 0, 0.05);
 
     .fa-plus {
-      color: $color-action-positive !important;
+      color: $color-success !important;
 
     }
     .fa-check {
-      color: $color-action-positive !important;
+      color: $color-success !important;
     }
 
     .fa-xmark {
-      color: $color-action-negative !important;
+      color: $color-error !important;
     }
   }
 }

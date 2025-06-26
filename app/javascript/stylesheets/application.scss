@@ -77,6 +77,6 @@ li {
 @import './rules';
 
 .page-without-header {
-  margin-top: 59.58px;
+  margin-top: max(7vh, 60px); // Use the larger of 7vh or 60px to ensure proper clearance
   // padding-top: .25rem;
 }

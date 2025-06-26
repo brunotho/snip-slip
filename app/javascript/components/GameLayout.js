@@ -8,7 +8,7 @@ const GameLayout = ({
   gameOver = false
 }) => {
   return (
-    <div className="container-fluid mt-2 mt-md-4 px-0">
+    <div className="container-fluid mt-0 px-0">
       <div className="row justify-content-center gx-0">
         {/* Main content - full width on mobile, constrained on desktop */}
         <div className={showSidePanel ? "col-12 col-lg-8 px-0 px-md-3" : "col-12 col-xl-10 px-0 px-md-3"}>
@@ -17,7 +17,7 @@ const GameLayout = ({
             style={{
               overflow: 'hidden',
               marginTop: '0',
-              paddingTop: '0.5rem',
+              paddingTop: '0',
               width: '100%'
             }}
           >
