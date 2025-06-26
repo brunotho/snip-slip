@@ -80,3 +80,15 @@ li {
   margin-top: max(7vh, 60px); // Use the larger of 7vh or 60px to ensure proper clearance
   // padding-top: .25rem;
 }
+
+// Animation for rules overlay
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -41,6 +41,7 @@ function QuickPlayGame({
         // )
         mainContent
       }
+      showSidePanel={false}
     />
   );
 }
