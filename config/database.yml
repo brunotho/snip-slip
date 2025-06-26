@@ -6,16 +6,10 @@ default: &default
 development:
   <<: *default
   database: snip_slip_development
-  username: bruno
-  password:
-  host: /var/run/postgresql
 
 test:
   <<: *default
   database: snip_slip_test
-  username: bruno
-  password:
-  host: /var/run/postgresql
 
 production:
   <<: *default

@@ -8,35 +8,27 @@ const GameLayout = ({
   gameOver = false
 }) => {
   return (
-    <div className="container-fluid mt-4">
+    <div className="container-fluid mt-2 mt-md-4">
       <div className="row justify-content-center">
-        <div className="col-md-2">
-          {/* empty left column space */}
-        </div>
-        <div
-          className={`col-md-8 mx-auto`}
-          style={{
-            // maxWidth: '65vw',
-            // paddingLeft: '2rem',
-            // paddingRight: '2rem',
-          }}        >
+        {/* Main content - full width on mobile, constrained on desktop */}
+        <div className={showSidePanel ? "col-12 col-lg-8" : "col-12 col-xl-10"}>
           <div
             className={`d-flex justify-content-center ${!gameOver ? 'align-items-center' : ''}`}
             style={{
-              // height: '80vh',
               overflow: 'hidden',
               marginTop: '0',
-              paddingTop: '1rem'
+              paddingTop: '0.5rem'
             }}
           >
             {mainContent}
           </div>
         </div>
+        
+        {/* Side panel - hidden on mobile, visible on desktop */}
         {showSidePanel && (
           <div
-            className="col-md-2"
+            className="col-12 col-lg-4 col-xl-3 d-none d-lg-block"
             style={{
-              // height: '80vh',
               overflowY: 'auto',
               overflowX: 'hidden',
               paddingLeft: '1rem',
@@ -47,15 +39,28 @@ const GameLayout = ({
             {sideContent}
           </div>
         )}
+        
+        {/* Mobile side panel - show below main content on mobile */}
+        {showSidePanel && (
+          <div className="col-12 d-lg-none mt-3">
+            <div className="row">
+              <div className="col-12">
+                <h6 className="text-center mb-3">Game Progress</h6>
+                {sideContent}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-GameLayout.propType = {
+GameLayout.propTypes = {
   mainContent: PropTypes.node.isRequired,
   sideContent: PropTypes.node,
-  showSidePanel: PropTypes.bool
+  showSidePanel: PropTypes.bool,
+  gameOver: PropTypes.bool
 };
 
 export default GameLayout;

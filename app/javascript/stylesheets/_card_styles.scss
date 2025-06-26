@@ -24,123 +24,122 @@
 .expanded-snippet {
   $border-style: 3.5px solid black;
   box-shadow: 0 0 15px $color-brand-accent;
-  // box-shadow: 0 4px 8px rgba($color-brand-accent, 0.3);
   margin: 0 auto;
   padding: 0;
   border: .5px solid black;
-
   border-radius: .5rem;
   overflow: hidden;
-  // border: 1px solid black;
-  // aspect-ratio: 16/9;
-  // max-width: 95%;
-  // min-height: 400px;
-  // max-height: 400px;
-  width: clamp(30%, 785px, 801px);
-  margin-top: 10vh;
-  margin-bottom: 10vh;
-  // background-color: gray;
-  // background-color: lighten($color-brand-secondary, 50%);
-
+  
+  // Mobile-first responsive width
+  width: clamp(95%, 100%, 801px);
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  
+  // Responsive grid layout
   display: grid;
-  grid-template-columns: 1fr 300px;
-  grid-template-rows: 1fr 90px;
-  // height: 100%;
-  // width: 100%;
-  // background: linear-gradient(180deg, #f8f5ff 0%, #f3eeff 100%);
-
-  > div {
-    // margin: 1rem;
+  grid-template-rows: 1fr auto;
+  
+  // Mobile: single column stack
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "lyric"
+    "image"
+    "button"
+    "info";
+  
+  // Tablet and up: side-by-side layout
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 1fr 90px;
+    grid-template-areas:
+      "lyric image"
+      "button info";
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    width: clamp(30%, 785px, 801px);
   }
 
   .lyric-box {
-    // border-bottom: $border-style;
-
-    // border-radius: 5rem 0 0 0;
-    // font-weight: 600;
+    grid-area: lyric;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    // flex-direction: column;
-    // background: rgba(85, 61, 103, 0.03);
-    // background: $color-brand-accent;
+    min-height: 200px; // Ensure minimum height on mobile
     background: lighten($color-brand-secondary, 10%);
+    
     p {
       color: white;
-      // color: #2d1f35;
-      // text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
       text-shadow: 0 0 30px rgba(255, 255, 255, 1);
-
-      // background: radial-gradient(
-      //   circle at center,
-      //   rgba(255, 255, 255, 0.4) 0%,
-      //   transparent 70%
-      // );
       font-family: 'Source Serif Pro', serif;
-      font-size: 1.5rem;
-      padding: 2.5rem;
+      font-size: 1.2rem; // Smaller on mobile
+      padding: 1.5rem;
       text-align: center;
-
-
-      // text-shadow: 0 0 20px rgba(255, 255, 255, 1);
-      // max-height: 100%;
-      // overflow-y: auto;
-
-      // font-family: 'Caveat', cursive;
-      // font-family: 'Permanent Marker', cursive;
-      // font-family: 'Gloria Hallelujah', cursive;
-
-      // font-family: 'Josefin Sans', sans-serif;
-      // font-family: 'Montserrat', sans-serif;
-      // font-family: 'Quicksand', sans-serif;
-
-      // color: $color-brand-secondary;
-      // font-family: 'Crimson Text', serif;
-      // font-family: 'Playfair Display', serif;
-      // text-shadow: 0 0 10px rgba(darken($color-brand-accent, 20%), .7);
+      
+      @media (min-width: 768px) {
+        font-size: 1.5rem;
+        padding: 2.5rem;
+      }
     }
-
   }
 
   .image-box {
+    grid-area: image;
     padding: 0;
-    border-left: $border-style;
+    border-left: none; // Remove on mobile
+    border-top: $border-style; // Add top border on mobile
+    
+    @media (min-width: 768px) {
+      border-left: $border-style;
+      border-top: none;
+    }
 
     .square-image-container {
-      // border-bottom: $border-style;
-      aspect-ratio: 1/1;
+      aspect-ratio: 16/9; // Better for mobile
       width: 100%;
-      // min-height: 75%;
       position: relative;
+      
+      @media (min-width: 768px) {
+        aspect-ratio: 1/1; // Square on desktop
+      }
 
       .album-cover {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      // border-radius: 0 .5rem 0 0;
-      opacity: .85;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: .85;
       }
     }
   }
 
   .button-box {
+    grid-area: button;
     display: flex;
     align-items: center;
     justify-content: center;
     border-top: $border-style;
-    // gap: 1rem;
+    min-height: 60px;
+    
+    @media (min-width: 768px) {
+      min-height: 90px;
+    }
   }
 
   .info-box {
-    border-left: $border-style;
+    grid-area: info;
+    border-left: none; // Remove on mobile
     border-top: $border-style;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: left;
+    text-align: center; // Center on mobile
     font-size: .9rem;
-    padding-top: 0;
-    padding-left: 1rem;
+    padding: 1rem;
+    
+    @media (min-width: 768px) {
+      border-left: $border-style;
+      text-align: left;
+      padding-left: 1rem;
+      padding-top: 0;
+    }
   }
 }

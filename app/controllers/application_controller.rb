@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_game_session
 
-  allow_browser versions: :modern
+  # allow_browser versions: :modern
 
   protected
 
