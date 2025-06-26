@@ -47,7 +47,7 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
       style={{ 
         margin: "1rem auto 0 auto", 
         padding: "0 1rem",
-        maxHeight: "100vh",
+        maxHeight: "calc(100vh - 120px)", // Account for header + progress bar + margins
         display: "flex",
         flexDirection: "column"
       }}
@@ -72,9 +72,9 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
           style={{ 
             backgroundColor: "#ffffff",
             borderRadius: "0.75rem",
-            padding: "clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem)",
+            padding: "clamp(1rem, 3vh, 2rem) clamp(1rem, 3vw, 2rem)",
             border: "2px solid #d1d5db",
-            minHeight: "clamp(120px, 20vh, 180px)",
+            minHeight: "clamp(100px, 15vh, 160px)",
             flex: "1"
           }}
         >
@@ -82,7 +82,7 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
             className="m-0 text-center w-100"
             style={{
               color: "#1e293b",
-              fontSize: "clamp(1rem, 3.5vw, 1.4rem)",
+              fontSize: "clamp(0.9rem, 3vw, 1.4rem)",
               fontWeight: "600",
               lineHeight: "1.4"
             }}

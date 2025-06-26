@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import GameLayout from "./GameLayout";
 import SnippetCard from "./SnippetCard";
 import ExpandedSnippet from "./ExpandedSnippet";
-import GameProgressCard from "./GameProgressCard";
+import GameProgressBar from "./GameProgressBar";
 import { createGameSessionChannel } from "../channels/game_session_channel";
 
 function MultiPlayerGame({
@@ -62,58 +62,18 @@ function MultiPlayerGame({
   console.log("MULTIPLAYER before return gameData 🌷🌷🌷:", gameData)
 
   return (
-    <GameLayout
-      mainContent={
-        // selectedSnippet ? (
-        //   <ExpandedSnippet
-        //     snippet={selectedSnippet}
-        //     // onSubmit={handleMultiplayerSubmit}
-        //     onSubmit={handleSubmit}
-        //     game_session_id={game_session_id}
-        //   />
-        // ) : (
-        //   <div className="row">
-        //     {snippets.map(snippet => (
-        //       <div key={snippet.id} className="col-md-6 mb-4">
-        //         <SnippetCard
-        //           snippet={snippet}
-        //           onClick={() => setSelectedSnippet(snippet)}
-        //         />
-        //       </div>
-        //     ))}
-        //   </div>
-        // )
-        mainContent
-      }
-      sideContent={
-        <div className="multiplayer-progress">
-          <div className="mb-4">
-            <GameProgressCard
-              playerName={gameData.players[gameData.currentPlayerId].name}
-              totalScore={gameData.players[gameData.currentPlayerId].total_score}
-              roundsPlayed={gameData.players[gameData.currentPlayerId].rounds_played}
-              roundHistory={gameData.players[gameData.currentPlayerId].round_history}
-            />
-          </div>
-
-          <div>
-            {Object.values(gameData.players)
-              .filter(player => player.id !== gameData.currentPlayerId)
-              .map(player => (
-                <div key={player.id} className="mb-3">
-                  <GameProgressCard
-                    playerName={player.name}
-                    totalScore={player.total_score}
-                    roundsPlayed={player.rounds_played}
-                    roundHistory={player.round_history}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-      }
-      showSidePanel={false}
-    />
+    <>
+      <GameProgressBar 
+        players={gameData.players || {}}
+        currentUserId={gameData.currentPlayerId}
+        isMultiplayer={true}
+      />
+      <GameLayout
+        mainContent={mainContent}
+        sideContent={null}
+        showSidePanel={false}
+      />
+    </>
   );
 }
 

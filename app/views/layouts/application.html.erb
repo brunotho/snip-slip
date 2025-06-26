@@ -30,7 +30,9 @@
     <% hide_bottom_nav = (controller_name == 'game_sessions' && action_name == 'show') || 
                           (controller_name == 'snippets' && action_name == 'index') %>
     
-    <div class="page-without-header" style="padding-bottom: <%= hide_bottom_nav ? '20px' : '80px' %>;">
+    <% game_session_padding = hide_bottom_nav ? 'padding-top: 60px;' : '' %>
+    
+    <div class="page-without-header" style="<%= game_session_padding %> padding-bottom: <%= hide_bottom_nav ? '20px' : '80px' %>;">
       <%= yield %>
     </div>
 

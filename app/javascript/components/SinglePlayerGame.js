@@ -2,7 +2,7 @@ import React from 'react';
 import GameLayout from './GameLayout';
 import SnippetCard from './SnippetCard';
 import ExpandedSnippet from './ExpandedSnippet';
-import GameProgressCard from './GameProgressCard';
+import GameProgressBar from './GameProgressBar';
 
 function SinglePlayerGame({
   snippets,
@@ -22,39 +22,30 @@ function SinglePlayerGame({
 
   console.log("SINGLEPLAYER before return gameData:", gameData);
 
+  // Convert single player data to players format for GameProgressBar
+  const players = gameData.totalScore !== undefined ? {
+    [gameData.currentPlayerId || 'player1']: {
+      id: gameData.currentPlayerId || 'player1',
+      name: 'You',
+      total_score: gameData.totalScore,
+      rounds_played: gameData.roundsPlayed,
+      round_history: gameData.roundHistory || []
+    }
+  } : {};
+
   return (
-    <GameLayout
-      mainContent={
-        // selectedSnippet ? (
-        //   <ExpandedSnippet
-        //     snippet={selectedSnippet}
-        //     onSubmit={handleSubmit}
-        //     game_session_id={game_session_id}
-        //     onNext={handleNextSnippet}
-        //   />
-        // ) : (
-        //   <div className="row">
-        //     {snippets.map(snippet => (
-        //       <div key={snippet.id} className="col-md-6 mb-4">
-        //         <SnippetCard
-        //           snippet={snippet}
-        //           onClick={() => setSelectedSnippet(snippet)}
-        //         />
-        //       </div>
-        //     ))}
-        //   </div>
-        // )
-        mainContent
-      }
-      sideContent={
-        <GameProgressCard
-          totalScore={gameData.totalScore}
-          roundsPlayed={gameData.roundsPlayed}
-          roundHistory={gameData.roundHistory}
-        />
-      }
-      showSidePanel={false}
-    />
+    <>
+      <GameProgressBar 
+        players={players}
+        currentUserId={gameData.currentPlayerId || 'player1'}
+        isMultiplayer={false}
+      />
+      <GameLayout
+        mainContent={mainContent}
+        sideContent={null}
+        showSidePanel={false}
+      />
+    </>
   );
 }
 
