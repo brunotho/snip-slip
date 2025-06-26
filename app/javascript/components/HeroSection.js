@@ -4,7 +4,7 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 function HeroSection({ onPlay }) {
   return (
-    <div>
+    <div style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
       <div
         className="jumbotron text-center d-flex flex-column justify-content-center"
         style={{ 
@@ -39,8 +39,8 @@ function HeroSection({ onPlay }) {
           />
         </div>
       </div>
-      <div className="rules-section d-flex justify-content-center">
-        <div className="container d-flex flex-column align-items-center">
+      <div className="rules-section d-flex justify-content-center" style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
+        <div className="container d-flex flex-column align-items-center" style={{ width: '100%', maxWidth: '100%' }}>
           <ul className="list-unstyled" style={{ marginTop: "2rem" }}>
             <div className="rules-container">
               <li className="basic-rule">Press Play</li>

@@ -13,6 +13,7 @@ import AddSnippetFormWrapper from "./components/AddSnippetForm"
 import ConstrainedLayout from "./components/ConstrainedLayout"
 import GameInviteManager from "./components/GameInviteManager"
 import UserProfile from "./components/UserProfile"
+import BottomNavigation from "./components/BottomNavigation"
 
 // Styles
 import "bootstrap/dist/css/bootstrap"
@@ -112,6 +113,15 @@ document.addEventListener('turbo:load', () => {
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </AddSnippetFormWrapper>
     )
+  }
+
+  // BottomNavigation
+  const bottomNavContainer = document.getElementById('bottom-navigation')
+  if (bottomNavContainer) {
+    console.log('Mounting BottomNavigation component')
+    const userSignedIn = bottomNavContainer.dataset.userSignedIn === 'true'
+    const root = createRoot(bottomNavContainer)
+    root.render(<BottomNavigation userSignedIn={userSignedIn} />)
   }
 })
 

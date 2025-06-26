@@ -34,9 +34,12 @@
 
     <%= render "layouts/header" %>
 
-    <div class="page-without-header">
+    <div class="page-without-header" style="padding-bottom: 80px;">
       <%= yield %>
     </div>
+
+    <!-- Bottom Navigation -->
+    <div id="bottom-navigation" data-user-signed-in="<%= user_signed_in? %>"></div>
   </body>
 
 </html>

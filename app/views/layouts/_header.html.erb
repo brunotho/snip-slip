@@ -1,34 +1,10 @@
 <nav class="navbar navbar-dark bg-dark fixed-top" style="min-height: 7vh">
-  <div class="container-fluid">
-    <%= link_to 'SnipSlip', root_path, data: { turbolinks: false }, class: 'navbar-brand' %>
+  <div class="container-fluid px-0">
+    <%= link_to 'SnipSlip', root_path, data: { turbolinks: false }, class: 'navbar-brand ps-2' %>
 
-    <div class="position-absolute start-50 translate-middle-x">
-      <div class="button-group">
-        <% if user_signed_in? %>
-          <%= button_to "Play Alone :<",
-              start_single_player_game_sessions_path,
-              class: "btn me-2 btn-accent",
-              method: :post
-          %>
-          <%= button_to "Play with Friends :>",
-              start_multiplayer_game_sessions_path,
-              class: "btn btn-accent",
-              method: :post
-          %>
-        <% else %>
-          <%= link_to "Play Alone :<",
-              new_user_session_path,
-              class: "btn me-2 btn-accent"
-          %>
-          <%= link_to "Play with Friends :>",
-              new_user_session_path,
-              class: "btn btn-accent"
-          %>
-        <% end %>
-      </div>
-    </div>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler pe-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
