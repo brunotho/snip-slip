@@ -106,13 +106,9 @@ function HeroSection({ onPlay }) {
                   width: '100%',
                   maxHeight: 'calc(100vh - 160px)', // Account for header margin and bottom space
                   overflowY: 'auto',
-                  padding: '1.5rem',
-                  backgroundColor: '#ffffff',
-                  borderRadius: '1rem',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                   animation: 'slideUp 0.3s ease-out'
                 }}
+                className="card-modal"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 style={{ 
@@ -131,7 +127,7 @@ function HeroSection({ onPlay }) {
                   Each player gets song lyrics and tries to work them naturally into conversations with unsuspecting friends. The goal: sound completely normal - nobody should think "that was weird."
                 </p>
                 <p style={{ fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0' }}>
-                  The thrill comes from trying to make something like "You gon' be that next chump" sound like your own natural thought in casual conversation. Honor system scoring: harder lyrics = more points, highest score wins!
+                  The thrill comes from trying to make something like "You gon' be that next chump" sound like your own natural thought in casual conversation. Honor system scoring, harder lyrics = more points, highest score wins!
                 </p>
                 <div style={{ textAlign: 'center' }}>
                   <button

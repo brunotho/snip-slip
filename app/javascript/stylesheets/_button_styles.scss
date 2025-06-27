@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @import './variables';
 
 // =============================================================================
@@ -66,13 +68,13 @@
 
   &:not(:disabled):not(.disabled) {
     &:not(:active):not(:focus):not(:hover) {
-      background-color: darken($color-brand-accent, 10%) !important;
+      background-color: color.adjust($color-brand-accent, $lightness: -10%) !important;
       filter: drop-shadow(0 0 4px $color-brand-accent) !important;
     }
 
     &:hover {
-      background-color: darken($color-brand-accent, 20%);
-      filter: drop-shadow(0 0 4px darken($color-brand-accent, 20%)) !important;
+      background-color: color.adjust($color-brand-accent, $lightness: -20%);
+      filter: drop-shadow(0 0 4px color.adjust($color-brand-accent, $lightness: -20%)) !important;
       transform: scale(1.01);
       transition: transform 0.2s ease;
     }

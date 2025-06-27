@@ -15,8 +15,7 @@ const GameLayout = ({
           <div
             className={`d-flex justify-content-center ${!gameOver ? 'align-items-center' : ''}`}
             style={{
-              overflow: 'hidden',
-              marginTop: '0',
+              marginTop: '56px',
               paddingTop: '0',
               width: '100%'
             }}

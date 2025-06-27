@@ -45,36 +45,22 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
     <div 
       className="expanded-snippet-new" 
       style={{ 
-        margin: "1rem auto 0 auto", 
-        padding: "0 1rem",
-        maxHeight: "calc(100vh - 120px)", // Account for header + progress bar + margins
+        margin: "0.5rem auto 1rem auto",
+        padding: "0",
+        maxHeight: "calc(100vh - 240px)",
+        maxWidth: "100vw",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        overflow: "visible"
       }}
     >
       {/* Integrated card design */}
-      <div 
-        style={{ 
-          backgroundColor: "#f8fafc",
-          borderRadius: "1rem",
-          padding: "1rem",
-          border: "2px solid #d1d5db",
-          maxWidth: "100%",
-          flex: "1",
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "0"
-        }}
-      >
+      <div className="card-elevated" style={{ margin: "0 1rem", overflow: "visible" }}>
         {/* Lyric text - Full width with larger canvas */}
         <div 
-          className="mb-3 d-flex align-items-center"
+          className="mb-3 d-flex align-items-center card-flat"
           style={{ 
-            backgroundColor: "#ffffff",
-            borderRadius: "0.75rem",
-            padding: "clamp(1rem, 3vh, 2rem) clamp(1rem, 3vw, 2rem)",
-            border: "2px solid #d1d5db",
-            minHeight: "clamp(100px, 15vh, 160px)",
+            minHeight: "clamp(80px, 12vh, 140px)",
             flex: "1"
           }}
         >
@@ -132,7 +118,7 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
 
         {/* Metadata in one line - dynamic font sizing */}
         <div 
-          className="mb-3 text-center"
+          className="mb-2 text-center"
           style={{ 
             color: "#374151",
             overflow: "hidden"

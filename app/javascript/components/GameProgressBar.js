@@ -23,7 +23,8 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
         backgroundColor: '#f8fafc',
         borderBottom: '2px solid #d1d5db',
         zIndex: 1000,
-        padding: '0.5rem 1rem'
+        padding: '0.5rem 1rem',
+        overflowX: 'hidden' // Prevent horizontal overflow
       }}
     >
       {/* Compact horizontal bar */}
@@ -33,7 +34,9 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
           justifyContent: 'center',
           alignItems: 'center',
           gap: '1rem',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          maxWidth: '100%',
+          overflow: 'hidden'
         }}
       >
         {Object.values(players).map(player => {
@@ -98,7 +101,8 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                     minWidth: '300px',
                     maxWidth: '90vw',
                     boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                    zIndex: 1001
+                    zIndex: 1002, // Ensure it's above everything
+                    marginTop: '0.25rem' // Small gap from the compact bar
                   }}
                 >
                   <div className="mb-3">

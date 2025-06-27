@@ -17,7 +17,7 @@ export default function GameProgressCard({
   return (
     <div
       className={`p-2 rounded-lg shadow bg-light game-progress-card ${winner ? 'game-progress-card--winner' : 'game-progress-card--default'}`}
-      style={{ maxWidth: "20vw", margin: "0 auto" }}
+      style={{ maxWidth: "min(300px, 90vw)", margin: "0 auto" }}
     >
       <div className={roundHistory.length > 0 ? "mb-1" : ""}>
         <div className="fw-bold" style={{ fontSize: "1.1em" }}>{playerName}</div>
@@ -38,7 +38,7 @@ export default function GameProgressCard({
                 icon={round.success ? faCheck : faXmark}
                 className="me-2 text-muted"
               />
-              <span>{round.lyric_snippet.snippet}</span>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{round.lyric_snippet.snippet}</span>
             </div>
           ))}
         </div>

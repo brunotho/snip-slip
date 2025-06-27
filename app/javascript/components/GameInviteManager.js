@@ -182,9 +182,9 @@ const GameInviteManager = () => {
         <div className="row">
           {isHost && (
             <div className="col-md-6">
-              <div className="card mb-4">
-                <div className="card-header">Your Friends</div>
-                <div className="card-body">
+              <div className="card-elevated mb-4">
+                <div className="card-header-custom">Your Friends</div>
+                <div className="card-body-custom">
                   {friends.length === 0 ? (
                     <p>No friends :((</p>
                   ) : (
@@ -207,9 +207,9 @@ const GameInviteManager = () => {
           )}
 
           <div className={isHost ? "col-md-6" : "col-md-8 mx-auto"}>
-            <div className="card mb-4">
-              <div className="card-header">Players Joined</div>
-              <div className="card-body">
+            <div className="card-elevated mb-4">
+              <div className="card-header-custom">Players Joined</div>
+              <div className="card-body-custom">
                 {joinedPlayers.length === 0 ? (
                   <p>Waiting for players to join...</p>
                 ) : (

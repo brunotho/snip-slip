@@ -168,11 +168,11 @@ const FriendshipManager = () => {
     <ConstrainedLayout>
       <h3 className="text-center mb-4">Friends</h3>
       <div className="container">
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-light">
+        <div className="card-elevated mb-4">
+          <div className="card-header-custom">
             <strong>Friends</strong>
           </div>
-          <div className="card-body">
+          <div className="card-body-custom">
             {friends.length > 0 ? (
               friends.map((friend) => (
                 <div key={friend.id}
@@ -191,11 +191,11 @@ const FriendshipManager = () => {
           </div>
         </div>
 
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-light">
+        <div className="card-elevated mb-4">
+          <div className="card-header-custom">
             <strong>Received Friend Requests</strong>
           </div>
-          <div className="card-body">
+          <div className="card-body-custom">
             {receivedRequests.length > 0 ? (
               receivedRequests.map((request) => (
                 <div key={request.id}
@@ -219,11 +219,11 @@ const FriendshipManager = () => {
           </div>
         </div>
 
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-light">
+        <div className="card-elevated mb-4">
+          <div className="card-header-custom">
             <strong>Add New Friends</strong>
           </div>
-          <div className="card-body">
+          <div className="card-body-custom">
             <div className="mb-3">
               <input
                 type="text"
@@ -253,11 +253,11 @@ const FriendshipManager = () => {
           </div>
         </div>
 
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-light">
+        <div className="card-elevated mb-4">
+          <div className="card-header-custom">
             <strong>Sent Friend Requests</strong>
           </div>
-          <div className="card-body">
+          <div className="card-body-custom">
             {pendingRequests.length > 0 ? (
               pendingRequests.map((request) => (
                 <div key={request.id}
