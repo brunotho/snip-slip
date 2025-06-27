@@ -57,7 +57,22 @@ function MultiPlayerGame({
   // };
 
   if (error) return <div>Error loading snippets: {error.message}</div>;
-  if (loading) return <div>Loading snippets... </div>;
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="skeleton-circle skeleton-circle-lg"></div>
+        <div className="skeleton-line" style={{ width: '200px' }}></div>
+        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
+      </div>
+    );
+  }
 
   console.log("MULTIPLAYER before return gameData 🌷🌷🌷:", gameData)
 
@@ -69,6 +84,7 @@ function MultiPlayerGame({
         players={gameData.players || {}}
         currentUserId={gameData.currentPlayerId}
         isMultiplayer={true}
+        loading={loading || !gameData.players}
       />
       <GameLayout
         mainContent={mainContent}

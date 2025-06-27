@@ -4,6 +4,7 @@ import SinglePlayerGame from './SinglePlayerGame';
 import MultiPlayerGame from './MultiPlayerGame';
 import SnippetCard from './SnippetCard';
 import ExpandedSnippet from './ExpandedSnippet';
+import { SkeletonSnippetCard } from './SkeletonLoader';
 
 function SnippetsGame({
   game_session_id = null,
@@ -193,6 +194,18 @@ function SnippetsGame({
         game_session_id={game_session_id}
         onNext={handleNextSnippet}
       />
+    ) : loading ? (
+      <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div
+            key={`skeleton-${index}`}
+            className="col-12 col-md-6"
+            style={{ maxWidth: "100%" }}
+          >
+            <SkeletonSnippetCard />
+          </div>
+        ))}
+      </div>
     ) : (
       <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
         {snippets.map(snippet => (
@@ -237,7 +250,20 @@ function SnippetsGame({
   };
 
   if (!initialized) {
-    return <div>Loading game...</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="skeleton-circle skeleton-circle-lg"></div>
+        <div className="skeleton-line" style={{ width: '200px' }}></div>
+        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
+      </div>
+    );
   }
 
   console.log("SNIPPETSGAME before return gameData:", gameData);

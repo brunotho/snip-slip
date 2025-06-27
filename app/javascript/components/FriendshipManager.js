@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import ConstrainedLayout from './ConstrainedLayout';
+import { SkeletonFriendItem } from './SkeletonLoader';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -17,8 +18,28 @@ const FriendshipManager = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  
+  // Loading states
+  const [isLoadingFriends, setIsLoadingFriends] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [loadingActions, setLoadingActions] = useState(new Set());
 
   const debouncedSearch = debounce((term) => searchUsers(term), 300);
+
+  // Helper functions for managing loading states
+  const setActionLoading = (actionId, isLoading) => {
+    setLoadingActions(prev => {
+      const newSet = new Set(prev);
+      if (isLoading) {
+        newSet.add(actionId);
+      } else {
+        newSet.delete(actionId);
+      }
+      return newSet;
+    });
+  };
+
+  const isActionLoading = (actionId) => loadingActions.has(actionId);
 
   const getCSRFToken = () => {
     const meta = document.querySelector('meta[name="csrf-token"]');
@@ -27,6 +48,7 @@ const FriendshipManager = () => {
 
   const fetchFriendships = async () => {
     try {
+      setIsLoadingFriends(true);
       console.log("fetching friendships");
 
       const response = await fetch('/friendships', {
@@ -46,15 +68,19 @@ const FriendshipManager = () => {
       setReceivedRequests(data.received_requests);
     } catch (error) {
       console.error("Error fetching friendships:", error);
+    } finally {
+      setIsLoadingFriends(false);
     }
   };
 
   const searchUsers = async (term) => {
     if (term.length < 2) {
       setSearchResults([]);
+      setIsSearching(false);
       return;
     }
     try {
+      setIsSearching(true);
       console.log("Sending search request for:", term);
       const response = await fetch(`/users/search?q=${encodeURIComponent(term)}`, {
         headers: {
@@ -72,11 +98,15 @@ const FriendshipManager = () => {
     } catch (error) {
       console.error("Error searching users:", error);
       setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 
   const sendFriendRequest = async (userId) => {
+    const actionId = `send-${userId}`;
     try {
+      setActionLoading(actionId, true);
       await fetch('/friendships', {
         method: "POST",
         headers: {
@@ -89,11 +119,15 @@ const FriendshipManager = () => {
       fetchFriendships();
     } catch (error) {
       console.error("Error sending friend request:", error);
+    } finally {
+      setActionLoading(actionId, false);
     }
   };
 
   const acceptFriendRequest = async (friendshipId) => {
+    const actionId = `accept-${friendshipId}`;
     try {
+      setActionLoading(actionId, true);
       console.log("accepting friend request for id:", friendshipId);
 
       const response = await fetch(`/friendships/${friendshipId}`, {
@@ -124,11 +158,15 @@ const FriendshipManager = () => {
       }
     } catch (error) {
       console.error("Error accepting friend request (2)", error)
+    } finally {
+      setActionLoading(actionId, false);
     }
   };
 
   const declineFriendRequest = async (friendshipId) => {
+    const actionId = `decline-${friendshipId}`;
     try {
+      setActionLoading(actionId, true);
       await fetch(`/friendships/${friendshipId}`, {
         method: "PATCH",
         headers: {
@@ -141,11 +179,15 @@ const FriendshipManager = () => {
       fetchFriendships();
     } catch (error) {
       console.error("Error declining friend request:", error);
+    } finally {
+      setActionLoading(actionId, false);
     }
   };
 
   const removeFriend = async (friendshipId) => {
+    const actionId = `remove-${friendshipId}`;
     try {
+      setActionLoading(actionId, true);
       const response = await fetch(`/friendships/${friendshipId}`, {
         method: "DELETE",
         headers: {
@@ -161,6 +203,8 @@ const FriendshipManager = () => {
       }
     } catch (error) {
       console.error("Error removing friend:", error);
+    } finally {
+      setActionLoading(actionId, false);
     }
   };
 
@@ -173,7 +217,9 @@ const FriendshipManager = () => {
             <strong>Friends</strong>
           </div>
           <div className="card-body-custom">
-            {friends.length > 0 ? (
+            {isLoadingFriends ? (
+              <SkeletonFriendItem count={3} />
+            ) : friends.length > 0 ? (
               friends.map((friend) => (
                 <div key={friend.id}
                     className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
@@ -181,7 +227,11 @@ const FriendshipManager = () => {
                     <span className="fw-medium me-2">{friend.name}</span>
                     <small className="text-muted">{friend.email}</small>
                   </div>
-                  <button className="btn-icon" onClick={() => removeFriend(friend.id)}>
+                  <button 
+                    className="btn-icon" 
+                    onClick={() => removeFriend(friend.id)}
+                    disabled={isActionLoading(`remove-${friend.id}`)}
+                  >
                     <FontAwesomeIcon icon={faXmark} />
                   </button>
                 </div>
@@ -199,7 +249,9 @@ const FriendshipManager = () => {
             <strong>Received Friend Requests</strong>
           </div>
           <div className="card-body-custom">
-            {receivedRequests.length > 0 ? (
+            {isLoadingFriends ? (
+              <SkeletonFriendItem count={2} />
+            ) : receivedRequests.length > 0 ? (
               receivedRequests.map((request) => (
                 <div key={request.id}
                     className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
@@ -208,10 +260,18 @@ const FriendshipManager = () => {
                     <small className="text-muted">{request.email}</small>
                   </div>
                   <div className="button-container">
-                    <button className="btn-icon" onClick={() => declineFriendRequest(request.id)}>
+                    <button 
+                      className="btn-icon" 
+                      onClick={() => declineFriendRequest(request.id)}
+                      disabled={isActionLoading(`decline-${request.id}`)}
+                    >
                       <FontAwesomeIcon icon={faXmark} />
                     </button>
-                    <button className="btn-icon" onClick={() => acceptFriendRequest(request.id)}>
+                    <button 
+                      className="btn-icon" 
+                      onClick={() => acceptFriendRequest(request.id)}
+                      disabled={isActionLoading(`accept-${request.id}`)}
+                    >
                       <FontAwesomeIcon icon={faCheck} />
                     </button>
                   </div>
@@ -244,18 +304,26 @@ const FriendshipManager = () => {
               />
             </div>
 
-            {searchResults.map((user) => (
-              <div key={user.id}
-                  className="d-flex justify-content-between align-items-center p-2 mb-2">
-                <div>
-                  <span className="fw-medium me-2">{user.name}</span>
-                  <small className="text-muted">{user.email}</small>
+            {isSearching ? (
+              <SkeletonFriendItem count={2} />
+            ) : (
+              searchResults.map((user) => (
+                <div key={user.id}
+                    className="d-flex justify-content-between align-items-center p-2 mb-2">
+                  <div>
+                    <span className="fw-medium me-2">{user.name}</span>
+                    <small className="text-muted">{user.email}</small>
+                  </div>
+                  <button 
+                    className="btn-icon" 
+                    onClick={() => sendFriendRequest(user.id)}
+                    disabled={isActionLoading(`send-${user.id}`)}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
                 </div>
-                <button className="btn-icon" onClick={() => sendFriendRequest(user.id)}>
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -264,7 +332,9 @@ const FriendshipManager = () => {
             <strong>Sent Friend Requests</strong>
           </div>
           <div className="card-body-custom">
-            {pendingRequests.length > 0 ? (
+            {isLoadingFriends ? (
+              <SkeletonFriendItem count={1} />
+            ) : pendingRequests.length > 0 ? (
               pendingRequests.map((request) => (
                 <div key={request.id}
                     className="p-2 mb-2 rounded hover-bg-light">

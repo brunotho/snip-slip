@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { SkeletonGameProgress } from './SkeletonLoader';
 
 // Utility function to calculate progress bar height
 export const calculateProgressBarHeight = (playerCount) => {
@@ -16,7 +17,7 @@ export const calculateProgressBarHeight = (playerCount) => {
   return baseHeight * rows + padding;
 };
 
-function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
+function GameProgressBar({ players, currentUserId, isMultiplayer = false, loading = false }) {
   const [expandedPlayer, setExpandedPlayer] = useState(null);
   
   const playerCount = Object.keys(players).length;
@@ -32,6 +33,36 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
   const togglePlayer = (playerId) => {
     setExpandedPlayer(expandedPlayer === playerId ? null : playerId);
   };
+
+  if (loading) {
+    return (
+      <div 
+        style={{
+          position: 'fixed',
+          top: '60px',
+          left: '0',
+          right: '0',
+          backgroundColor: '#f8fafc',
+          borderBottom: '2px solid #d1d5db',
+          zIndex: 1000,
+          padding: '0.375rem 0.75rem',
+          overflowX: 'hidden'
+        }}
+      >
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '0.5rem',
+          justifyItems: 'stretch',
+          maxWidth: '100%',
+          overflow: 'hidden'
+        }}>
+          <div className="skeleton-button" style={{ height: '28px', borderRadius: '0.75rem' }}></div>
+          <div className="skeleton-button" style={{ height: '28px', borderRadius: '0.75rem' }}></div>
+        </div>
+      </div>
+    );
+  }
 
   if (!players || Object.keys(players).length === 0) {
     return null;

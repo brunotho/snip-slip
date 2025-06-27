@@ -18,7 +18,22 @@ function SinglePlayerGame({
 }) {
 
   if (error) return <div>Error loading snippets: {error.message}</div>;
-  if (loading) return <div>Loading Snippets...</div>;
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="skeleton-circle skeleton-circle-lg"></div>
+        <div className="skeleton-line" style={{ width: '200px' }}></div>
+        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
+      </div>
+    );
+  }
 
   console.log("SINGLEPLAYER before return gameData:", gameData);
 
@@ -41,6 +56,7 @@ function SinglePlayerGame({
         players={players}
         currentUserId={gameData.currentPlayerId || 'player1'}
         isMultiplayer={false}
+        loading={loading || gameData.totalScore === undefined}
       />
       <GameLayout
         mainContent={mainContent}
