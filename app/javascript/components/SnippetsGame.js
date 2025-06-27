@@ -59,7 +59,7 @@ function SnippetsGame({
         currentPlayerName: data.current_player_name,
         players: data.players,
         game_session_id: data.game_session_id,
-        roundHistory: data.round_history
+        roundHistory: data.round_history || []
       });
     } catch (error) {
       console.error("Error fetching game session data:", error);
@@ -115,7 +115,7 @@ function SnippetsGame({
           lyric_snippet: { snippet: selectedSnippet.snippet },
           success: data.round.success
         };
-        const updatedHistory = [...gameData.roundHistory, newRound];
+        const updatedHistory = [...(gameData.roundHistory || []), newRound];
 
         const newGameData = {
           ...gameData,
@@ -128,14 +128,38 @@ function SnippetsGame({
       }
 
       if (data.game_session.player_game_over) {
-        setGameData(prevData => ({
-          ...prevData,
-          totalScore: data.game_session.total_score,
-          roundsPlayed: data.game_session.rounds_played,
-          status: data.game_session.status,
-          playerGameOver: data.game_session.player_game_over,
-          gameOver: data.game_session.game_over
-        }));
+        // Fetch complete final game state when game ends
+        try {
+          const finalResponse = await fetch(`/game_sessions/${game_session_id}.json`, {
+            headers: {
+              "Accept": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+          });
+          const finalData = await finalResponse.json();
+          
+          setGameData(prevData => ({
+            ...prevData,
+            totalScore: finalData.total_score,
+            roundsPlayed: finalData.rounds_played,
+            status: finalData.status,
+            players: finalData.players,
+            roundHistory: finalData.round_history || [],
+            playerGameOver: data.game_session.player_game_over,
+            gameOver: data.game_session.game_over
+          }));
+        } catch (error) {
+          console.error("Error fetching final game state:", error);
+          // Fallback to partial update
+          setGameData(prevData => ({
+            ...prevData,
+            totalScore: data.game_session.total_score,
+            roundsPlayed: data.game_session.rounds_played,
+            status: data.game_session.status,
+            playerGameOver: data.game_session.player_game_over,
+            gameOver: data.game_session.game_over
+          }));
+        }
         return;
       }
 

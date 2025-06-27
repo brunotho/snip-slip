@@ -42,6 +42,7 @@ function QuickPlayGame({
         mainContent
       }
       showSidePanel={false}
+      showProgressBar={false}
     />
   );
 }

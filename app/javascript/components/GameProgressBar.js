@@ -1,9 +1,33 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faXmark, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faXmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+// Utility function to calculate progress bar height
+export const calculateProgressBarHeight = (playerCount) => {
+  const baseHeight = 28; // Even more compact - reduced from 32px
+  const padding = 12; // Account for container padding (0.375rem * 2 = ~6px + gap)
+  
+  // Smart row calculation based on player count
+  let rows;
+  if (playerCount <= 2) rows = 1;
+  else if (playerCount <= 4) rows = 2; // 2 players per row
+  else rows = Math.ceil(playerCount / 3); // 3+ players per row for larger groups
+  
+  return baseHeight * rows + padding;
+};
 
 function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
   const [expandedPlayer, setExpandedPlayer] = useState(null);
+  
+  const playerCount = Object.keys(players).length;
+  const progressBarHeight = calculateProgressBarHeight(playerCount);
+
+  // Responsive grid columns based on player count
+  const getGridColumns = () => {
+    if (playerCount <= 2) return 'repeat(2, 1fr)';
+    if (playerCount <= 4) return 'repeat(2, 1fr)'; // 2 columns for 3-4 players
+    return 'repeat(auto-fit, minmax(125px, 1fr))'; // Auto-fit for 5+ players
+  };
 
   const togglePlayer = (playerId) => {
     setExpandedPlayer(expandedPlayer === playerId ? null : playerId);
@@ -23,18 +47,17 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
         backgroundColor: '#f8fafc',
         borderBottom: '2px solid #d1d5db',
         zIndex: 1000,
-        padding: '0.5rem 1rem',
+        padding: '0.375rem 0.75rem', // Reduced padding
         overflowX: 'hidden' // Prevent horizontal overflow
       }}
     >
       {/* Compact horizontal bar */}
       <div 
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '1rem',
-          flexWrap: 'wrap',
+          display: 'grid',
+          gridTemplateColumns: getGridColumns(), // Dynamic responsive columns
+          gap: '0.5rem', // Reduced gap
+          justifyItems: 'stretch', // Stretch to fill grid cells
           maxWidth: '100%',
           overflow: 'hidden'
         }}
@@ -52,59 +75,104 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.25rem 0.75rem',
+                  gap: '0.375rem', // Reduced gap
+                  padding: '0.2rem 0.6rem', // Reduced padding
                   backgroundColor: isCurrentUser ? '#dbeafe' : '#ffffff',
-                  border: `2px solid ${isComplete ? '#10b981' : '#cbd5e1'}`,
-                  borderRadius: '1rem',
+                  border: `1px solid ${isComplete ? '#10b981' : '#cbd5e1'}`, // Thinner border
+                  borderRadius: '0.75rem', // Slightly smaller radius
                   cursor: 'pointer',
-                  fontSize: '0.9rem',
+                  fontSize: '0.8rem', // Smaller font
                   fontWeight: isCurrentUser ? '600' : '500',
-                  minWidth: '120px',
+                  minWidth: '110px', // Reduced min width
+                  width: '100%', // Fill grid cell
+                  maxWidth: '160px', // Prevent too wide on large screens
                   justifyContent: 'center',
-                  opacity: isComplete ? 1 : 0.8
+                  opacity: isComplete ? 1 : 0.8,
+                  whiteSpace: 'nowrap' // Prevent text wrapping
                 }}
               >
-                <span>{isMultiplayer ? player.name : 'You'}</span>
-                <span style={{ color: '#6b7280' }}>•</span>
-                <span>{player.total_score}pts</span>
-                <span style={{ color: '#6b7280' }}>•</span>
+                <span style={{ 
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '50px' // Limit name width
+                }}>
+                  {isMultiplayer ? player.name : 'You'}
+                </span>
+                <span style={{ color: '#6b7280', fontSize: '0.7rem' }}>•</span>
+                <span style={{ fontWeight: '600' }}>{player.total_score}</span>
+                <span style={{ color: '#6b7280', fontSize: '0.7rem' }}>•</span>
                 <span style={{ 
                   color: isComplete ? '#10b981' : '#6b7280',
-                  fontWeight: isComplete ? '600' : '500'
+                  fontWeight: isComplete ? '600' : '500',
+                  fontSize: '0.75rem'
                 }}>
                   {player.rounds_played}/5
                 </span>
                 {isComplete && (
-                  <span style={{ color: '#10b981', fontSize: '0.7rem', marginLeft: '0.25rem' }}>
+                  <span style={{ color: '#10b981', fontSize: '0.6rem', marginLeft: '0.125rem' }}>
                     ✓
                   </span>
                 )}
                 <FontAwesomeIcon 
                   icon={isExpanded ? faChevronUp : faChevronDown}
-                  style={{ fontSize: '0.7rem', color: '#9ca3af' }}
+                  style={{ fontSize: '0.6rem', color: '#9ca3af' }} // Smaller icon
                 />
               </div>
 
               {/* Expanded details */}
               {isExpanded && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: '#ffffff',
-                    border: '2px solid #d1d5db',
-                    borderRadius: '0.75rem',
-                    padding: '1rem',
-                    minWidth: '300px',
-                    maxWidth: '90vw',
-                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                    zIndex: 1002, // Ensure it's above everything
-                    marginTop: '0.25rem' // Small gap from the compact bar
-                  }}
-                >
+                <>
+                  {/* Backdrop */}
+                  <div
+                    onClick={() => setExpandedPlayer(null)}
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                      zIndex: 1001
+                    }}
+                  />
+                  {/* Expanded content */}
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: '120px', // Position below the progress bar
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      backgroundColor: '#ffffff',
+                      border: '2px solid #d1d5db',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      minWidth: '300px',
+                      maxWidth: '90vw',
+                      maxHeight: 'calc(100vh - 140px)', // Ensure it doesn't go off screen
+                      overflowY: 'auto', // Allow scrolling if content is too long
+                      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                      zIndex: 1002 // Ensure it's above everything
+                    }}
+                  >
+                  {/* Close button */}
+                  <button
+                    onClick={() => setExpandedPlayer(null)}
+                    style={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      right: '0.5rem',
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '1rem',
+                      color: '#6b7280',
+                      cursor: 'pointer',
+                      padding: '0.25rem',
+                      borderRadius: '0.25rem'
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                  
                   <div className="mb-3">
                     <div style={{ 
                       fontWeight: '600', 
@@ -171,9 +239,9 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                             }}
                           />
                           <span style={{ 
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
+                            whiteSpace: 'normal'
                           }}>
                             {round.lyric_snippet.snippet}
                           </span>
@@ -181,7 +249,8 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                       ))}
                     </div>
                   )}
-                </div>
+                  </div>
+                </>
               )}
             </div>
           );

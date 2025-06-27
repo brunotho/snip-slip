@@ -2,7 +2,7 @@ import React from 'react';
 import GameLayout from './GameLayout';
 import SnippetCard from './SnippetCard';
 import ExpandedSnippet from './ExpandedSnippet';
-import GameProgressBar from './GameProgressBar';
+import GameProgressBar, { calculateProgressBarHeight } from './GameProgressBar';
 
 function SinglePlayerGame({
   snippets,
@@ -33,6 +33,8 @@ function SinglePlayerGame({
     }
   } : {};
 
+  const progressBarHeight = calculateProgressBarHeight(Object.keys(players).length);
+
   return (
     <>
       <GameProgressBar 
@@ -44,6 +46,8 @@ function SinglePlayerGame({
         mainContent={mainContent}
         sideContent={null}
         showSidePanel={false}
+        showProgressBar={true}
+        progressBarHeight={progressBarHeight}
       />
     </>
   );

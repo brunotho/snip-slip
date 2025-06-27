@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import GameLayout from "./GameLayout";
 import SnippetCard from "./SnippetCard";
 import ExpandedSnippet from "./ExpandedSnippet";
-import GameProgressBar from "./GameProgressBar";
+import GameProgressBar, { calculateProgressBarHeight } from "./GameProgressBar";
 import { createGameSessionChannel } from "../channels/game_session_channel";
 
 function MultiPlayerGame({
@@ -61,6 +61,8 @@ function MultiPlayerGame({
 
   console.log("MULTIPLAYER before return gameData 🌷🌷🌷:", gameData)
 
+  const progressBarHeight = calculateProgressBarHeight(Object.keys(gameData.players || {}).length);
+
   return (
     <>
       <GameProgressBar 
@@ -72,6 +74,8 @@ function MultiPlayerGame({
         mainContent={mainContent}
         sideContent={null}
         showSidePanel={false}
+        showProgressBar={true}
+        progressBarHeight={progressBarHeight}
       />
     </>
   );

@@ -12,8 +12,21 @@ function MainComponent({ gameSessionId = null }) {
       return 'home';
     }
 
-    if (gameData.playerGameOver) {
+    const isMultiplayer = gameMode === 'multi';
+    
+    // Single player: show game over when player finishes
+    if (!isMultiplayer && gameData.playerGameOver) {
       return 'gameover';
+    }
+    
+    // Multiplayer: show game over only when entire game is complete
+    if (isMultiplayer && gameData.gameOver) {
+      return 'gameover';
+    }
+    
+    // Multiplayer: show waiting state when player is done but game continues
+    if (isMultiplayer && gameData.playerGameOver && !gameData.gameOver) {
+      return 'waiting';
     }
 
     return 'game';
@@ -37,6 +50,27 @@ function MainComponent({ gameSessionId = null }) {
     }
   }, [gameSessionId]);
 
+  const handlePlayAgain = () => {
+    // Reset game state and start a new game with the same mode
+    if (gameMode === 'quick') {
+      // For quick play, just reset to home and let user start fresh
+      setGameData({});
+      setGameMode(null);
+      window.location.href = '/';
+    } else {
+      // For multiplayer/single player games, redirect to start new session
+      // This will need to be implemented based on your routing logic
+      window.location.href = '/';
+    }
+  };
+
+  const handleMainMenu = () => {
+    // Navigate back to main menu
+    setGameData({});
+    setGameMode(null);
+    window.location.href = '/';
+  };
+
   const currentView = getView();
 
   return (
@@ -58,10 +92,22 @@ function MainComponent({ gameSessionId = null }) {
         />
       )}
 
+      {currentView === 'waiting' && (
+        <GameOver
+          gameData={gameData}
+          setGameData={setGameData}
+          onPlayAgain={handlePlayAgain}
+          onMainMenu={handleMainMenu}
+          waitingForOthers={true}
+        />
+      )}
+
       {currentView === 'gameover' && (
         <GameOver
           gameData={gameData}
           setGameData={setGameData}
+          onPlayAgain={handlePlayAgain}
+          onMainMenu={handleMainMenu}
         />
       )}
     </div>

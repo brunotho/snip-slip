@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import GameProgressCard from './GameProgressCard';
 import GameLayout from './GameLayout';
 import { createGameSessionChannel } from '../channels/game_session_channel';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark, faTrophy, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
 
-function GameOver({ gameData, setGameData }) {
+function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOthers = false }) {
   if (!gameData) return null;
 
-  console.log("GAMEOVER gameData:", { gameData });
+  console.log("GAMEOVER gameData:", { gameData, waitingForOthers });
 
   useEffect(() => {
     console.log("Setting up GameOver channel with session:", gameData.game_session_id);
@@ -33,12 +34,11 @@ function GameOver({ gameData, setGameData }) {
     };
   }, [gameData.game_session_id]);
 
-  const gameMode = Object.values(gameData.players).length > 1 ? 'multi' : 'single'
-
+  const gameMode = Object.values(gameData.players).length > 1 ? 'multi' : 'single';
+  const isMultiplayer = gameMode === 'multi';
+  
+  // Calculate winners
   const winnerIds = Object.values(gameData.players).reduce((highest, player) => {
-    console.log("Winner ids calucalted with:");
-    console.log(gameData.players);
-
     if (player.total_score > highest.score) {
       return { score: player.total_score, ids: [player.id] };
     } else if (player.total_score === highest.score) {
@@ -47,53 +47,179 @@ function GameOver({ gameData, setGameData }) {
     return highest;
   }, { score: -1, ids: [] }).ids;
 
-  // console.log("GameOver rendering with:", {
-  //   players: Object.values(gameData.players).map(p => `${p.name}: ${p.total_score}`),
-  //   winnerIds
-  // });
+  const currentPlayer = gameData.players[gameData.currentPlayerId];
+  const isWinner = winnerIds.includes(gameData.currentPlayerId);
+  
+  // Sort players by score for leaderboard
+  const sortedPlayers = Object.values(gameData.players).sort((a, b) => b.total_score - a.total_score);
+
+  const getResultMessage = () => {
+    if (waitingForOthers) {
+      return "Round Complete!";
+    }
+    if (isMultiplayer) {
+      return isWinner ? "Victory!" : "Game Complete!";
+    }
+    return "Game Complete!";
+  };
+
+  const getResultSubtext = () => {
+    if (waitingForOthers) {
+      return "Waiting for other players to finish...";
+    }
+    if (isMultiplayer) {
+      const winnerCount = winnerIds.length;
+      if (winnerCount > 1) {
+        return isWinner ? "Tied for first place!" : `${winnerCount} players tied for first`;
+      }
+      return isWinner ? "You won!" : `${sortedPlayers[0].name} won!`;
+    }
+    return `You completed ${currentPlayer.rounds_played} rounds`;
+  };
+
+  const PlayerHistoryCard = ({ player, rank, isCurrentPlayer = false }) => (
+    <div className={`card-elevated mb-3 ${winnerIds.includes(player.id) ? 'border-warning' : ''}`}>
+      <div className="card-body-custom">
+        <div className="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h6 className="mb-1 d-flex align-items-center">
+              {rank === 1 && winnerIds.includes(player.id) && (
+                <FontAwesomeIcon icon={faTrophy} className="text-warning me-2" />
+              )}
+              {player.name}
+            </h6>
+            <div className="text-muted small">
+              Score: {player.total_score} | Rounds: {player.rounds_played}
+            </div>
+          </div>
+          {isMultiplayer && (
+            <div className="text-end">
+              <span className="badge bg-secondary">#{rank}</span>
+            </div>
+          )}
+        </div>
+        
+        {player.round_history && player.round_history.length > 0 && (
+          <div className="mt-2">
+            {player.round_history.map((round, index) => (
+              <div key={index} className="mb-1 small" style={{ display: 'block' }}>
+                <FontAwesomeIcon
+                  icon={round.success ? faCheck : faXmark}
+                  className={`me-2 ${round.success ? 'text-success' : 'text-danger'}`}
+                  style={{ float: 'left', marginTop: '2px' }}
+                />
+                <div style={{ 
+                  marginLeft: '20px',
+                  wordBreak: 'break-word', 
+                  overflowWrap: 'break-word',
+                  whiteSpace: 'normal'
+                }}>
+                  {round.lyric_snippet.snippet}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <GameLayout
-    mainContent={
-      <div className="container mt-3">
-        <div className="row justify-content-center">
-            <h2 className="mb-4 text-center">Game Over!</h2>
-            <div>
-              {/* <div className="col-md-12"> */}
-              <GameProgressCard
-                playerName={Object.keys(gameData.players).length > 1 ? gameData.currentPlayerName : ""}
-                totalScore={gameMode === 'multi' ? gameData.players[gameData.currentPlayerId].total_score : gameData.totalScore}
-                roundsPlayed={gameMode === 'multi' ? gameData.players[gameData.currentPlayerId].rounds_played : gameData.roundsPlayed}
-                roundHistory={gameMode === 'multi' ? gameData.players[gameData.currentPlayerId].round_history : gameData.roundHistory}
-                winner={gameData.gameOver && winnerIds.includes(gameData.currentPlayerId) && Object.keys(gameData.players).length > 1}
-              />
-              {/* </div> */}
-            </div>
-        </div>
-      </div>
-    }
-    sideContent={
-      <div className="multiplayer-progress">
-        <div>
-          {Object.values(gameData.players)
-            .filter(player => player.id !== gameData.currentPlayerId)
-            .map(player => (
-              <div key={player.id} className="mb-3">
-                <GameProgressCard
-                  playerName={player.name}
-                  totalScore={player.total_score}
-                  roundsPlayed={player.rounds_played}
-                  roundHistory={player.round_history}
-                  winner={gameData.gameOver && winnerIds.includes(player.id)}
-                />
+      mainContent={
+        <div className="px-3">
+          {/* Game Mode Badge - positioned in corner */}
+          <div className="position-absolute top-0 end-0 mt-2 me-2">
+            <span className="badge bg-light text-dark border">
+              <FontAwesomeIcon icon={isMultiplayer ? faUsers : faUser} className="me-1" />
+              {isMultiplayer ? 'Multiplayer' : 'Single Player'}
+            </span>
+          </div>
+
+          {/* Hero Section */}
+          <div className="text-center mb-4">
+            <h1 className="display-6 fw-bold mb-2">{getResultMessage()}</h1>
+            <p className="text-muted mb-3">{getResultSubtext()}</p>
+
+            {/* Main Score Display */}
+            <div className={`card-elevated d-inline-block px-4 py-3 ${isWinner && isMultiplayer ? 'border-warning' : ''}`}>
+              <div className="text-center">
+                <div className="display-4 fw-bold text-primary mb-1">{currentPlayer.total_score}</div>
+                <div className="text-muted">Your Score</div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Single Player History */}
+          {!isMultiplayer && (
+            <div className="mb-4">
+              <PlayerHistoryCard player={currentPlayer} rank={1} isCurrentPlayer={true} />
+            </div>
+          )}
+
+          {/* Multiplayer Leaderboard */}
+          {isMultiplayer && (
+            <div className="mb-4">
+              <h5 className="mb-3">Final Results</h5>
+              {sortedPlayers.map((player, index) => (
+                <PlayerHistoryCard
+                  key={player.id}
+                  player={player}
+                  rank={index + 1}
+                  isCurrentPlayer={player.id === gameData.currentPlayerId}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          {!waitingForOthers && (
+            <div className="text-center">
+              <div className="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                <button
+                  className="btn btn-accent btn-lg"
+                  onClick={onPlayAgain}
+                  style={{ minWidth: '140px' }}
+                >
+                  Play Again
+                </button>
+                <button
+                  className="btn btn-outline-secondary btn-lg"
+                  onClick={onMainMenu}
+                  style={{ minWidth: '140px' }}
+                >
+                  Main Menu
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Waiting state info */}
+          {waitingForOthers && (
+            <div className="text-center">
+              <div className="card-elevated p-4">
+                <div className="d-flex align-items-center justify-content-center mb-3">
+                  <div className="spinner-border text-primary me-3" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <span className="text-muted">Game will continue automatically when all players finish</span>
+                </div>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={onMainMenu}
+                  style={{ minWidth: '140px' }}
+                >
+                  Leave Game
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    }
-    showSidePanel={true}
-    gameOver={true}
-  />
+      }
+      showSidePanel={false}
+      showProgressBar={false}
+      gameOver={true}
+    />
   );
 }
 
