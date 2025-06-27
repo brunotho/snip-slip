@@ -77,26 +77,76 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
           </p>
         </div>
 
-        {/* Buttons - All gray */}
+        {/* Buttons - Enhanced button styling without bright colors */}
         <div className="d-flex justify-content-center gap-3 mb-3">
           {game_session_id ? (
             <>
               <button 
-                className="btn btn-neutral btn-rounded"
+                className="btn btn-pill"
                 onClick={handleSuccess}
                 style={{ 
                   minWidth: "120px",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  backgroundColor: "#f8fafc",
+                  color: "#1e293b",
+                  border: "3px solid #4b5563",
+                  fontWeight: "600",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.2s ease",
+                  background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)"
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-2px) scale(1.02)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
+                  e.target.style.borderColor = "#374151";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0) scale(1)";
+                  e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+                  e.target.style.borderColor = "#4b5563";
+                }}
+                onMouseDown={(e) => {
+                  e.target.style.transform = "translateY(1px) scale(0.98)";
+                  e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.2)";
+                }}
+                onMouseUp={(e) => {
+                  e.target.style.transform = "translateY(-2px) scale(1.02)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
                 }}
               >
                 Got it! 😎
               </button>
               <button 
-                className="btn btn-neutral btn-rounded"
+                className="btn btn-pill"
                 onClick={handleFailure}
                 style={{ 
                   minWidth: "120px",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  backgroundColor: "#f8fafc",
+                  color: "#1e293b",
+                  border: "3px solid #4b5563",
+                  fontWeight: "600",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.2s ease",
+                  background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)"
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-2px) scale(1.02)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
+                  e.target.style.borderColor = "#374151";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0) scale(1)";
+                  e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+                  e.target.style.borderColor = "#4b5563";
+                }}
+                onMouseDown={(e) => {
+                  e.target.style.transform = "translateY(1px) scale(0.98)";
+                  e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.2)";
+                }}
+                onMouseUp={(e) => {
+                  e.target.style.transform = "translateY(-2px) scale(1.02)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
                 }}
               >
                 Missed! 😅
@@ -104,11 +154,36 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
             </>
           ) : (
             <button 
-              className="btn btn-neutral btn-rounded"
+              className="btn btn-pill"
               onClick={handleNext}
               style={{ 
                 minWidth: "120px",
-                whiteSpace: "nowrap"
+                whiteSpace: "nowrap",
+                backgroundColor: "#f8fafc",
+                color: "#1e293b",
+                border: "3px solid #4b5563",
+                fontWeight: "600",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                transition: "all 0.2s ease",
+                background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)"
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-2px) scale(1.02)";
+                e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
+                e.target.style.borderColor = "#374151";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0) scale(1)";
+                e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+                e.target.style.borderColor = "#4b5563";
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = "translateY(1px) scale(0.98)";
+                e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.2)";
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = "translateY(-2px) scale(1.02)";
+                e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.25)";
               }}
             >
               Next 🤓

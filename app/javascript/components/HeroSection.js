@@ -2,8 +2,49 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
-function HeroSection({ onPlay }) {
+// Translations for rules text
+const translations = {
+  English: {
+    welcome: "Welcome playa!",
+    basicRules: [
+      "Press Play",
+      "Pick your lyric snippet", 
+      "Slip it into conversation",
+      "Don't get caught!"
+    ],
+    toggleText: "What's the game?",
+    modalTitle: "What's the game?",
+    modalContent: [
+      "SnipSlip is a sneaky party game. At a social gathering, some friends secretly start a game while others have no idea it's happening.",
+      "Each player gets song lyrics and tries to work them naturally into conversations with unsuspecting friends. The goal: sound completely normal - nobody should think \"that was weird.\"",
+      "The thrill comes from trying to make something like \"You gon' be that next chump\" sound like your own natural thought in casual conversation. Honor system scoring, harder lyrics = more points, highest score wins!"
+    ],
+    gotIt: "Got it!"
+  },
+  German: {
+    welcome: "Willkommen Spieler!",
+    basicRules: [
+      "Drücke Play",
+      "Wähle deinen Textschnipsel",
+      "Baue ihn ins Gespräch ein", 
+      "Lass dich nicht erwischen!"
+    ],
+    toggleText: "Was ist das Spiel?",
+    modalTitle: "Was ist das Spiel?",
+    modalContent: [
+      "ist ein heimliches Partyspiel. Bei einem geselligen Beisammensein beginnen einige Freunde heimlich ein Spiel, während andere keine Ahnung haben, dass es stattfindet.",
+      "Jeder Spieler bekommt Songtexte und versucht, sie natürlich in Gespräche mit ahnungslosen Freunden einzubauen. Das Ziel: völlig normal klingen - niemand sollte denken \"das war seltsam.\"",
+      "Der Nervenkitzel kommt daher, dass man versucht, schwierige Texte wie einen eigenen natürlichen Gedanken in einem lockeren Gespräch klingen zu lassen. Ehrensystem-Bewertung, schwierigere Texte = mehr Punkte, höchste Punktzahl gewinnt!"
+    ],
+    gotIt: "Verstanden!"
+  }
+};
+
+function HeroSection({ onPlay, userLanguage = 'English' }) {
   const [showDetailedRules, setShowDetailedRules] = useState(false);
+  
+  // Get translations for current language
+  const t = translations[userLanguage] || translations.English;
 
   const toggleRules = () => {
     setShowDetailedRules(!showDetailedRules);
@@ -20,7 +61,7 @@ function HeroSection({ onPlay }) {
         }}
       >
         <h1 className="display-4" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)' }}>
-          Welcome playa!
+          {t.welcome}
         </h1>
         <div
           className="mt-3 mt-md-4"
@@ -48,18 +89,11 @@ function HeroSection({ onPlay }) {
       <div className="rules-section d-flex justify-content-center" style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
         <div className="container d-flex flex-column align-items-center" style={{ width: '100%', maxWidth: '100%' }}>
           <ul className="list-unstyled" style={{ marginTop: "1rem", textAlign: "center" }}>
-            <div className="rules-container">
-              <li className="basic-rule">Press Play</li>
-            </div>
-            <div className="rules-container">
-              <li className="basic-rule">Pick your lyric snippet</li>
-            </div>
-            <div className="rules-container">
-              <li className="basic-rule">Slip it into conversation</li>
-            </div>
-            <div className="rules-container">
-              <li className="basic-rule">Don't get caught!</li>
-            </div>
+            {t.basicRules.map((rule, index) => (
+              <div key={index} className="rules-container">
+                <li className="basic-rule">{rule}</li>
+              </div>
+            ))}
           </ul>
           
           {/* Clickable toggle for detailed rules */}
@@ -77,7 +111,7 @@ function HeroSection({ onPlay }) {
               fontSize: '0.9rem',
               textDecoration: 'underline'
             }}>
-              What's the game?
+              {t.toggleText}
             </span>
           </div>
 
@@ -118,23 +152,25 @@ function HeroSection({ onPlay }) {
                   textAlign: 'center',
                   color: '#1e293b'
                 }}>
-                  What's the game?
+                  {t.modalTitle}
                 </h3>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 0.75rem 0' }}>
-                  <strong>SnipSlip</strong> is a sneaky party game. At a social gathering, some friends secretly start a game while others have no idea it's happening.
-                </p>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 0.75rem 0' }}>
-                  Each player gets song lyrics and tries to work them naturally into conversations with unsuspecting friends. The goal: sound completely normal - nobody should think "that was weird."
-                </p>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0' }}>
-                  The thrill comes from trying to make something like "You gon' be that next chump" sound like your own natural thought in casual conversation. Honor system scoring, harder lyrics = more points, highest score wins!
-                </p>
+                {t.modalContent.map((paragraph, index) => (
+                  <p key={index} style={{ fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 0.75rem 0' }}>
+                    {index === 0 ? (
+                      <>
+                        <strong>SnipSlip</strong> {paragraph}
+                      </>
+                    ) : (
+                      paragraph
+                    )}
+                  </p>
+                ))}
                 <div style={{ textAlign: 'center' }}>
                   <button
                     onClick={toggleRules}
                     className="btn btn-neutral btn-rounded"
                   >
-                    Got it!
+                    {t.gotIt}
                   </button>
                 </div>
               </div>

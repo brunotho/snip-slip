@@ -82,15 +82,19 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
       <div className="card-body-custom">
         <div className="d-flex justify-content-between align-items-start mb-2">
           <div>
-            <h6 className="mb-1 d-flex align-items-center">
-              {rank === 1 && winnerIds.includes(player.id) && isMultiplayer && (
-                <FontAwesomeIcon icon={faTrophy} className="text-warning me-2" />
-              )}
-              {player.name}
-            </h6>
-            <div className="text-muted small">
-              Score: {player.total_score} | Rounds: {player.rounds_played}
-            </div>
+            {isMultiplayer && (
+              <h6 className="mb-1 d-flex align-items-center">
+                {rank === 1 && winnerIds.includes(player.id) && !waitingForOthers && (
+                  <FontAwesomeIcon icon={faTrophy} className="text-warning me-2" />
+                )}
+                {player.name}
+              </h6>
+            )}
+            {isMultiplayer && (
+              <div className="text-muted small">
+                Score: {player.total_score}
+              </div>
+            )}
           </div>
           {isMultiplayer && (
             <div className="text-end">
@@ -144,16 +148,17 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
             {/* Main Score Display */}
             <div className={`card-elevated d-inline-block px-4 py-3 ${isWinner && isMultiplayer ? 'border-warning' : ''}`}>
               <div className="text-center">
-                <div className="display-4 fw-bold text-primary mb-1">{currentPlayer.total_score}</div>
-                <div className="text-muted">Your Score</div>
+                <div className="display-4 fw-bold text-dark">{currentPlayer.total_score}</div>
               </div>
             </div>
           </div>
 
           {/* Single Player History */}
           {!isMultiplayer && (
-            <div className="mb-4">
-              <PlayerHistoryCard player={currentPlayer} rank={1} isCurrentPlayer={true} />
+            <div className="mb-4 d-flex justify-content-center">
+              <div style={{ maxWidth: "500px", width: "100%" }}>
+                <PlayerHistoryCard player={currentPlayer} rank={1} isCurrentPlayer={true} />
+              </div>
             </div>
           )}
 

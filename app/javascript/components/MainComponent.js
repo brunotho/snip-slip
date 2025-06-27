@@ -3,7 +3,7 @@ import HeroSection from './HeroSection';
 import SnippetsGame from './SnippetsGame';
 import GameOver from './GameOver';
 
-function MainComponent({ gameSessionId = null }) {
+function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
   const [gameData, setGameData] = useState({});
   const [gameMode, setGameMode] = useState(null);
 
@@ -76,11 +76,13 @@ function MainComponent({ gameSessionId = null }) {
   return (
     <div>
       {currentView === 'home' && (
-          <HeroSection onPlay={() => {
-            setGameMode('quick');
-            setGameData({ status: true });
-          }}
-        />
+          <HeroSection 
+            userLanguage={userLanguage}
+            onPlay={() => {
+              setGameMode('quick');
+              setGameData({ status: true });
+            }}
+          />
       )}
 
       {currentView === 'game' && (

@@ -31,9 +31,11 @@ document.addEventListener('turbo:load', () => {
   const mainContainer = document.getElementById('main')
   if (mainContainer) {
     const gameSessionId = mainContainer.dataset.gameSessionId || null
+    const userLanguage = mainContainer.dataset.userLanguage || 'English'
     console.log("gameSessionId:", gameSessionId);
+    console.log("userLanguage:", userLanguage);
     const root = createRoot(mainContainer)
-    root.render(<MainComponent gameSessionId={gameSessionId} />)
+    root.render(<MainComponent gameSessionId={gameSessionId} userLanguage={userLanguage} />)
   }
 
   // SnippetsGame
