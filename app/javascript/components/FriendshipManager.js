@@ -177,7 +177,10 @@ const FriendshipManager = () => {
               friends.map((friend) => (
                 <div key={friend.id}
                     className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
-                  <span className="fw-medium">{friend.name}</span>
+                  <div>
+                    <span className="fw-medium me-2">{friend.name}</span>
+                    <small className="text-muted">{friend.email}</small>
+                  </div>
                   <button className="btn-icon" onClick={() => removeFriend(friend.id)}>
                     <FontAwesomeIcon icon={faXmark} />
                   </button>
@@ -200,7 +203,10 @@ const FriendshipManager = () => {
               receivedRequests.map((request) => (
                 <div key={request.id}
                     className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
-                  <span className="fw-medium">{request.name}</span>
+                  <div>
+                    <span className="fw-medium me-2">{request.name}</span>
+                    <small className="text-muted">{request.email}</small>
+                  </div>
                   <div className="button-container">
                     <button className="btn-icon" onClick={() => declineFriendRequest(request.id)}>
                       <FontAwesomeIcon icon={faXmark} />
@@ -262,7 +268,10 @@ const FriendshipManager = () => {
               pendingRequests.map((request) => (
                 <div key={request.id}
                     className="p-2 mb-2 rounded hover-bg-light">
-                  <span className="fw-medium">{request.name}</span>
+                  <div>
+                    <span className="fw-medium me-2">{request.name}</span>
+                    <small className="text-muted">{request.email}</small>
+                  </div>
                 </div>
               ))
             ) : (
