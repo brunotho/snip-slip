@@ -83,7 +83,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
         <div className="d-flex justify-content-between align-items-start mb-2">
           <div>
             <h6 className="mb-1 d-flex align-items-center">
-              {rank === 1 && winnerIds.includes(player.id) && (
+              {rank === 1 && winnerIds.includes(player.id) && isMultiplayer && (
                 <FontAwesomeIcon icon={faTrophy} className="text-warning me-2" />
               )}
               {player.name}

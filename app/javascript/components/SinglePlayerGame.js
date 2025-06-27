@@ -26,7 +26,7 @@ function SinglePlayerGame({
   const players = gameData.totalScore !== undefined ? {
     [gameData.currentPlayerId || 'player1']: {
       id: gameData.currentPlayerId || 'player1',
-      name: 'You',
+      name: gameData.currentPlayerName || 'Player',
       total_score: gameData.totalScore,
       rounds_played: gameData.roundsPlayed,
       round_history: gameData.roundHistory || []

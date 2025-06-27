@@ -95,8 +95,8 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   maxWidth: '50px' // Limit name width
-                }}>
-                  {isMultiplayer ? player.name : 'You'}
+                }}                >
+                  {player.name}
                 </span>
                 <span style={{ color: '#6b7280', fontSize: '0.7rem' }}>•</span>
                 <span style={{ fontWeight: '600' }}>{player.total_score}</span>
@@ -182,7 +182,7 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false }) {
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      {isMultiplayer ? player.name : 'Your Progress'}
+                      {player.name}
                       {isCurrentUser && isMultiplayer && (
                         <span style={{ 
                           fontSize: '0.7rem', 
