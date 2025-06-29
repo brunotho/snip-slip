@@ -55,7 +55,12 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
       }}
     >
       {/* Integrated card design */}
-      <div className="card-elevated" style={{ margin: "0 1rem", overflow: "visible" }}>
+      <div className="card-elevated" style={{ 
+        margin: "0 1rem", 
+        overflow: "visible",
+        // Desktop: limit max width to prevent enormous size
+        maxWidth: window.innerWidth > 768 ? "600px" : "none"
+      }}>
         {/* Lyric text - Full width with larger canvas */}
         <div 
           className="mb-3 d-flex align-items-center card-flat"
@@ -232,7 +237,9 @@ function ExpandedSnippet({ snippet, game_session_id, onSubmit, onNext }) {
             aspectRatio: "1", 
             borderRadius: "0.75rem", 
             overflow: "hidden",
-            flexShrink: "0"
+            flexShrink: "0",
+            // Desktop: limit max height to prevent enormous images
+            maxHeight: window.innerWidth > 768 ? "400px" : "none"
           }}
         >
           <img

@@ -211,7 +211,7 @@ const FriendshipManager = () => {
 
   return (
     <ConstrainedLayout>
-      <h3 className="text-center mb-4">Friends & Invitations</h3>
+              <h3 className="text-center mb-4">Friends</h3>
       <div className="container">
         {/* 1. Friends List */}
         <div className="card-elevated mb-4">
