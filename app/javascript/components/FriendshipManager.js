@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import ConstrainedLayout from './ConstrainedLayout';
 import { SkeletonFriendItem } from './SkeletonLoader';
+import InviteSection from './InviteSection';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -210,11 +211,12 @@ const FriendshipManager = () => {
 
   return (
     <ConstrainedLayout>
-      <h3 className="text-center mb-4">Friends</h3>
+      <h3 className="text-center mb-4">Friends & Invitations</h3>
       <div className="container">
+        {/* 1. Friends List */}
         <div className="card-elevated mb-4">
           <div className="card-header-custom">
-            <strong>Friends</strong>
+            <strong>Your Friends</strong>
           </div>
           <div className="card-body-custom">
             {isLoadingFriends ? (
@@ -238,63 +240,26 @@ const FriendshipManager = () => {
               ))
             ) : (
               <div className="text-center text-muted py-3">
-                No friends yet. Search for users to add!
+                No friends yet. Search below or invite friends to join SnipSlip!
               </div>
             )}
           </div>
         </div>
 
+        {/* 2. Find Friends (Search) */}
         <div className="card-elevated mb-4">
           <div className="card-header-custom">
-            <strong>Received Friend Requests</strong>
+            <strong>Find Friends</strong>
           </div>
           <div className="card-body-custom">
-            {isLoadingFriends ? (
-              <SkeletonFriendItem count={2} />
-            ) : receivedRequests.length > 0 ? (
-              receivedRequests.map((request) => (
-                <div key={request.id}
-                    className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
-                  <div>
-                    <span className="fw-medium me-2">{request.name}</span>
-                    <small className="text-muted">{request.email}</small>
-                  </div>
-                  <div className="button-container">
-                    <button 
-                      className="btn-icon" 
-                      onClick={() => declineFriendRequest(request.id)}
-                      disabled={isActionLoading(`decline-${request.id}`)}
-                    >
-                      <FontAwesomeIcon icon={faXmark} />
-                    </button>
-                    <button 
-                      className="btn-icon" 
-                      onClick={() => acceptFriendRequest(request.id)}
-                      disabled={isActionLoading(`accept-${request.id}`)}
-                    >
-                      <FontAwesomeIcon icon={faCheck} />
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-muted py-3">
-                No pending requests
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="card-elevated mb-4">
-          <div className="card-header-custom">
-            <strong>Add New Friends</strong>
-          </div>
-          <div className="card-body-custom">
+            <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
+              Search for friends who already have SnipSlip accounts
+            </p>
             <div className="mb-3">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search users..."
+                placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={(e) => {
                   const newTerm = e.target.value;
@@ -306,7 +271,7 @@ const FriendshipManager = () => {
 
             {isSearching ? (
               <SkeletonFriendItem count={2} />
-            ) : (
+            ) : searchResults.length > 0 ? (
               searchResults.map((user) => (
                 <div key={user.id}
                     className="d-flex justify-content-between align-items-center p-2 mb-2">
@@ -323,34 +288,80 @@ const FriendshipManager = () => {
                   </button>
                 </div>
               ))
-            )}
+            ) : searchTerm.length >= 2 ? (
+              <div className="text-center text-muted py-3">
+                No users found. Try inviting them to join SnipSlip below!
+              </div>
+            ) : null}
           </div>
         </div>
 
-        <div className="card-elevated mb-4">
-          <div className="card-header-custom">
-            <strong>Sent Friend Requests</strong>
-          </div>
-          <div className="card-body-custom">
-            {isLoadingFriends ? (
-              <SkeletonFriendItem count={1} />
-            ) : pendingRequests.length > 0 ? (
-              pendingRequests.map((request) => (
-                <div key={request.id}
-                    className="p-2 mb-2 rounded hover-bg-light">
-                  <div>
-                    <span className="fw-medium me-2">{request.name}</span>
-                    <small className="text-muted">{request.email}</small>
+        {/* 3. Invite Friends */}
+        <InviteSection />
+
+        {/* 4. Friend Requests (Received) */}
+        {(receivedRequests.length > 0 || isLoadingFriends) && (
+          <div className="card-elevated mb-4">
+            <div className="card-header-custom">
+              <strong>Friend Requests</strong>
+            </div>
+            <div className="card-body-custom">
+              {isLoadingFriends ? (
+                <SkeletonFriendItem count={2} />
+              ) : (
+                receivedRequests.map((request) => (
+                  <div key={request.id}
+                      className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
+                    <div>
+                      <span className="fw-medium me-2">{request.name}</span>
+                      <small className="text-muted">{request.email}</small>
+                    </div>
+                    <div className="button-container">
+                      <button 
+                        className="btn-icon" 
+                        onClick={() => declineFriendRequest(request.id)}
+                        disabled={isActionLoading(`decline-${request.id}`)}
+                      >
+                        <FontAwesomeIcon icon={faXmark} />
+                      </button>
+                      <button 
+                        className="btn-icon" 
+                        onClick={() => acceptFriendRequest(request.id)}
+                        disabled={isActionLoading(`accept-${request.id}`)}
+                      >
+                        <FontAwesomeIcon icon={faCheck} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-muted py-3">
-                No outgoing requests
-              </div>
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* 5. Sent Requests (Only show if there are any) */}
+        {(pendingRequests.length > 0 || isLoadingFriends) && (
+          <div className="card-elevated mb-4">
+            <div className="card-header-custom">
+              <strong>Sent Requests</strong>
+            </div>
+            <div className="card-body-custom">
+              {isLoadingFriends ? (
+                <SkeletonFriendItem count={1} />
+              ) : (
+                pendingRequests.map((request) => (
+                  <div key={request.id}
+                      className="p-2 mb-2 rounded hover-bg-light">
+                    <div>
+                      <span className="fw-medium me-2">{request.name}</span>
+                      <small className="text-muted">{request.email}</small>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </ConstrainedLayout>
   );
