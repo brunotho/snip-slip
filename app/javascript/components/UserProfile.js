@@ -61,10 +61,12 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
 
   if (!isEditing) {
     return (
-      <div className="container form-container">
-        <h2 className="">{user.name}</h2>
-        <p>Snippet Settings:</p>
-        <p>Language: {user.language}</p>
+      <div className="container form-container" style={{ margin: "6rem auto 2rem auto" }}>
+        <h2>{user.name}</h2>
+        <div className="card-body-custom">
+          <p>Snippet Settings:</p>
+          <p>Language: {user.language}</p>
+        </div>
         <div className="d-flex justify-content-end">
           <button
             className="btn btn-accent"
@@ -78,7 +80,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
   }
 
   return (
-    <div className="container form-container">
+    <div className="container form-container" style={{ margin: "6rem auto 2rem auto" }}>
       <h2>Edit your profile</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-inputs">
@@ -89,7 +91,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
             defaultValue={user.name}
             className="form-control"
             placeholder="Name"
-            autocomplete="name"
+            autoComplete="name"
           />
           {errors.name && (
             <div className="invalid-feedback d-block">
@@ -102,7 +104,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
             name="language"
             defaultValue={user.language}
             className="form-control"
-            autocomplete="language"
+            autoComplete="language"
           >
             {languages.map((language) => (
               <option key={language} value={language}>
@@ -136,7 +138,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
                 className="form-control"
                 placeholder="New Password"
                 onChange={handlePasswordChange}
-                autocomplete="new-password"
+                autoComplete="new-password"
               />
               {errors.password && (
                 <div className="invalid-feedback d-block">
@@ -151,7 +153,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
                 className="form-control"
                 placeholder="Confirm New Password"
                 onChange={handlePasswordChange}
-                autocomplete="new-password"
+                autoComplete="new-password"
               />
 
               {changingSensitiveInfo && (
@@ -162,7 +164,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
                   className="form-control"
                   placeholder="Current Password"
                   required
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                 />
               )}
             </>

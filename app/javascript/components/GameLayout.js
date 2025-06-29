@@ -5,8 +5,12 @@ const GameLayout = ({
   mainContent,
   sideContent = null,
   showSidePanel = true,
-  gameOver = false
+  showProgressBar = false,
+  gameOver = false,
+  progressBarHeight = 56
 }) => {
+  const topMargin = showProgressBar ? `${progressBarHeight + 16}px` : '0px'; // Add 16px gap
+
   return (
     <div className="container-fluid mt-0 px-0">
       <div className="row justify-content-center gx-0">
@@ -15,8 +19,7 @@ const GameLayout = ({
           <div
             className={`d-flex justify-content-center ${!gameOver ? 'align-items-center' : ''}`}
             style={{
-              overflow: 'hidden',
-              marginTop: '0',
+              marginTop: topMargin,
               paddingTop: '0',
               width: '100%'
             }}
@@ -61,7 +64,9 @@ GameLayout.propTypes = {
   mainContent: PropTypes.node.isRequired,
   sideContent: PropTypes.node,
   showSidePanel: PropTypes.bool,
-  gameOver: PropTypes.bool
+  showProgressBar: PropTypes.bool,
+  gameOver: PropTypes.bool,
+  progressBarHeight: PropTypes.number
 };
 
 export default GameLayout;

@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client'
 // Components
 import MainComponent from "./components/MainComponent"
 import SnippetsGame from "./components/SnippetsGame"
-import InviteFriend from "./components/InviteFriend"
+
 import SnippetCard from "./components/SnippetCard"
 import FriendshipManager from "./components/FriendshipManager"
 import AddSnippetFormWrapper from "./components/AddSnippetForm"
@@ -31,9 +31,11 @@ document.addEventListener('turbo:load', () => {
   const mainContainer = document.getElementById('main')
   if (mainContainer) {
     const gameSessionId = mainContainer.dataset.gameSessionId || null
+    const userLanguage = mainContainer.dataset.userLanguage || 'English'
     console.log("gameSessionId:", gameSessionId);
+    console.log("userLanguage:", userLanguage);
     const root = createRoot(mainContainer)
-    root.render(<MainComponent gameSessionId={gameSessionId} />)
+    root.render(<MainComponent gameSessionId={gameSessionId} userLanguage={userLanguage} />)
   }
 
   // SnippetsGame
@@ -45,12 +47,7 @@ document.addEventListener('turbo:load', () => {
     root.render(<SnippetsGame game_session_id={gameSessionId} />)
   }
 
-  // InviteFriend
-  const inviteFriendElement = document.getElementById('invite-friend')
-  if (inviteFriendElement) {
-    const root = createRoot(inviteFriendElement)
-    root.render(<InviteFriend />)
-  }
+
 
   // SnippetCard for thank_you view
   const snippetLastElement = document.getElementById("snippet-last")

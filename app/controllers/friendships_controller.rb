@@ -3,9 +3,9 @@ class FriendshipsController < ApplicationController
 
   def index
     @friendships_data = {
-      friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-      pending_requests: current_user.friendships.pending.map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-      received_requests: Friendship.pending.where(friend: current_user).map { |f| { id: f.id, name: f.user.name, user_id: f.user.id } }
+      friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+      pending_requests: current_user.friendships.pending.map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+      received_requests: Friendship.pending.where(friend: current_user).map { |f| { id: f.id, name: f.user.name, email: f.user.email, user_id: f.user.id } }
     }
 
     respond_to do |format|
@@ -35,9 +35,9 @@ class FriendshipsController < ApplicationController
           reverse_friendship.update(status: :accepted)
 
           updated_data = {
-            friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-            pending_requests: current_user.friendships.pending.where(user_id: current_user.id).map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-            received_requests: current_user.friendships.pending.where(friend_id: current_user.id).map { |f| { id: f.id, name: f.user.name, user_id: f.user.id } }
+            friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+            pending_requests: current_user.friendships.pending.where(user_id: current_user.id).map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+            received_requests: current_user.friendships.pending.where(friend_id: current_user.id).map { |f| { id: f.id, name: f.user.name, email: f.user.email, user_id: f.user.id } }
           }
 
           render json: { success: true, message: "Friend request accepted", updated_data: updated_data }, status: :ok
@@ -48,9 +48,9 @@ class FriendshipsController < ApplicationController
         if friendship.update(status: :declined)
 
           updated_data = {
-            friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-            pending_requests: current_user.friendships.pending.where(user_id: current_user.id).map { |f| { id: f.id, name: f.friend.name, user_id: f.friend.id } },
-            received_requests: current_user.friendships.pending.where(friend_id: current_user.id).map { |f| { id: f.id, name: f.user.name, user_id: f.user.id } }
+            friends: current_user.friendships.accepted.map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+            pending_requests: current_user.friendships.pending.where(user_id: current_user.id).map { |f| { id: f.id, name: f.friend.name, email: f.friend.email, user_id: f.friend.id } },
+            received_requests: current_user.friendships.pending.where(friend_id: current_user.id).map { |f| { id: f.id, name: f.user.name, email: f.user.email, user_id: f.user.id } }
           }
 
           render json: { success: true, message: "Friend request declined", updated_data: updated_data }, status: :ok

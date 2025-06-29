@@ -1,10 +1,12 @@
+@use "sass:color";
+
 .difficulty-slider-container {
   margin-top: 1.25rem;
 
   $track-height: 0.5rem;
   $thumb-size: 1.25rem;
   $track-color-start: rgba($color-brand-accent, 0.7);
-  $track-color-end: rgba(darken($color-brand-accent, 10%), 1);
+  $track-color-end: rgba(color.adjust($color-brand-accent, $lightness: -10%), 1);
   $thumb-color: white;
   $thumb-border: $color-brand-accent;
 
@@ -19,14 +21,14 @@
       width: 100%;
       height: $track-height;
       background: linear-gradient(to right, $track-color-start, $track-color-end);
-      border-radius: $track-height / 2;
+      border-radius: calc($track-height / 2);
     }
 
     &::-moz-range-track {
       width: 100%;
       height: $track-height;
       background: linear-gradient(to right, $track-color-start, $track-color-end);
-      border-radius: $track-height / 2;
+      border-radius: calc($track-height / 2);
     }
 
     &::-webkit-slider-thumb {
@@ -36,7 +38,7 @@
       border-radius: 50%;
       background: $thumb-color;
       border: 2px solid $thumb-border;
-      margin-top: -($thumb-size - $track-height) / 2;
+      margin-top: calc(-1 * ($thumb-size - $track-height) / 2);
       cursor: pointer;
     }
 

@@ -1,0 +1,183 @@
+@import './variables';
+
+// Base skeleton styles
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+// Skeleton animations
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+// Skeleton element types
+.skeleton-line {
+  @extend .skeleton;
+  height: 16px;
+  margin-bottom: 8px;
+  
+  &.skeleton-line-sm { height: 12px; }
+  &.skeleton-line-lg { height: 20px; }
+  &.skeleton-line-xl { height: 24px; }
+}
+
+.skeleton-circle {
+  @extend .skeleton;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  
+  &.skeleton-circle-sm { width: 24px; height: 24px; }
+  &.skeleton-circle-lg { width: 56px; height: 56px; }
+}
+
+.skeleton-button {
+  @extend .skeleton;
+  height: 36px;
+  border-radius: 6px;
+  
+  &.skeleton-button-sm { height: 28px; }
+  &.skeleton-button-lg { height: 44px; }
+}
+
+.skeleton-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: $radius-lg;
+  padding: 1rem;
+  
+  .skeleton {
+    background: linear-gradient(90deg, #e9ecef 25%, #dee2e6 50%, #e9ecef 75%);
+    background-size: 200% 100%;
+  }
+}
+
+// Skeleton layouts for specific components
+.skeleton-snippet-card {
+  @extend .skeleton-card;
+  height: clamp(115px, 16vh, 145px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  .skeleton-snippet-text {
+    @extend .skeleton-line;
+    height: 18px;
+    width: 85%;
+    margin: 0 auto 12px auto;
+  }
+  
+  .skeleton-snippet-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .skeleton-artist {
+      @extend .skeleton-line-sm;
+      width: 60px;
+    }
+    
+    .skeleton-difficulty {
+      @extend .skeleton-circle-sm;
+    }
+  }
+}
+
+.skeleton-friend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  
+  .skeleton-friend-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    
+    .skeleton-avatar {
+      @extend .skeleton-circle-sm;
+      margin-right: 0.75rem;
+    }
+    
+    .skeleton-text {
+      .skeleton-name {
+        @extend .skeleton-line;
+        width: 120px;
+        height: 16px;
+        margin-bottom: 4px;
+      }
+      
+      .skeleton-email {
+        @extend .skeleton-line-sm;
+        width: 160px;
+        height: 12px;
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .skeleton-action {
+    @extend .skeleton-button-sm;
+    width: 24px;
+  }
+}
+
+.skeleton-game-progress {
+  @extend .skeleton-card;
+  max-width: min(300px, 90vw);
+  margin: 0 auto 1rem auto;
+  
+  .skeleton-player-name {
+    @extend .skeleton-line;
+    width: 100px;
+    height: 18px;
+    margin-bottom: 8px;
+  }
+  
+  .skeleton-score {
+    @extend .skeleton-line-sm;
+    width: 150px;
+    height: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .skeleton-round {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    
+    .skeleton-icon {
+      @extend .skeleton-circle-sm;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+    
+    .skeleton-text {
+      @extend .skeleton-line-sm;
+      width: 200px;
+      height: 12px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Disable pointer events on skeleton elements
+.skeleton, .skeleton-card {
+  pointer-events: none;
+  user-select: none;
+}
+
+// Reduce motion for users who prefer it
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: #f0f0f0;
+  }
+} 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import GameLayout from "./GameLayout";
 import SnippetCard from "./SnippetCard";
 import ExpandedSnippet from "./ExpandedSnippet";
-import GameProgressCard from "./GameProgressCard";
+import GameProgressBar, { calculateProgressBarHeight } from "./GameProgressBar";
 import { createGameSessionChannel } from "../channels/game_session_channel";
 
 function MultiPlayerGame({
@@ -56,64 +56,67 @@ function MultiPlayerGame({
   //   }
   // };
 
-  if (error) return <div>Error loading snippets: {error.message}</div>;
-  if (loading) return <div>Loading snippets... </div>;
+  if (error) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="text-center">
+          <div className="text-danger mb-3" style={{ fontSize: '2rem' }}>⚠️</div>
+          <h4 className="text-danger mb-2">Unable to load snippets</h4>
+          <p className="text-muted">{error.message}</p>
+          <button 
+            className="btn btn-outline-primary" 
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="skeleton-circle skeleton-circle-lg"></div>
+        <div className="skeleton-line" style={{ width: '200px' }}></div>
+        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
+      </div>
+    );
+  }
 
   console.log("MULTIPLAYER before return gameData 🌷🌷🌷:", gameData)
 
-  return (
-    <GameLayout
-      mainContent={
-        // selectedSnippet ? (
-        //   <ExpandedSnippet
-        //     snippet={selectedSnippet}
-        //     // onSubmit={handleMultiplayerSubmit}
-        //     onSubmit={handleSubmit}
-        //     game_session_id={game_session_id}
-        //   />
-        // ) : (
-        //   <div className="row">
-        //     {snippets.map(snippet => (
-        //       <div key={snippet.id} className="col-md-6 mb-4">
-        //         <SnippetCard
-        //           snippet={snippet}
-        //           onClick={() => setSelectedSnippet(snippet)}
-        //         />
-        //       </div>
-        //     ))}
-        //   </div>
-        // )
-        mainContent
-      }
-      sideContent={
-        <div className="multiplayer-progress">
-          <div className="mb-4">
-            <GameProgressCard
-              playerName={gameData.players[gameData.currentPlayerId].name}
-              totalScore={gameData.players[gameData.currentPlayerId].total_score}
-              roundsPlayed={gameData.players[gameData.currentPlayerId].rounds_played}
-              roundHistory={gameData.players[gameData.currentPlayerId].round_history}
-            />
-          </div>
+  const progressBarHeight = calculateProgressBarHeight(Object.keys(gameData.players || {}).length);
 
-          <div>
-            {Object.values(gameData.players)
-              .filter(player => player.id !== gameData.currentPlayerId)
-              .map(player => (
-                <div key={player.id} className="mb-3">
-                  <GameProgressCard
-                    playerName={player.name}
-                    totalScore={player.total_score}
-                    roundsPlayed={player.rounds_played}
-                    roundHistory={player.round_history}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-      }
-      showSidePanel={true}
-    />
+  return (
+    <>
+      <GameProgressBar 
+        players={gameData.players || {}}
+        currentUserId={gameData.currentPlayerId}
+        isMultiplayer={true}
+        loading={loading || !gameData.players}
+      />
+      <GameLayout
+        mainContent={mainContent}
+        sideContent={null}
+        showSidePanel={false}
+        showProgressBar={true}
+        progressBarHeight={progressBarHeight}
+      />
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import SinglePlayerGame from './SinglePlayerGame';
 import MultiPlayerGame from './MultiPlayerGame';
 import SnippetCard from './SnippetCard';
 import ExpandedSnippet from './ExpandedSnippet';
+import { SkeletonSnippetCard } from './SkeletonLoader';
 
 function SnippetsGame({
   game_session_id = null,
@@ -59,7 +60,7 @@ function SnippetsGame({
         currentPlayerName: data.current_player_name,
         players: data.players,
         game_session_id: data.game_session_id,
-        roundHistory: data.round_history
+        roundHistory: data.round_history || []
       });
     } catch (error) {
       console.error("Error fetching game session data:", error);
@@ -115,7 +116,7 @@ function SnippetsGame({
           lyric_snippet: { snippet: selectedSnippet.snippet },
           success: data.round.success
         };
-        const updatedHistory = [...gameData.roundHistory, newRound];
+        const updatedHistory = [...(gameData.roundHistory || []), newRound];
 
         const newGameData = {
           ...gameData,
@@ -128,14 +129,38 @@ function SnippetsGame({
       }
 
       if (data.game_session.player_game_over) {
-        setGameData(prevData => ({
-          ...prevData,
-          totalScore: data.game_session.total_score,
-          roundsPlayed: data.game_session.rounds_played,
-          status: data.game_session.status,
-          playerGameOver: data.game_session.player_game_over,
-          gameOver: data.game_session.game_over
-        }));
+        // Fetch complete final game state when game ends
+        try {
+          const finalResponse = await fetch(`/game_sessions/${game_session_id}.json`, {
+            headers: {
+              "Accept": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+          });
+          const finalData = await finalResponse.json();
+          
+          setGameData(prevData => ({
+            ...prevData,
+            totalScore: finalData.total_score,
+            roundsPlayed: finalData.rounds_played,
+            status: finalData.status,
+            players: finalData.players,
+            roundHistory: finalData.round_history || [],
+            playerGameOver: data.game_session.player_game_over,
+            gameOver: data.game_session.game_over
+          }));
+        } catch (error) {
+          console.error("Error fetching final game state:", error);
+          // Fallback to partial update
+          setGameData(prevData => ({
+            ...prevData,
+            totalScore: data.game_session.total_score,
+            roundsPlayed: data.game_session.rounds_played,
+            status: data.game_session.status,
+            playerGameOver: data.game_session.player_game_over,
+            gameOver: data.game_session.game_over
+          }));
+        }
         return;
       }
 
@@ -169,6 +194,18 @@ function SnippetsGame({
         game_session_id={game_session_id}
         onNext={handleNextSnippet}
       />
+    ) : loading ? (
+      <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div
+            key={`skeleton-${index}`}
+            className="col-12 col-md-6"
+            style={{ maxWidth: "100%" }}
+          >
+            <SkeletonSnippetCard />
+          </div>
+        ))}
+      </div>
     ) : (
       <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
         {snippets.map(snippet => (
@@ -213,7 +250,20 @@ function SnippetsGame({
   };
 
   if (!initialized) {
-    return <div>Loading game...</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="skeleton-circle skeleton-circle-lg"></div>
+        <div className="skeleton-line" style={{ width: '200px' }}></div>
+        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
+      </div>
+    );
   }
 
   console.log("SNIPPETSGAME before return gameData:", gameData);

@@ -117,25 +117,42 @@ class GameSessionsController < ApplicationController
 
   def game_session_data(game_session)
     first_participant = game_session.game_session_participants.order(:created_at).first
+    user_rounds = game_session.rounds.where(user: current_user).includes(:lyric_snippet).order(:created_at)
 
     {
       game_session_id: game_session.id,
       current_player_id: current_user.id,
       current_player_name: current_user.name,
       is_host: first_participant.user_id == current_user.id,
-      total_score: current_user.total_score,
+      total_score: user_rounds.sum(&:score),
       successful_rounds_count: game_session.rounds.where(user: current_user, success: true).count,
       rounds_played: game_session.rounds.where(user_id: current_user.id).count,
       status: game_session.status,
-      round_history: [],
+      round_history: user_rounds.map do |round|
+        {
+          lyric_snippet: {
+            snippet: round.lyric_snippet.snippet
+          },
+          success: round.success
+        }
+      end,
       players: game_session.game_session_participants.each_with_object({}) do |participant, hash|
+        participant_rounds = game_session.rounds.where(user: participant.user).includes(:lyric_snippet).order(:created_at)
+        game_session_score = participant_rounds.sum(&:score)
         hash[participant.user.id] = {
           id: participant.user.id,
           name: participant.user.name,
-          total_score: participant.user.total_score,
+          total_score: game_session_score,
           successful_rounds_count: game_session.rounds.where(user: participant.user, success: true).count,
           rounds_played: game_session.rounds.where(user_id: participant.user.id).count,
-          round_history: []
+          round_history: participant_rounds.map do |round|
+            {
+              lyric_snippet: {
+                snippet: round.lyric_snippet.snippet
+              },
+              success: round.success
+            }
+          end
         }
       end,
       multiplayer: game_session.multiplayer?

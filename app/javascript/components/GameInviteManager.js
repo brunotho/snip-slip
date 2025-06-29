@@ -168,7 +168,24 @@ const GameInviteManager = () => {
     }
   };
 
-  if (loading) return <div>Loading Invite Manager...</div>
+  if (loading) {
+    return (
+      <ConstrainedLayout>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <div className="skeleton-circle skeleton-circle-lg"></div>
+          <div className="skeleton-line" style={{ width: '250px' }}></div>
+          <div className="skeleton-line skeleton-line-sm" style={{ width: '180px' }}></div>
+        </div>
+      </ConstrainedLayout>
+    );
+  }
 
   console.log("GameInviteManager with players:", joinedPlayers);
 
@@ -182,9 +199,9 @@ const GameInviteManager = () => {
         <div className="row">
           {isHost && (
             <div className="col-md-6">
-              <div className="card mb-4">
-                <div className="card-header">Your Friends</div>
-                <div className="card-body">
+              <div className="card-elevated mb-4">
+                <div className="card-header-custom">Your Friends</div>
+                <div className="card-body-custom">
                   {friends.length === 0 ? (
                     <p>No friends :((</p>
                   ) : (
@@ -207,9 +224,9 @@ const GameInviteManager = () => {
           )}
 
           <div className={isHost ? "col-md-6" : "col-md-8 mx-auto"}>
-            <div className="card mb-4">
-              <div className="card-header">Players Joined</div>
-              <div className="card-body">
+            <div className="card-elevated mb-4">
+              <div className="card-header-custom">Players Joined</div>
+              <div className="card-body-custom">
                 {joinedPlayers.length === 0 ? (
                   <p>Waiting for players to join...</p>
                 ) : (
