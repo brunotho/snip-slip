@@ -205,7 +205,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
               <div className="card-elevated p-4">
                 <div className="d-flex align-items-center justify-content-center mb-3">
                   <div className="spinner-border text-primary me-3" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">Waiting...</span>
                   </div>
                   <span className="text-muted">Game will continue automatically when all players finish</span>
                 </div>

@@ -252,9 +252,6 @@ const FriendshipManager = () => {
             <strong>Find Friends</strong>
           </div>
           <div className="card-body-custom">
-            <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-              Search for friends who already have SnipSlip accounts
-            </p>
             <div className="mb-3">
               <input
                 type="text"

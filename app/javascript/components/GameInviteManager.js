@@ -168,7 +168,24 @@ const GameInviteManager = () => {
     }
   };
 
-  if (loading) return <div>Loading Invite Manager...</div>
+  if (loading) {
+    return (
+      <ConstrainedLayout>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <div className="skeleton-circle skeleton-circle-lg"></div>
+          <div className="skeleton-line" style={{ width: '250px' }}></div>
+          <div className="skeleton-line skeleton-line-sm" style={{ width: '180px' }}></div>
+        </div>
+      </ConstrainedLayout>
+    );
+  }
 
   console.log("GameInviteManager with players:", joinedPlayers);
 

@@ -56,10 +56,6 @@ function InviteSection() {
         <strong>Invite Friends to SnipSlip</strong>
       </div>
       <div className="card-body-custom">
-        <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-          Share SnipSlip with friends so they can create accounts and play with you!
-        </p>
-        
         {/* Share buttons */}
         <div className="row g-2 mb-3">
           <div className="col-6 col-md-3">

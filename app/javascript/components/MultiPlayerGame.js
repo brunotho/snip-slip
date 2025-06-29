@@ -56,7 +56,30 @@ function MultiPlayerGame({
   //   }
   // };
 
-  if (error) return <div>Error loading snippets: {error.message}</div>;
+  if (error) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="text-center">
+          <div className="text-danger mb-3" style={{ fontSize: '2rem' }}>⚠️</div>
+          <h4 className="text-danger mb-2">Unable to load snippets</h4>
+          <p className="text-muted">{error.message}</p>
+          <button 
+            className="btn btn-outline-primary" 
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (loading) {
     return (
       <div style={{ 
