@@ -211,7 +211,7 @@ const FriendshipManager = () => {
 
   return (
     <ConstrainedLayout>
-              <h3 className="text-center mb-4">Friends</h3>
+      <h3 className="text-center mb-4">Friends</h3>
       <div className="container">
         {/* 1. Friends List */}
         <div className="card-elevated mb-4">
@@ -270,19 +270,19 @@ const FriendshipManager = () => {
               <SkeletonFriendItem count={2} />
             ) : searchResults.length > 0 ? (
               searchResults.map((user) => (
-                <div key={user.id}
-                    className="d-flex justify-content-between align-items-center p-2 mb-2">
-                  <div>
-                    <span className="fw-medium me-2">{user.name}</span>
-                    <small className="text-muted">{user.email}</small>
-                  </div>
+              <div key={user.id}
+                  className="d-flex justify-content-between align-items-center p-2 mb-2">
+                <div>
+                  <span className="fw-medium me-2">{user.name}</span>
+                  <small className="text-muted">{user.email}</small>
+                </div>
                   <button 
                     className="btn-icon" 
                     onClick={() => sendFriendRequest(user.id)}
                     disabled={isActionLoading(`send-${user.id}`)}
                   >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </button>
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
                 </div>
               ))
             ) : searchTerm.length >= 2 ? (
@@ -346,18 +346,18 @@ const FriendshipManager = () => {
               {isLoadingFriends ? (
                 <SkeletonFriendItem count={1} />
               ) : (
-                pendingRequests.map((request) => (
-                  <div key={request.id}
-                      className="p-2 mb-2 rounded hover-bg-light">
+              pendingRequests.map((request) => (
+                <div key={request.id}
+                    className="p-2 mb-2 rounded hover-bg-light">
                     <div>
                       <span className="fw-medium me-2">{request.name}</span>
                       <small className="text-muted">{request.email}</small>
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
+                </div>
+              ))
+            )}
           </div>
+        </div>
         )}
       </div>
     </ConstrainedLayout>

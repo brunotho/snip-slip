@@ -109,13 +109,13 @@ function MultiPlayerGame({
         isMultiplayer={true}
         loading={loading || !gameData.players}
       />
-      <GameLayout
+    <GameLayout
         mainContent={mainContent}
         sideContent={null}
         showSidePanel={false}
         showProgressBar={true}
         progressBarHeight={progressBarHeight}
-      />
+                  />
     </>
   );
 }

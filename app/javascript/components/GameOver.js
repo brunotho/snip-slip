@@ -36,7 +36,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
 
   const gameMode = Object.values(gameData.players).length > 1 ? 'multi' : 'single';
   const isMultiplayer = gameMode === 'multi';
-  
+
   // Calculate winners
   const winnerIds = Object.values(gameData.players).reduce((highest, player) => {
     if (player.total_score > highest.score) {
@@ -130,7 +130,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
 
   return (
     <GameLayout
-      mainContent={
+    mainContent={
         <div className="px-3">
           {/* Game Mode Badge - positioned in corner */}
           <div className="position-absolute top-0 end-0 mt-2 me-2">
@@ -158,8 +158,8 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
             <div className="mb-4 d-flex justify-content-center">
               <div style={{ maxWidth: "500px", width: "100%" }}>
                 <PlayerHistoryCard player={currentPlayer} rank={1} isCurrentPlayer={true} />
-              </div>
-            </div>
+        </div>
+      </div>
           )}
 
           {/* Multiplayer Leaderboard */}
@@ -217,14 +217,14 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
                   Leave Game
                 </button>
               </div>
-            </div>
-          )}
         </div>
-      }
+          )}
+      </div>
+    }
       showSidePanel={false}
       showProgressBar={false}
-      gameOver={true}
-    />
+    gameOver={true}
+  />
   );
 }
 

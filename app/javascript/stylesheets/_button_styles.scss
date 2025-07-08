@@ -54,7 +54,7 @@
 // Primary button styles
 .btn-accent {
   @include button-variant($color-brand-accent, $color-brand-primary);
-  
+
   &:disabled,
   &.disabled {
     opacity: 0.5;

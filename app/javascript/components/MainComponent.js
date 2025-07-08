@@ -79,10 +79,10 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
           <HeroSection 
             userLanguage={userLanguage}
             onPlay={() => {
-              setGameMode('quick');
-              setGameData({ status: true });
-            }}
-          />
+            setGameMode('quick');
+            setGameData({ status: true });
+          }}
+        />
       )}
 
       {currentView === 'game' && (

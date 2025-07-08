@@ -25,7 +25,7 @@ const GameLayout = ({
             }}
           >
             <div style={{ width: '100%', maxWidth: '100%' }}>
-              {mainContent}
+            {mainContent}
             </div>
           </div>
         </div>
