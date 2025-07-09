@@ -59,7 +59,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
           marginTop: '2rem',
           minHeight: '200px' // Ensure minimum height on mobile
         }}
-      >
+        >
         <h1 className="display-4" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)' }}>
           {t.welcome}
         </h1>
@@ -67,7 +67,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
           className="mt-3 mt-md-4"
           style={{ cursor: "pointer" }}
           onClick={onPlay}
-        >
+          >
           <FontAwesomeIcon
             icon={faPlay}
             size="3x"
@@ -83,7 +83,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
             style={{ color: "black" }}
             aria-label="Play"
             beat
-          />
+            />
         </div>
       </div>
       <div className="rules-section d-flex justify-content-center" style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }}>
@@ -113,7 +113,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
             }}>
               {t.toggleText}
             </span>
-          </div>
+            </div>
 
           {/* Full modal overlay */}
           {showDetailedRules && (
@@ -172,8 +172,8 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
                   >
                     {t.gotIt}
                   </button>
-                </div>
-              </div>
+            </div>
+            </div>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const DifficultySlider = () => {
-  const [difficulty, setDifficulty] = useState(300);
+  const [difficulty, setDifficulty] = useState(400);
 
   const handleSliderChange = (event) => {
     setDifficulty(event.target.value);

@@ -152,14 +152,14 @@ function SnippetsGame({
         } catch (error) {
           console.error("Error fetching final game state:", error);
           // Fallback to partial update
-          setGameData(prevData => ({
-            ...prevData,
-            totalScore: data.game_session.total_score,
-            roundsPlayed: data.game_session.rounds_played,
-            status: data.game_session.status,
-            playerGameOver: data.game_session.player_game_over,
-            gameOver: data.game_session.game_over
-          }));
+        setGameData(prevData => ({
+          ...prevData,
+          totalScore: data.game_session.total_score,
+          roundsPlayed: data.game_session.rounds_played,
+          status: data.game_session.status,
+          playerGameOver: data.game_session.player_game_over,
+          gameOver: data.game_session.game_over
+        }));
         }
         return;
       }

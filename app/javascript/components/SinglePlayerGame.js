@@ -81,13 +81,13 @@ function SinglePlayerGame({
         isMultiplayer={false}
         loading={loading || gameData.totalScore === undefined}
       />
-      <GameLayout
+    <GameLayout
         mainContent={mainContent}
         sideContent={null}
         showSidePanel={false}
         showProgressBar={true}
         progressBarHeight={progressBarHeight}
-      />
+        />
     </>
   );
 }

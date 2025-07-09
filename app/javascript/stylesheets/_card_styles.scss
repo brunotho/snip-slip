@@ -183,8 +183,8 @@
   
   // Tablet and up: side-by-side layout
   @media (min-width: 768px) {
-    grid-template-columns: 1fr 300px;
-    grid-template-rows: 1fr 90px;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 1fr 90px;
     grid-template-areas:
       "lyric image"
       "button info";
@@ -208,7 +208,7 @@
       font-size: 1.2rem;
       padding: 1.5rem;
       text-align: center;
-      
+
       @media (min-width: 768px) {
         font-size: 1.5rem;
         padding: 2.5rem;
@@ -223,7 +223,7 @@
     border-top: $border-style;
     
     @media (min-width: 768px) {
-      border-left: $border-style;
+    border-left: $border-style;
       border-top: none;
     }
 
@@ -237,10 +237,10 @@
       }
 
       .album-cover {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: .85;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .85;
       }
     }
   }
@@ -273,7 +273,7 @@
       border-left: $border-style;
       text-align: left;
       padding-left: 1rem;
-      padding-top: 0;
+    padding-top: 0;
     }
   }
 }

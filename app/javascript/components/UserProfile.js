@@ -64,8 +64,8 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
       <div className="container form-container" style={{ margin: "6rem auto 2rem auto" }}>
         <h2>{user.name}</h2>
         <div className="card-body-custom">
-          <p>Snippet Settings:</p>
-          <p>Language: {user.language}</p>
+        <p>Snippet Settings:</p>
+        <p>Language: {user.language}</p>
         </div>
         <div className="d-flex justify-content-end">
           <button

@@ -86,9 +86,9 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
       <div 
         style={{
           display: 'grid',
-          gridTemplateColumns: getGridColumns(), // Dynamic responsive columns
+          gridTemplateColumns: isMultiplayer ? getGridColumns() : '1fr', // Single column for single player
           gap: '0.5rem', // Reduced gap
-          justifyItems: 'stretch', // Stretch to fill grid cells
+          justifyItems: isMultiplayer ? 'stretch' : 'center', // Center for single player, stretch for multiplayer
           maxWidth: '100%',
           overflow: 'hidden'
         }}
@@ -115,7 +115,7 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                   fontSize: '0.8rem', // Smaller font
                   fontWeight: isCurrentUser ? '600' : '500',
                   minWidth: '110px', // Reduced min width
-                  width: '100%', // Fill grid cell
+                  width: isMultiplayer ? '100%' : '160px', // Fixed width for single player, full width for multiplayer
                   maxWidth: '160px', // Prevent too wide on large screens
                   justifyContent: 'center',
                   opacity: isComplete ? 1 : 0.8,
