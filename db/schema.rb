@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_112524) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_09_093315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_112524) do
     t.string "language"
   end
 
+  create_table "report_votes", force: :cascade do |t|
+    t.bigint "snippet_report_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "vote"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["snippet_report_id"], name: "index_report_votes_on_snippet_report_id"
+    t.index ["user_id"], name: "index_report_votes_on_user_id"
+  end
+
   create_table "rounds", force: :cascade do |t|
     t.bigint "lyric_snippet_id", null: false
     t.bigint "user_id", null: false
@@ -90,6 +100,29 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_112524) do
     t.index ["game_session_id"], name: "index_rounds_on_game_session_id"
     t.index ["lyric_snippet_id"], name: "index_rounds_on_lyric_snippet_id"
     t.index ["user_id"], name: "index_rounds_on_user_id"
+  end
+
+  create_table "snippet_reports", force: :cascade do |t|
+    t.bigint "lyric_snippet_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "status"
+    t.boolean "is_boring"
+    t.boolean "wrong_artist"
+    t.boolean "wrong_song"
+    t.boolean "wrong_snippet"
+    t.boolean "wrong_difficulty"
+    t.boolean "wrong_language"
+    t.boolean "wrong_image"
+    t.string "suggested_artist"
+    t.string "suggested_song"
+    t.text "suggested_snippet"
+    t.integer "suggested_difficulty"
+    t.string "suggested_language"
+    t.string "suggested_image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lyric_snippet_id"], name: "index_snippet_reports_on_lyric_snippet_id"
+    t.index ["user_id"], name: "index_snippet_reports_on_user_id"
   end
 
   create_table "user_played_snippets", force: :cascade do |t|
@@ -121,9 +154,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_112524) do
   add_foreign_key "friendships", "users", on_delete: :cascade
   add_foreign_key "game_session_participants", "game_sessions"
   add_foreign_key "game_session_participants", "users"
+  add_foreign_key "report_votes", "snippet_reports"
+  add_foreign_key "report_votes", "users"
   add_foreign_key "rounds", "game_sessions"
   add_foreign_key "rounds", "lyric_snippets"
   add_foreign_key "rounds", "users"
+  add_foreign_key "snippet_reports", "lyric_snippets"
+  add_foreign_key "snippet_reports", "users"
   add_foreign_key "user_played_snippets", "lyric_snippets"
   add_foreign_key "user_played_snippets", "users"
 end
