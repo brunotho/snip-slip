@@ -1,9 +1,19 @@
 import React, {useEffect, useState, useRef} from 'react';
+import { useLongPress } from '@uidotdev/usehooks';
 
-function SnippetCard({ snippet, onClick }) {
+function SnippetCard({ snippet, onClick, onLongPress }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
+  const longPressProps = useLongPress(() => {
+    console.log('long press');
+    if (onLongPress) {
+      onLongPress(snippet);
+    }
+  }, {
+    threshold: 500,
+  });
+  console.log('longPressProps created:');
 
   if (!snippet) {
     console.error('No snippet data provided to SnippetCard');
@@ -18,11 +28,9 @@ function SnippetCard({ snippet, onClick }) {
     const text = textRef.current;
     const container = containerRef.current;
 
-    // Start with responsive base size - increased from 1.1 to 1.2
     let currentSize = 1.2;
     text.style.fontSize = `${currentSize}rem`;
 
-    // Only scale down if really necessary, and not too aggressively - increased minimum from 0.85 to 0.95
     while (isOverflowing(container) && currentSize > 0.95) {
       currentSize -= 0.05;
       text.style.fontSize = `${currentSize}rem`;
@@ -41,6 +49,7 @@ function SnippetCard({ snippet, onClick }) {
     <div
       className="card snippet-card shadow"
       onClick={onClick}
+      {...longPressProps}
     >
       <div className="d-flex h-100">
         <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>

@@ -4,6 +4,8 @@ import SinglePlayerGame from './SinglePlayerGame';
 import MultiPlayerGame from './MultiPlayerGame';
 import SnippetCard from './SnippetCard';
 import ExpandedSnippet from './ExpandedSnippet';
+import Modal from './Modal';
+import ReportModal from './ReportModal';
 import { SkeletonSnippetCard } from './SkeletonLoader';
 
 function SnippetsGame({
@@ -17,6 +19,8 @@ function SnippetsGame({
   const [error, setError] = useState(null);
   const [selectedSnippet, setSelectedSnippet] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportingSnippet, setReportingSnippet] = useState(null);
 
   const fetchSnippets = () => {
     setLoading(true);
@@ -177,6 +181,11 @@ function SnippetsGame({
     return meta && meta.getAttribute('content');
   };
 
+  const handleOpenReportModal = (snippet) => {
+    setReportingSnippet(snippet);
+    setReportModalOpen(true);
+  };
+
   // const handleMultiplayerSubmit = async (snippet_id, success) => {
   //   try {
   //     await handleSubmit(snippet_id, success);
@@ -217,6 +226,7 @@ function SnippetsGame({
             <SnippetCard
               snippet={snippet}
               onClick={() => setSelectedSnippet(snippet)}
+              onLongPress={() => handleOpenReportModal(snippet)}
             />
           </div>
         ))}
@@ -268,7 +278,18 @@ function SnippetsGame({
 
   console.log("SNIPPETSGAME before return gameData:", gameData);
 
-  return renderGameMode();
+  return (
+    <>
+      {renderGameMode()}
+
+      <Modal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)}>
+        <ReportModal
+          snippet={reportingSnippet}
+          onSubmit={() => {}}
+        />
+      </Modal>
+    </>
+  )
 }
 
 export default SnippetsGame;
