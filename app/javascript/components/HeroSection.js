@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
-// Translations for rules text
 const translations = {
   English: {
     welcome: "Welcome playa!",
@@ -57,7 +56,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
         style={{ 
           height: '15vh', 
           marginTop: '2rem',
-          minHeight: '200px' // Ensure minimum height on mobile
+          minHeight: '200px'
         }}
         >
         <h1 className="display-4" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)' }}>
@@ -71,7 +70,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
           <FontAwesomeIcon
             icon={faPlay}
             size="3x"
-            className="d-md-none" // Smaller icon on mobile
+            className="d-md-none"
             style={{ color: "black" }}
             aria-label="Play"
             beat
@@ -79,7 +78,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
           <FontAwesomeIcon
             icon={faPlay}
             size="4x"
-            className="d-none d-md-block" // Larger icon on desktop
+            className="d-none d-md-block"
             style={{ color: "black" }}
             aria-label="Play"
             beat
@@ -101,7 +100,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
             className="mt-3 text-center"
             style={{ 
               cursor: 'pointer',
-              opacity: showDetailedRules ? 0 : 1, // Hide when modal is open
+              opacity: showDetailedRules ? 0 : 1,
               transition: 'opacity 0.2s ease'
             }}
             onClick={toggleRules}
@@ -130,7 +129,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '60px 1rem' // Equal padding top and bottom
+                padding: '60px 1rem'
               }}
               onClick={toggleRules}
             >
@@ -138,7 +137,7 @@ function HeroSection({ onPlay, userLanguage = 'English' }) {
                 style={{ 
                   maxWidth: '500px', 
                   width: '100%',
-                  maxHeight: 'calc(100vh - 160px)', // Account for header margin and bottom space
+                  maxHeight: 'calc(100vh - 160px)',
                   overflowY: 'auto',
                   animation: 'slideUp 0.3s ease-out'
                 }}
