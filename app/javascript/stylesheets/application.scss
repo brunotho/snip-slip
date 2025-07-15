@@ -76,10 +76,10 @@ li {
 @import './containers';
 @import './rules';
 @import './skeleton';
+@import './modal_styles';
 
-// Desktop-specific improvements while keeping mobile exactly the same
+// Desktop-specific improvements
 @media (min-width: 768px) {
-  // Center play button on desktop
   .jumbotron {
     display: flex;
     flex-direction: column;
@@ -87,14 +87,12 @@ li {
     justify-content: center;
   }
   
-  // Center snippet grid on desktop
   .row.align-self-center {
     justify-content: center;
     max-width: 800px;
     margin: 0 auto;
   }
   
-  // Improved ExpandedSnippet sizing on desktop
   .expanded-snippet-new {
     max-width: 600px !important;
     
@@ -105,7 +103,7 @@ li {
 }
 
 .page-without-header {
-  margin-top: max(7vh, 60px); // Use the larger of 7vh or 60px to ensure proper clearance
+  margin-top: max(7vh, 60px);
   // padding-top: .25rem;
 }
 

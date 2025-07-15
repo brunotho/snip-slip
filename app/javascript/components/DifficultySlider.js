@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 
-const DifficultySlider = () => {
-  const [difficulty, setDifficulty] = useState(400);
-
+function DifficultySlider({ value, onChange, standalone = false }) {
+  const [internalDifficulty, setInternalDifficulty] = useState(400);
+  
+  const currentValue = standalone ? internalDifficulty : (value || 400);
   const handleSliderChange = (event) => {
-    setDifficulty(event.target.value);
-    document.getElementById('snippet_difficulty').value = event.target.value;
+    const newValue = event.target.value;
+    
+    if (standalone) {
+      setInternalDifficulty(newValue);
+      const hiddenInput = document.getElementById('snippet_difficulty');
+      if (hiddenInput) {
+        hiddenInput.value = newValue;
+      }
+    } else {
+      if (onChange) {
+        onChange(newValue);
+      }
+    }
   };
 
   return (
     <div className="difficulty-slider-container">
-      <label htmlFor="difficulty">Difficulty: {difficulty}</label>
+      <label htmlFor="difficulty">Difficulty: {currentValue}</label>
       <input
         type="range"
         id="difficulty"
@@ -18,11 +30,13 @@ const DifficultySlider = () => {
         min="100"
         max="1000"
         step="100"
-        value={difficulty}
+        value={currentValue}
         onChange={handleSliderChange}
         className="slider"
       />
-      <input type="hidden" id="snippet_difficulty" name="lyric_snippet[difficulty]" value={difficulty} />
+      {standalone && (
+        <input type="hidden" id="snippet_difficulty" name="lyric_snippet[difficulty]" value={currentValue} />
+      )}
     </div>
   );
 };

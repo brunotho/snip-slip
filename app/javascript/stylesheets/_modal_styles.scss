@@ -1,0 +1,101 @@
+.report-modal-frame {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 300px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+}
+
+.modal-content-centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+}
+
+// Report modal styles
+.report-field {
+    cursor: pointer;
+    padding: 0.5rem 0;
+    margin: 0.25rem 0;
+    
+    &--selected {
+      text-decoration: line-through;
+      color: #666;
+    }
+    
+    &--disabled {
+      opacity: 0.5;
+      color: #999;
+      pointer-events: none;
+      cursor: default;
+
+      &.report-field--selected {
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .input-field {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+
+    &--disabled {
+      opacity: 0.5;
+      color: #999;
+      pointer-events: none;
+      cursor: default;
+    }
+  }
+
+  .suggestion-input {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .suggestion-section {
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      max-height: 200px;
+      transform: translateY(0);
+    }
+  }
+
+  // keep duplicate from _form.scss ?
+  .form-section {
+    margin-top: 1rem;
+    
+    &--disabled {
+      opacity: 0.5;
+      color: #999;
+      pointer-events: none;
+      
+      .report-field--selected {
+        text-decoration: line-through;
+        color: #999;
+      }
+    }
+  } 

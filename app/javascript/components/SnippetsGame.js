@@ -286,6 +286,7 @@ function SnippetsGame({
         <ReportModal
           snippet={reportingSnippet}
           onSubmit={() => {}}
+          onClose={() => setReportModalOpen(false)}
         />
       </Modal>
     </>
