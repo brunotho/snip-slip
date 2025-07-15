@@ -115,7 +115,7 @@ function InviteSection() {
             style={{ fontSize: '0.8rem', textDecoration: 'none' }}
           >
             <FontAwesomeIcon icon={faQrcode} className="me-1" />
-            {showQR ? 'Hide QR Code' : 'Show QR Code for in-person sharing'}
+            {showQR ? 'Hide QR Code' : 'Share with QR Code'}
           </button>
         </div>
 
@@ -125,11 +125,8 @@ function InviteSection() {
             <img
               src={generateQRCode()}
               alt="QR Code for SnipSlip"
-              style={{ maxWidth: '150px', border: '1px solid #e9ecef', borderRadius: '8px' }}
+              style={{ maxWidth: '150px', border: '1px solid #e9ecef', borderRadius: '8px', marginBottom: '1rem' }}
             />
-            <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
-              Friends can scan this to visit SnipSlip
-            </p>
           </div>
         )}
       </div>

@@ -227,6 +227,7 @@ const FriendshipManager = () => {
                     className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
                   <div>
                     <span className="fw-medium me-2">{friend.name}</span>
+                    <br />
                     <small className="text-muted">{friend.email}</small>
                   </div>
                   <button 
@@ -274,6 +275,7 @@ const FriendshipManager = () => {
                   className="d-flex justify-content-between align-items-center p-2 mb-2">
                 <div>
                   <span className="fw-medium me-2">{user.name}</span>
+                  <br />
                   <small className="text-muted">{user.email}</small>
                 </div>
                   <button 
@@ -311,6 +313,7 @@ const FriendshipManager = () => {
                       className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
                     <div>
                       <span className="fw-medium me-2">{request.name}</span>
+                      <br />
                       <small className="text-muted">{request.email}</small>
                     </div>
                     <div className="button-container">
@@ -351,6 +354,7 @@ const FriendshipManager = () => {
                     className="p-2 mb-2 rounded hover-bg-light">
                     <div>
                       <span className="fw-medium me-2">{request.name}</span>
+                      <br />
                       <small className="text-muted">{request.email}</small>
                     </div>
                 </div>

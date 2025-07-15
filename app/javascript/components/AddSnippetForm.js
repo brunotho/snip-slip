@@ -8,7 +8,7 @@ const AddSnippetFormWrapper = ({ children }) => {
     const sliderContainer = document.getElementById('difficulty-slider-container');
     if (sliderContainer) {
       const root = createRoot(sliderContainer);
-      root.render(<DifficultySlider />);
+      root.render(<DifficultySlider standalone={true} />);
     }
   }, []);
 

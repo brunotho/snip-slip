@@ -9,6 +9,7 @@ class SnippetReport < ApplicationRecord
 
   private
 
+  # todo update validations to match react form
   def one_to_two_issues_selected
     issues = [ is_boring, wrong_artist, wrong_song, wrong_snippet, wrong_difficulty, wrong_language, wrong_image ]
     issue_count = issues.count(true)

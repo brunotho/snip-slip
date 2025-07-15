@@ -1,26 +1,60 @@
 import React, { useState } from 'react';
 import DifficultySlider from './DifficultySlider';
 
-function ReportModal({ snippet, onSubmit }) {
+function ReportModal({ snippet, onSubmit, onClose }) {
   const [wrongFields, setWrongFields] = useState({});
-  const [suggestions, setSuggestions] = useState({});
+  const [suggestions, setSuggestions] = useState({});  
+  // todo make language use snippet.language
   const [language, setLanguage] = useState('english');
   const [isBoring, setIsBoring] = useState(false);
+
+  const buildFieldClasses = (fieldName) => {
+    let classes = 'report-field';
+
+    if (wrongFields[fieldName]) {
+      classes += ' report-field--selected';
+    }
+    
+    if (isBoring) {
+      classes += ' report-field--disabled';
+    }
+    
+    return classes;
+  };
+
+  const validateSubmission = () => {
+    if (isBoring && Object.values(wrongFields).some(val => val)) {
+      return { valid: false, message: "If marking as boring, don't select other issues" };
+    }
+  
+    if (wrongFields.snippet && suggestions.snippet) {
+      const similarity = calculateWordSimilarity(snippet.snippet, suggestions.snippet);
+      if (similarity < 0.5) {
+        return { valid: false, message: "Snippet changes must be minor (keep most original words)" };
+      }
+    }
+  
+    const hasIssues = isBoring || Object.values(wrongFields).some(val => val);
+    if (!hasIssues) {
+      return { valid: false, message: "Select at least one issue to report" };
+    }
+  
+    return { valid: true };
+  };
 
   const toggleField = (field) => {
     setWrongFields({...wrongFields, [field]: !wrongFields[field]});
   };
 
     return (
-      <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', minWidth: '300px' }}>
+      <div className="report-modal-frame">
         <h3>Report Issues</h3>
+        <h6>and suggest Edits</h6>
 
         <div 
-          onClick={() => toggleField('artist')}
-          style={{
-            textDecoration: wrongFields.artist ? 'line-through' : 'none',
-            cursor: 'pointer'
-        }}>
+          className={buildFieldClasses('artist')}
+          onClick={() => !isBoring && toggleField('artist')}
+        >
           Artist: {snippet?.artist}
         </div>
         {wrongFields.artist && (
@@ -29,15 +63,13 @@ function ReportModal({ snippet, onSubmit }) {
             placeholder='Suggest artist'
             value={suggestions.artist || ''}
             onChange={(e) => setSuggestions({...suggestions, artist: e.target.value})}
-            style={{ marginLeft: '1rem', marginTop: '0.5rem' }}
-          />
+            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            />
         )}
         <div 
-          onClick={() => toggleField('song')}
-          style={{
-            textDecoration: wrongFields.song ? 'line-through' : 'none',
-            cursor: 'pointer'
-          }}>
+          className={buildFieldClasses('song')}
+          onClick={() => !isBoring && toggleField('song')}
+        >
           Song: {snippet?.song}
         </div>
         {wrongFields.song && (
@@ -46,14 +78,13 @@ function ReportModal({ snippet, onSubmit }) {
             placeholder='Suggest song'
             value={suggestions.song || ''}
             onChange={(e) => setSuggestions({...suggestions, song: e.target.value})}
-            style={{ marginLeft: '1rem', marginTop: '0.5rem' }}
-          />
+            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            />
         )}
-        <div onClick={() => toggleField('snippet')}
-          style={{
-            textDecoration: wrongFields.snippet ? 'line-through' : 'none',
-            cursor: 'pointer'
-          }}>
+        <div 
+          className={buildFieldClasses('snippet')}
+          onClick={() => !isBoring && toggleField('snippet')}
+        >
           Snippet: {snippet?.snippet}
         </div>
         {wrongFields.snippet && (
@@ -62,30 +93,32 @@ function ReportModal({ snippet, onSubmit }) {
             placeholder='Suggest snippet'
             value={suggestions.snippet || ''}
             onChange={(e) => setSuggestions({...suggestions, snippet: e.target.value})}
-            style={{ marginLeft: '1rem', marginTop: '0.5rem' }}
-          />
+            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            />
         )}
-        <div onClick={() => toggleField('difficulty')}
-          style={{
-            textDecoration: wrongFields.difficulty ? 'line-through' : 'none',
-            cursor: 'pointer'
-          }}>
+        <div 
+          className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}
+          onClick={() => !isBoring && toggleField('difficulty')}
+        >
           Difficulty: {snippet?.difficulty}
         </div>
         {wrongFields.difficulty && (
-          <div style={{ marginLeft: '1rem', marginTop: '0.5rem' }}>
+          <div 
+            className={`form-section ${isBoring ? 'form-section--disabled' : ''} suggestion-section`}
+          >
             <DifficultySlider 
-              value={suggestions.difficulty || 300}
+              value={suggestions.difficulty || snippet?.difficulty}
               onChange={(value) => setSuggestions({...suggestions, difficulty: value})}
             />
           </div>
         )}
-        <div style={{ marginTop: '1rem' }}>
+        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''} suggestion-section`}>
           <label>
             <input 
               type="checkbox" 
-              checked={wrongFields.language} 
-              onChange={() => toggleField('language')} 
+              className="form-check-input"
+              checked={wrongFields.language || false} 
+              onChange={() => !isBoring && toggleField('language')} 
             />
             Wrong language (currently: {snippet?.language})
           </label>
@@ -93,7 +126,7 @@ function ReportModal({ snippet, onSubmit }) {
             <select 
               value={suggestions.language || ''} 
               onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
-              style={{ marginLeft: '1rem', marginTop: '0.5rem' }}
+              className="input-field suggestion-input form-select"
             >
               <option value="">Select correct language</option>
               <option value="English">English</option>
@@ -101,20 +134,28 @@ function ReportModal({ snippet, onSubmit }) {
             </select>
           )}
         </div>
-        <div style={{ marginTop: '1rem' }}>
+        <div className='form-section'>
           <label>
             <input 
               type="checkbox" 
+              className="form-check-input"
               checked={isBoring} 
               onChange={(e) => setIsBoring(e.target.checked)} 
             />
-            Too boring!
+            Too boring! - Delete!
           </label>
         </div>
-          <div>
-            
-          </div>
-        <button onClick={() => console.log('Submit report')}>Submit</button>
+
+        <div className='modal-button-group'> 
+          <button 
+            className='btn btn-neutral'
+            onClick={onClose}>Cancel
+          </button>
+          <button 
+            className='btn btn-accent'
+            onClick={() => console.log('Submit report')}>Submit
+          </button>
+        </div>
       </div>
     );
   }
