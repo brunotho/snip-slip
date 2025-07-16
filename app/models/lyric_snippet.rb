@@ -3,6 +3,7 @@ class LyricSnippet < ApplicationRecord
   has_many :rounds, dependent: :destroy
   has_many :user_played_snippets
   has_many :users_who_played, through: :user_played_snippets, source: :user
+  has_many :snippet_reports, dependent: :destroy
 
   validates :snippet, presence: true
   validates :snippet, length: { minimum: 5, maximum: 70 }
@@ -49,7 +50,7 @@ class LyricSnippet < ApplicationRecord
   end
 
   def normalize_artist_name(name)
-    # add äö!`^ etc
+    # todo: add äö!`^ etc
     name.downcase.gsub(/[^a-z0-9\s]/i, "").strip
   end
 
