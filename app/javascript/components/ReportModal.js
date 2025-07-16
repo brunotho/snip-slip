@@ -7,6 +7,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   // todo make language use snippet.language
   const [language, setLanguage] = useState('english');
   const [isBoring, setIsBoring] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
 
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
@@ -22,32 +24,134 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     return classes;
   };
 
+  const calculateWordSimilarity = (original, suggestion) => {
+    const originalWords = original.toLowerCase().split(/\s+/);
+    const suggestedWords = suggestion.toLowerCase().split(/\s+/); 
+    const matches = originalWords.filter(word => suggestedWords.includes(word));
+
+    return matches.length / originalWords.length;
+  };
+
   const validateSubmission = () => {
-    if (isBoring && Object.values(wrongFields).some(val => val)) {
-      return { valid: false, message: "If marking as boring, don't select other issues" };
+    if (isBoring) {
+      return { valid: true };
     }
+
+    const fieldsNeedingSuggestions = ['artist', 'song', 'snippet', 'difficulty', 'language'];
+      for (const field of fieldsNeedingSuggestions) {
+        if (wrongFields[field]) {
+          const suggestion = suggestions[field];
+          if (field === 'difficulty') {
+            if (!suggestion) {
+              return { valid: false, message: "Please adjust the difficulty slider" };
+            }
+          } else if (field === 'language') {
+            if (!suggestion || suggestion === snippet?.language) {
+              return { valid: false, message: "Please select a different language" };
+            }
+          } else {
+            if (!suggestion) {
+              return { valid: false, message: `Please provide a suggestion for ${field}` };
+            }
+          }
+        }
+      }
   
     if (wrongFields.snippet && suggestions.snippet) {
       const similarity = calculateWordSimilarity(snippet.snippet, suggestions.snippet);
       if (similarity < 0.5) {
-        return { valid: false, message: "Snippet changes must be minor (keep most original words)" };
+        return { valid: false, message: "Snippet changes must be minor (keep half of the original words)" };
       }
     }
   
-    const hasIssues = isBoring || Object.values(wrongFields).some(val => val);
-    if (!hasIssues) {
-      return { valid: false, message: "Select at least one issue to report" };
+    const hasIssues = Object.values(wrongFields).some(val => val);
+    return hasIssues ? { valid: true } : { valid: false, message: "Select at least one issue" };
+  };
+
+  const getCSRFToken = () => {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta && meta.getAttribute('content');
+  };
+
+  const reportData = (wrongFields, suggestions, isBoring) => {
+    return {
+      snippet_report: {
+        is_boring: isBoring,
+        wrong_artist: wrongFields.artist || false,
+        wrong_song: wrongFields.song || false,
+        wrong_snippet: wrongFields.snippet || false,
+        wrong_difficulty: wrongFields.difficulty || false,
+        wrong_language: wrongFields.language || false,
+        suggested_artist: suggestions.artist || null,
+        suggested_song: suggestions.song || null,
+        suggested_snippet: suggestions.snippet || null,
+        suggested_difficulty: suggestions.difficulty || null,
+        suggested_language: suggestions.language || null,
+      }
     }
-  
-    return { valid: true };
+  };
+
+  const handleSubmit = async() => {
+    const validation = validateSubmission();
+    if (validation.valid) {
+      try {
+        const report = reportData(wrongFields, suggestions, isBoring);
+        console.log(report);
+        
+        const response = await fetch(`/snippets/${snippet.id}/reports`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCSRFToken()
+          },
+          body: JSON.stringify(report)
+        });
+        
+        if (response.ok) {
+          console.log('Report submitted successfully');
+          setShowSuccessfulReportView(true);
+          setErrorMessage('');
+
+          setTimeout(() => {
+            onClose();
+          }, 2500);
+        } else {
+          const error = await response.json();
+          setErrorMessage(error.message || 'Failed to submit report');
+        }
+      } catch (error) {
+        console.error('Error submitting report:', error);
+        setErrorMessage('Failed to submit report');
+      }
+    } else {
+      setErrorMessage(validation.message);
+    }
   };
 
   const toggleField = (field) => {
     setWrongFields({...wrongFields, [field]: !wrongFields[field]});
   };
 
+  const renderSuccessContent = () => {
     return (
-      <div className="report-modal-frame">
+      <div className="text-center">
+        <h3>Thanks {/* user name */}! 😍</h3>
+        <p>Report submitted successfully!</p>
+        <button className="btn btn-neutral" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    );
+  };
+
+  const renderFormContent = () => {
+    return (
+      <>
+        {errorMessage && (
+          <div style={{ color: 'red', marginBottom: '1rem' }}>
+            {errorMessage}
+          </div>
+        )}
         <h3>Report Issues</h3>
         <h6>and suggest Edits</h6>
 
@@ -97,7 +201,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             />
         )}
         <div 
-          className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}
+          className={buildFieldClasses('difficulty')}
           onClick={() => !isBoring && toggleField('difficulty')}
         >
           Difficulty: {snippet?.difficulty}
@@ -153,11 +257,18 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           </button>
           <button 
             className='btn btn-accent'
-            onClick={() => console.log('Submit report')}>Submit
+            onClick={handleSubmit}>Submit
           </button>
         </div>
-      </div>
-    );
-  }
+      </>
+    )
+  };
+
+  return (
+    <div className="report-modal-frame">
+      {showSuccessfulReportView ? renderSuccessContent() : renderFormContent()}
+    </div>
+  );
+}
 
 export default ReportModal;

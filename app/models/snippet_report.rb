@@ -5,7 +5,7 @@ class SnippetReport < ApplicationRecord
   enum status: { pending: 0, approved: 1, rejected: 2 }
 
   validates :user, uniqueness: { scope: :lyric_snippet }
-  validate :one_to_two_issues_selected
+  # validate :one_to_two_issues_selected
 
   private
 
