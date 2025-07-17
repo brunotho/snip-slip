@@ -5,16 +5,27 @@ class SnippetReport < ApplicationRecord
   enum status: { pending: 0, approved: 1, rejected: 2 }
 
   validates :user, uniqueness: { scope: :lyric_snippet }
-  # validate :one_to_two_issues_selected
+  validate :at_least_one_issue_selected
+  validate :suggestions_for_wrong_fields_present
 
   private
 
-  # todo update validations to match react form
-  def one_to_two_issues_selected
+  def at_least_one_issue_selected
     issues = [ is_boring, wrong_artist, wrong_song, wrong_snippet, wrong_difficulty, wrong_language, wrong_image ]
     issue_count = issues.count(true)
-    unless issue_count == 1 || issue_count == 2
-      errors.add(:base, "Select one or two issues to report")
+    unless issue_count > 0
+      errors.add(:base, "Must select at least one issue to report")
+    end
+  end
+
+  def suggestions_for_wrong_fields_present
+    fields = [ "artist", "song", "snippet", "difficulty", "language", "image" ]
+    fields.each do |field|
+      if self.send("wrong_#{field}") == true
+        if self.send("suggested_#{field}").blank?
+          errors.add("suggested_#{field}".to_sym, "must be provided when wrong_#{field} is true")
+        end
+      end
     end
   end
 end

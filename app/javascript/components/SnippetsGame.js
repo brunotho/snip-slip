@@ -182,18 +182,13 @@ function SnippetsGame({
   };
 
   const handleOpenReportModal = (snippet) => {
+    if (snippet.already_reported) {
+      alert('This snippet has already been reported');
+      return;
+    }
     setReportingSnippet(snippet);
     setReportModalOpen(true);
   };
-
-  // const handleMultiplayerSubmit = async (snippet_id, success) => {
-  //   try {
-  //     await handleSubmit(snippet_id, success);
-
-  //   } catch (error) {
-  //     console.error("Error submitting round (MultiPlayer):", error)
-  //   }
-  // };
 
   const mainContent =
     selectedSnippet ? (
@@ -226,7 +221,7 @@ function SnippetsGame({
             <SnippetCard
               snippet={snippet}
               onClick={() => setSelectedSnippet(snippet)}
-              onLongPress={() => handleOpenReportModal(snippet)}
+              onLongPress={gameMode === 'quick' ? null : () => handleOpenReportModal(snippet)}
             />
           </div>
         ))}
