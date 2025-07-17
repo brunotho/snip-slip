@@ -9,6 +9,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   const [isBoring, setIsBoring] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
+  const [userName, setUserName] = useState('');
 
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
@@ -108,9 +109,11 @@ function ReportModal({ snippet, onSubmit, onClose }) {
         });
         
         if (response.ok) {
-          console.log('Report submitted successfully');
+          const data = await response.json();
           setShowSuccessfulReportView(true);
           setErrorMessage('');
+          setUserName(data.user_name);
+          console.log('Report submitted successfully');
 
           setTimeout(() => {
             onClose();
@@ -135,8 +138,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   const renderSuccessContent = () => {
     return (
       <div className="text-center">
-        <h3>Thanks {/* user name */}! 😍</h3>
-        <p>Report submitted successfully!</p>
+        <h3>Thanks {userName}! 😍</h3>
+        <p>Report submitted!</p>
         <button className="btn btn-neutral" onClick={onClose}>
           Close
         </button>
@@ -167,7 +170,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             placeholder='Suggest artist'
             value={suggestions.artist || ''}
             onChange={(e) => setSuggestions({...suggestions, artist: e.target.value})}
-            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
         <div 
@@ -182,7 +185,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             placeholder='Suggest song'
             value={suggestions.song || ''}
             onChange={(e) => setSuggestions({...suggestions, song: e.target.value})}
-            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
         <div 
@@ -197,7 +200,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             placeholder='Suggest snippet'
             value={suggestions.snippet || ''}
             onChange={(e) => setSuggestions({...suggestions, snippet: e.target.value})}
-            className={`input-field ${isBoring ? 'input-field--disabled' : ''} suggestion-input form-control`}
+            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
         <div 
@@ -216,7 +219,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             />
           </div>
         )}
-        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''} suggestion-section`}>
+        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
           <label>
             <input 
               type="checkbox" 
@@ -230,7 +233,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             <select 
               value={suggestions.language || ''} 
               onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
-              className="input-field suggestion-input form-select"
+              className="modal-suggestion-input form-select"
             >
               <option value="">Select correct language</option>
               <option value="English">English</option>

@@ -28,19 +28,21 @@ class SnippetsController < ApplicationController
 
   def fetch_snippets
     user_language = current_user&.language || "English"
+    reported_snippet_ids = current_user&.snippet_reports&.pluck(:lyric_snippet_id) || []
     random_ids = LyricSnippet
                 .where.not(snippet: "Dummy snippet for failed rounds")
                 .where(language: user_language)
-                # .where(artist: "Arctic Monkeys")
+                .where.not(id: reported_snippet_ids)
                 .pluck(:id)
                 .sample(20)
     snippets = LyricSnippet
                 .where(id: random_ids)
                 .sample(4)
 
+
     render json: snippets.map { |snippet|
       snippet.as_json.merge({
-        image_url: snippet.image.attached? ? snippet.image.url : nil
+        image_url: snippet.image.attached? ? snippet.image.url : nil,
       })
     }
   end

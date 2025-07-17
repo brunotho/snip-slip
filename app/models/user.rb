@@ -9,14 +9,15 @@ class User < ApplicationRecord
   has_many :rounds, dependent: :destroy
   has_many :user_played_snippets
   has_many :played_snippets, through: :user_played_snippets, source: :lyric_snippet
-
-  validate :name_presence_and_length
-  validate :language_presence_and_inclusion
-
+  has_many :snippet_reports, dependent: :destroy
+  
   has_many :friendships, dependent: :destroy
   has_many :friends, -> { where(friendships: { status: :accepted }) }, through: :friendships, source: :friend
   has_many :pending_sent_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'user_id'
   has_many :pending_received_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'friend_id'
+
+  validate :name_presence_and_length
+  validate :language_presence_and_inclusion
 
   def send_friend_request(friend)
     friendships.create(friend: friend, status: :pending)

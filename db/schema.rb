@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_09_093315) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_17_194431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,7 +118,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_09_093315) do
     t.text "suggested_snippet"
     t.integer "suggested_difficulty"
     t.string "suggested_language"
-    t.string "suggested_image_url"
+    t.string "suggested_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lyric_snippet_id"], name: "index_snippet_reports_on_lyric_snippet_id"

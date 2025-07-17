@@ -8,7 +8,11 @@ class SnippetReportsController < ApplicationController
     @snippet_report.status = :pending
 
     if @snippet_report.save
-      render json: { status: "success", message: "Report submitted successfully" }
+      render json: {
+        status: "success",
+        message: "Report submitted successfully",
+        user_name: current_user.name
+      }
     else
       render json: {
         status: "error",
