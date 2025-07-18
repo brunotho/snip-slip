@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import ConstrainedLayout from './ConstrainedLayout';
-import { SkeletonFriendItem } from './SkeletonLoader';
 import InviteSection from './InviteSection';
-
+import { SkeletonFriendItem } from './SkeletonLoader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -20,14 +19,12 @@ const FriendshipManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   
-  // Loading states
   const [isLoadingFriends, setIsLoadingFriends] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [loadingActions, setLoadingActions] = useState(new Set());
 
   const debouncedSearch = debounce((term) => searchUsers(term), 300);
 
-  // Helper functions for managing loading states
   const setActionLoading = (actionId, isLoading) => {
     setLoadingActions(prev => {
       const newSet = new Set(prev);
@@ -241,7 +238,7 @@ const FriendshipManager = () => {
               ))
             ) : (
               <div className="text-center text-muted py-3">
-                No friends yet. Search below or invite friends to join SnipSlip!
+                No friends yet :/ Search below or invite friends to join!
               </div>
             )}
           </div>
@@ -289,7 +286,7 @@ const FriendshipManager = () => {
               ))
             ) : searchTerm.length >= 2 ? (
               <div className="text-center text-muted py-3">
-                No users found. Try inviting them to join SnipSlip below!
+                No users found. Try inviting them to join!
               </div>
             ) : null}
           </div>

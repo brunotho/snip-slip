@@ -31,7 +31,12 @@ function SnippetsGame({
         "X-Requested-With": "XMLHttpRequest",
       },
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} - Failed to fetch snippets`);
+        }
+        return response.json();
+      })
       .then(data => {
         setSnippets(data);
         setLoading(false);

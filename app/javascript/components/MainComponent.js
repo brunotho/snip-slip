@@ -40,7 +40,12 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} - Failed to fetch game session data`);
+          }
+          return response.json();
+        })
         .then(data => {
           setGameMode(Object.keys(data.players).length > 1 ? "multi" : "single");
         })
@@ -59,7 +64,6 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
       window.location.href = '/';
     } else {
       // For multiplayer/single player games, redirect to start new session
-      // This will need to be implemented based on your routing logic
       window.location.href = '/';
     }
   };
