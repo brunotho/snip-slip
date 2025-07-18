@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: [:search]
+  before_action :authenticate_user!, except: [ :search ]
 
   def show
-    @user = current_user
+    @user = User.find(params[:id])
   end
 
   def edit
@@ -23,14 +23,10 @@ class UsersController < ApplicationController
     end
     @users = User.where("name ILIKE :query OR email ILIKE :query", query: "%#{query}%").limit(10)
     Rails.logger.debug "Found users: #{@users.inspect}"
-    render json: @users.as_json(only: [:id, :name, :email])
+    render json: @users.as_json(only: [ :id, :name, :email ])
   rescue => e
     Rails.logger.error "Search error: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     render json: { error: "An error occurred during search" }, status: :internal_server_error
-  end
-
-  def test
-    render json: { message: "Test successful" }
   end
 end

@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   # Snippets and reports
-  resources :snippets, only: [ :index, :create, :new ] do
+  resources :snippets, only: [ :index, :new, :create ] do
     resources :snippet_reports, only: [ :create ], path: "reports"
   end
   get "fetch_snippets", to: "snippets#fetch_snippets"
@@ -47,7 +47,6 @@ Rails.application.routes.draw do
   # Misc
   mount ActionCable.server => "/cable"
   post "record_play", to: "user_played_snippets#record_play"
-  get "test", to: "snippets#test"
 
   root "welcome#home"
 end

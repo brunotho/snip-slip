@@ -24,19 +24,8 @@ gem "httparty"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
-
   gem "brakeman", require: false
-
   gem "rubocop-rails-omakase", require: false
-
-  gem "rspec-rails"
-  gem "factory_bot_rails"
-end
-
-group :test do
-  gem "capybara"
-  gem "shoulda-matchers"
-  # gem "simplecov", require: false
 end
 
 group :development do
