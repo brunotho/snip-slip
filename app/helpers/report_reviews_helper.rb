@@ -1,0 +1,2 @@
+module ReportReviewsHelper
+end

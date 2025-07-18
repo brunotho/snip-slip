@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "report_reviews/index"
   # Health and PWA
   get "up" => "rails/health#show", as: :rails_health_check
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
     resources :snippet_reports, only: [ :create ], path: "reports"
   end
   get "fetch_snippets", to: "snippets#fetch_snippets"
+  get "reports", to: "report_reviews#index"
 
   # Social features
   resources :friendships, only: [ :index, :create, :update, :destroy ]

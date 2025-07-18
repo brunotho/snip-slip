@@ -42,7 +42,7 @@ class SnippetsController < ApplicationController
 
     render json: snippets.map { |snippet|
       snippet.as_json.merge({
-        image_url: snippet.image.attached? ? snippet.image.url : nil,
+        image_url: snippet.image.attached? ? snippet.image.url : nil
       })
     }
   end
