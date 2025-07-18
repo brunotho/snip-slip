@@ -5,15 +5,16 @@ import { createRoot } from 'react-dom/client'
 
 // Components
 import MainComponent from "./components/MainComponent"
-import SnippetsGame from "./components/SnippetsGame"
 
+import SnippetsGame from "./components/SnippetsGame"
 import SnippetCard from "./components/SnippetCard"
+import GameInviteManager from "./components/GameInviteManager"
 import FriendshipManager from "./components/FriendshipManager"
+import UserProfile from "./components/UserProfile"
+import ReportReviews from "./components/ReportReviews"
+import BottomNavigation from "./components/BottomNavigation"
 import AddSnippetFormWrapper from "./components/AddSnippetForm"
 import ConstrainedLayout from "./components/ConstrainedLayout"
-import GameInviteManager from "./components/GameInviteManager"
-import UserProfile from "./components/UserProfile"
-import BottomNavigation from "./components/BottomNavigation"
 
 // Styles
 import "bootstrap/dist/css/bootstrap"
@@ -25,7 +26,7 @@ import "./channels/notifications_channel"
 
 // Mount all components on turbo:load
 document.addEventListener('turbo:load', () => {
-  console.log("turbo:load fired");
+  console.log("Application.js HELLO - turbo:load fired");
 
   // Main container
   const mainContainer = document.getElementById('main')
@@ -47,7 +48,13 @@ document.addEventListener('turbo:load', () => {
     root.render(<SnippetsGame game_session_id={gameSessionId} />)
   }
 
-
+  // ReportReviews
+  const reportReviewsContainer = document.getElementById('report-reviews')
+  if (reportReviewsContainer) {
+    console.log('Mounting ReportReviews component')
+    const root = createRoot(reportReviewsContainer)
+    root.render(<ReportReviews />)
+  }
 
   // SnippetCard for thank_you view
   const snippetLastElement = document.getElementById("snippet-last")

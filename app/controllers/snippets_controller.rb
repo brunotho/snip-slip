@@ -1,9 +1,5 @@
 class SnippetsController < ApplicationController
-  before_action :authenticate_user!, except: [ :index, :fetch_snippets ]
-
-  def test
-    @lyric_snippet = LyricSnippet.first
-  end
+  before_action :authenticate_user!, except: [ :index ]
 
   def index
     @game_session = current_game_session
@@ -42,7 +38,7 @@ class SnippetsController < ApplicationController
 
     render json: snippets.map { |snippet|
       snippet.as_json.merge({
-        image_url: snippet.image.attached? ? snippet.image.url : nil,
+        image_url: snippet.image.attached? ? snippet.image.url : nil
       })
     }
   end
