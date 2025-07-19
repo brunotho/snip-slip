@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import SnippetCard from './SnippetCard';
+import ConstrainedLayout from './ConstrainedLayout';
 
 function ReportReviews() {
     const [loading, setLoading] = useState(true);
@@ -6,7 +8,7 @@ function ReportReviews() {
 
     useEffect(() => {
         setLoading(true);
-        fetch('/reports', {
+        fetch('/fetch_report', {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -22,8 +24,6 @@ function ReportReviews() {
             .then(data => {
                 setReportData(data);
                 setLoading(false);
-                console.log("😀")
-                console.log("Report data:", data);
             })
             .catch(error => {
                 console.error('Error fetching report data:', error);
@@ -33,39 +33,70 @@ function ReportReviews() {
 
     const handleSkip = () => {}
 
+    const buildSuggestedSnippet = () => {
+        if (reportData.changes.is_boring) {
+            return reportData.original_snippet;
+        } else {
+            const suggestedSnippet = {
+                ...reportData.original_snippet,
+                artist: reportData.changes.suggested_artist,
+                song: reportData.changes.suggested_song,
+                snippet: reportData.changes.suggested_snippet,
+                image_url: reportData.changes.suggested_image_url,
+            }
+            return suggestedSnippet;
+        }
+    }
+        
+
     const renderOriginalSnippet = () => {
-        // console.log("Rendering original snippet:", reportData.original_snippet);
-        <div>
-            {/* {reportData.original_snippet.artist}
-            {reportData.original_snippet.song}
-            {reportData.original_snippet.snippet}
-            {reportData.original_snippet.image_url} */}
-            <p>
-                hi
-            </p>
-        </div>
+        console.log("🤔")
+        console.log("Loading state:", loading);
+        console.log("Report data:", reportData);
+        return (
+            loading ? (
+                <div>
+                    <p>Loading...</p>
+                </div>
+            ) : (
+            <div>
+                <SnippetCard snippet={reportData.original_snippet} />
+            </div>
+        ))
     }
 
     const renderChangedSnippet = () => {
-        <div>
-            {/* {reportData.changes.suggested_artist}
-            {reportData.changes.suggested_song}
-            {reportData.changes.suggested_snippet}
-            {reportData.changes.suggested_image_url} */}
-        </div>
+        return (
+            loading ? (
+                <div>
+                    <p>Loading...</p>
+                </div>
+            ) : reportData.changes.is_boring ? (
+                <div>
+                    {/* add big red cross */}
+                    <SnippetCard snippet={reportData.original_snippet} />
+                </div>
+            ) : (
+                <div>
+                    <SnippetCard snippet={reportData.changed_snippet} />
+                </div>
+            )
+        )
     }
 
     return (
-        <div>
-            <h1>Report Review (react)</h1>
-            <p>Select between the original snippet and the suggested changes</p>
-            <p>Simply Click the one you think is correct</p>
+        <ConstrainedLayout>
             <div>
-                {renderOriginalSnippet()}
-                {renderChangedSnippet()}
+                <h1>Report Review (react)</h1>
+                <p>Select between the original snippet and the suggested changes</p>
+                <p>Simply Click the one you think is correct</p>
+                <div>
+                    {renderOriginalSnippet()}
+                    {renderChangedSnippet()}
+                </div>
+                <button onClick={() => {}}>Skip/I don't know</button>
             </div>
-            <button onClick={() => {}}>Skip/I don't know</button>
-        </div>
+        </ConstrainedLayout>
     )
 }
 

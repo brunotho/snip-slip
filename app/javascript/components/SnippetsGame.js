@@ -138,7 +138,6 @@ function SnippetsGame({
       }
 
       if (data.game_session.player_game_over) {
-        // Fetch complete final game state when game ends
         try {
           const finalResponse = await fetch(`/game_sessions/${game_session_id}.json`, {
             headers: {
@@ -160,7 +159,6 @@ function SnippetsGame({
           }));
         } catch (error) {
           console.error("Error fetching final game state:", error);
-          // Fallback to partial update
         setGameData(prevData => ({
           ...prevData,
           totalScore: data.game_session.total_score,
