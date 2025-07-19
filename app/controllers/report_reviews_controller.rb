@@ -1,10 +1,10 @@
 class ReportReviewsController < ApplicationController
-  def index
+  def reports
+  end
+
+  def fetch_report
     @snippet_report = SnippetReport.all.sample
-    respond_to do |format|
-      format.html
-      format.json { render json: report_data(@snippet_report) }
-    end
+    render json: report_data(@snippet_report)
   end
 
   private
