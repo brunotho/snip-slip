@@ -194,14 +194,7 @@ function SnippetsGame({
   };
 
   const mainContent =
-    selectedSnippet ? (
-      <ExpandedSnippet
-        snippet={selectedSnippet}
-        onSubmit={gameMode === 'quick' ? handleNextSnippet : handleSubmit}
-        game_session_id={game_session_id}
-        onNext={handleNextSnippet}
-      />
-    ) : loading ? (
+    loading ? (
       <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
         {Array.from({ length: 6 }).map((_, index) => (
           <div
@@ -213,6 +206,13 @@ function SnippetsGame({
           </div>
         ))}
       </div>
+    ) : selectedSnippet ? (
+      <ExpandedSnippet
+        snippet={selectedSnippet}
+        onSubmit={gameMode === 'quick' ? handleNextSnippet : handleSubmit}
+        game_session_id={game_session_id}
+        onNext={handleNextSnippet}
+      />
     ) : (
       <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
         {snippets.map(snippet => (
