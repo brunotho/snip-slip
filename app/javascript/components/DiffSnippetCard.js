@@ -1,43 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
-import { useLongPress } from '@uidotdev/usehooks';
+import DiffText from './diffText';
 
-function DiffSnippetCard({ snippet, onClick, changes, valence }) {
+function DiffSnippetCard({ snippet, suggestedSnippet, variant, onClick }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
-  const longPressProps = useLongPress(() => {
-    console.log('long press');
-    if (onLongPress) {
-      onLongPress(snippet);
-    }
-  }, {
-    threshold: 500,
-  });
-  console.log('longPressProps created:');
-
-  if (!snippet) {
-    console.error('No snippet data provided to SnippetCard');
-    return <div>No snippet data available</div>;
-  }
-
-  const isOverflowing = (element) => {
-    return element.scrollHeight > element.clientHeight;
-  };
-
-  const adjustFontSize = () => {
-    const text = textRef.current;
-    const container = containerRef.current;
-
-    let currentSize = 1.2;
-    text.style.fontSize = `${currentSize}rem`;
-
-    while (isOverflowing(container) && currentSize > 0.95) {
-      currentSize -= 0.05;
-      text.style.fontSize = `${currentSize}rem`;
-    }
-
-    setFontSize(`${currentSize}rem`);
-  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -45,11 +12,119 @@ function DiffSnippetCard({ snippet, onClick, changes, valence }) {
     }, 10);
   },[snippet]);
 
+  const isOverflowing = (element) => {
+    return element.scrollHeight > element.clientHeight;
+  };
+  
+  const adjustFontSize = () => {
+    const text = textRef.current;
+    const container = containerRef.current;
+    
+    let currentSize = 1.2;
+    text.style.fontSize = `${currentSize}rem`;
+    
+    while (isOverflowing(container) && currentSize > 0.95) {
+      currentSize -= 0.05;
+      text.style.fontSize = `${currentSize}rem`;
+    }
+    
+    setFontSize(`${currentSize}rem`);
+  }
+  
+  // const parseRemovedDiff = (snippetAttribute, changesAttribute) => {
+  //   console.log("🤡");
+  //   console.log(snippetAttribute);
+  //   console.log(changesAttribute);
+  //   const originalWords = String(snippetAttribute).split(" ");
+  //   const changedWords = String(changesAttribute).split(" ");
+  //   const diff = originalWords.filter(word => !changedWords.includes(word));
+  //   return diff;
+  // };
+
+  // const parseAddedDiff = (snippetAttribute, changesAttribute) => {
+  //   console.log("🇬🇭");
+  //   console.log(snippetAttribute);
+  //   console.log(changesAttribute);
+  //   const originalWords = String(snippetAttribute).split(" ");
+  //   const changedWords = String(changesAttribute).split(" ");
+  //   const diff = changedWords.filter(word => !originalWords.includes(word));
+  //   return diff;
+  // };
+
+  // const buildDiffArray = (snippetAttribute, changesAttribute, variant) => {
+  //   const removedDiff = parseRemovedDiff(snippetAttribute, changesAttribute);
+  //   const addedDiff = parseAddedDiff(snippetAttribute, changesAttribute);
+    
+  //   const variantToType = {
+  //     original: "removed",
+  //     proposed: "added"
+  //   }
+    
+  //   const variantToDiff = {
+  //     original: removedDiff,
+  //     proposed: addedDiff
+  //   };
+    
+  //   const variantToAttributeText = {
+  //     original: snippetAttribute,
+  //     proposed: changesAttribute
+  //   }
+    
+  //   const allWords = String(variantToAttributeText[variant]).split(" ");
+    
+  //   const diffArray = allWords.map(word => {
+  //     console.log("🤩");
+  //     console.log(removedDiff);
+  //     console.log(addedDiff);
+  //     if (variantToDiff[variant].includes(word)) {
+  //       return {
+  //         text: word,
+  //         type: variantToType[variant]
+  //       };
+  //     } else {
+  //       return {
+  //         text: word,
+  //         type: "unchanged"
+  //       };
+  //     }
+  //   });
+  //   return diffArray;
+  // }
+
+  const buildDiffArray = (snippetAttribute, changesAttribute, variant) => {
+    const originalWords = String(snippetAttribute).split(" ");
+    const suggestedWords = String(changesAttribute).split(" ");
+
+    if (variant === "original") {
+      return originalWords.map(word => ({
+        text: word,
+        type: suggestedWords.includes(word) ? "unchanged" : "removed"
+      }));
+    } else {
+      return suggestedWords.map(word => ({
+        text: word,
+        type: originalWords.includes(word) ? "unchanged" : "added"
+      }));
+    }
+  }
+
+  const renderSnippetAttribute = (snippetAttribute, changesAttribute, variant) => {
+    return <DiffText diffArray={buildDiffArray(snippetAttribute, changesAttribute, variant)} />;
+  }
+
+  if (!snippet) {
+    console.error('No snippet data provided to SnippetCard');
+    return (
+      <div>
+        <p>No snippet data available</p>
+      </div>
+    )
+  }
+  
   return (
     <div
-      className="card snippet-card shadow"
-      onClick={onClick}
-      {...longPressProps}
+    className="card snippet-card shadow"
+    onClick={onClick}
     >
       <div className="d-flex h-100">
         <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>
@@ -74,16 +149,16 @@ function DiffSnippetCard({ snippet, onClick, changes, valence }) {
                   color: "#1e293b",
                   textAlign: "left"
                 }}>
-                {snippet.snippet}
+                {renderSnippetAttribute(snippet.snippet, suggestedSnippet.snippet, variant)}
               </p>
             </div>
             <div className="d-flex justify-content-between align-items-end mt-1" style={{ opacity: "0.75" }}>
               <small className="text-muted" style={{ fontSize: "0.75rem", fontWeight: "400" }}>
-                Points: {snippet.difficulty}
+                Points: {renderSnippetAttribute(snippet.difficulty, suggestedSnippet.difficulty, variant)}
               </small>
               <small className="text-muted text-end" style={{ lineHeight: "1.2", fontSize: "0.75rem", fontWeight: "400" }}>
-                <div>{snippet.song}</div>
-                <div>{snippet.artist}</div>
+                <div>{renderSnippetAttribute(snippet.song, suggestedSnippet.song, variant)}</div>
+                <div>{renderSnippetAttribute(snippet.artist, suggestedSnippet.artist, variant)}</div>
               </small>
             </div>
           </div>

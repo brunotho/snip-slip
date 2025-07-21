@@ -33,7 +33,7 @@ english_snippets = [
 german_snippets = [
   { snippet: "Ich will dass ihr mir vertraut", artist: "Rammstein", song: "Ich Will", difficulty: 500, language: "German" },
   { snippet: "Die Gedanken sind frei", artist: "Volksweise", song: "Die Gedanken sind frei", difficulty: 400, language: "German" },
-  { snippet: "Lass uns gehen, lass uns gehen", artist: "Peter Fox", song: "Haus am See", difficulty: 300, language: "German" },
+  { snippet: "Lass uns gehen, lass uns gehen", artist: "Peter Fox", song: "Haus am See", difficulty: 300, language: "German" }
   # { snippet: "Ich habe einen Koffer in Berlin", artist: "Marlene Dietrich", song: "Ich hab noch einen Koffer in Berlin", difficulty: 600, language: "German" },
   # { snippet: "Manche Träume sind aus Plastik", artist: "Deichkind", song: "Remmidemmi", difficulty: 700, language: "German" }
 ]
@@ -89,10 +89,33 @@ Friendship.create!(user: henry, friend: jack, status: :declined)
 Friendship.create!(user: eva, friend: david, status: :declined)
 Friendship.create!(user: fiftycent, friend: ivy, status: :declined)
 
+# Create a single report for consistent testing
+fiftycent = User.find_by(name: "50Cent")
+first_english_snippet = LyricSnippet.find_by(snippet: "Hey, Shawty, we could be friends")
+
+SnippetReport.destroy_all
+
+SnippetReport.create!(
+  lyric_snippet: first_english_snippet,
+  user: fiftycent,
+  status: :pending,
+  wrong_snippet: true,
+  suggested_snippet: "Hey, friends",
+  suggested_song: "Rich Only",
+  wrong_difficulty: true,
+  suggested_difficulty: 100,
+  is_boring: false,
+  wrong_artist: false,
+  wrong_song: true,
+  wrong_language: false,
+  wrong_image: false
+)
+
 p "Seed done 😍"
 p "Created #{LyricSnippet.count} lyric snippets"
 p "Created #{User.count} users"
 p "Created #{Friendship.count} friendships"
+p "Created #{SnippetReport.count} snippet reports"
 p "Accepted friendships: #{Friendship.where(status: :accepted).count}"
 p "Pending friendships: #{Friendship.where(status: :pending).count}"
 p "Declined friendships: #{Friendship.where(status: :declined).count}"
