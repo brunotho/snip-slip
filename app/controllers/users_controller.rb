@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, except: [ :search ]
 
   def show
-    @user = User.find(params[:id])
+    @user = current_user
   end
 
   def edit
