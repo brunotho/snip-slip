@@ -152,9 +152,9 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, onClick }) {
                 {renderSnippetAttribute(snippet.snippet, suggestedSnippet.snippet, variant)}
               </p>
             </div>
-            <div>
-                <span className="badge btn-neutral">{renderSnippetAttribute(snippet.language, suggestedSnippet.language, variant)}</span>
-            </div>
+            <span className="badge badge-sm">
+              {renderSnippetAttribute(snippet.language, suggestedSnippet.language, variant)}
+            </span>
             <div className="d-flex justify-content-between align-items-end mt-1" style={{ opacity: "0.75" }}>
               <small className="text-muted" style={{ fontSize: "0.75rem", fontWeight: "400" }}>
                 Points: {renderSnippetAttribute(snippet.difficulty, suggestedSnippet.difficulty, variant)}
