@@ -5,6 +5,7 @@ function SnippetCard({ snippet, onClick, onLongPress }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
+  
   const longPressProps = useLongPress(() => {
     console.log('long press');
     if (onLongPress) {
@@ -13,7 +14,6 @@ function SnippetCard({ snippet, onClick, onLongPress }) {
   }, {
     threshold: 500,
   });
-  console.log('longPressProps created:');
 
   if (!snippet) {
     console.error('No snippet data provided to SnippetCard');

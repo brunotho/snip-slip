@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import DiffText from './diffText';
 
-function DiffSnippetCard({ snippet, suggestedSnippet, variant, onClick }) {
+function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handleSkip }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
@@ -30,66 +30,6 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, onClick }) {
     
     setFontSize(`${currentSize}rem`);
   }
-  
-  // const parseRemovedDiff = (snippetAttribute, changesAttribute) => {
-  //   console.log("🤡");
-  //   console.log(snippetAttribute);
-  //   console.log(changesAttribute);
-  //   const originalWords = String(snippetAttribute).split(" ");
-  //   const changedWords = String(changesAttribute).split(" ");
-  //   const diff = originalWords.filter(word => !changedWords.includes(word));
-  //   return diff;
-  // };
-
-  // const parseAddedDiff = (snippetAttribute, changesAttribute) => {
-  //   console.log("🇬🇭");
-  //   console.log(snippetAttribute);
-  //   console.log(changesAttribute);
-  //   const originalWords = String(snippetAttribute).split(" ");
-  //   const changedWords = String(changesAttribute).split(" ");
-  //   const diff = changedWords.filter(word => !originalWords.includes(word));
-  //   return diff;
-  // };
-
-  // const buildDiffArray = (snippetAttribute, changesAttribute, variant) => {
-  //   const removedDiff = parseRemovedDiff(snippetAttribute, changesAttribute);
-  //   const addedDiff = parseAddedDiff(snippetAttribute, changesAttribute);
-    
-  //   const variantToType = {
-  //     original: "removed",
-  //     proposed: "added"
-  //   }
-    
-  //   const variantToDiff = {
-  //     original: removedDiff,
-  //     proposed: addedDiff
-  //   };
-    
-  //   const variantToAttributeText = {
-  //     original: snippetAttribute,
-  //     proposed: changesAttribute
-  //   }
-    
-  //   const allWords = String(variantToAttributeText[variant]).split(" ");
-    
-  //   const diffArray = allWords.map(word => {
-  //     console.log("🤩");
-  //     console.log(removedDiff);
-  //     console.log(addedDiff);
-  //     if (variantToDiff[variant].includes(word)) {
-  //       return {
-  //         text: word,
-  //         type: variantToType[variant]
-  //       };
-  //     } else {
-  //       return {
-  //         text: word,
-  //         type: "unchanged"
-  //       };
-  //     }
-  //   });
-  //   return diffArray;
-  // }
 
   const buildDiffArray = (snippetAttribute, changesAttribute, variant) => {
     const originalWords = String(snippetAttribute).split(" ");
@@ -124,7 +64,7 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, onClick }) {
   return (
     <div
     className="card snippet-card shadow"
-    onClick={onClick}
+    onClick={handleVote}
     >
       <div className="d-flex h-100">
         <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>
