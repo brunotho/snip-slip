@@ -43,6 +43,10 @@ class SnippetsController < ApplicationController
     }
   end
 
+  def languages
+    render json: LyricSnippet.languages
+  end
+
   private
 
   def snippet_params

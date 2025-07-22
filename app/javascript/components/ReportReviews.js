@@ -115,9 +115,13 @@ function ReportReviews() {
                 <h1>Report Review</h1>
                 <p>Select between the original snippet and the suggested changes</p>
                 <p>Click the one you think is correct</p>
-                <div>
-                    {renderOriginalSnippet()}
-                    {renderChangedSnippet()}
+                <div className="snippets-grid">
+                    <div className="snippets-grid-item">
+                        {renderOriginalSnippet()}
+                    </div>
+                    <div className="snippets-grid-item">
+                        {renderChangedSnippet()}
+                    </div>
                 </div>
                 <button 
                     onClick={() => {handleSkip()}}

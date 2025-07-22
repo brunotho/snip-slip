@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { SkeletonGameProgress } from './SkeletonLoader';
 
-// Utility function to calculate progress bar height
 export const calculateProgressBarHeight = (playerCount) => {
-  const baseHeight = 28; // Even more compact - reduced from 32px
-  const padding = 12; // Account for container padding (0.375rem * 2 = ~6px + gap)
+  const baseHeight = 28;
+  const padding = 12;
   
-  // Smart row calculation based on player count
   let rows;
   if (playerCount <= 2) rows = 1;
-  else if (playerCount <= 4) rows = 2; // 2 players per row
-  else rows = Math.ceil(playerCount / 3); // 3+ players per row for larger groups
+  else if (playerCount <= 4) rows = 2;
+  else rows = Math.ceil(playerCount / 3);
   
   return baseHeight * rows + padding;
 };
@@ -23,11 +20,10 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
   const playerCount = Object.keys(players).length;
   const progressBarHeight = calculateProgressBarHeight(playerCount);
 
-  // Responsive grid columns based on player count
   const getGridColumns = () => {
     if (playerCount <= 2) return 'repeat(2, 1fr)';
-    if (playerCount <= 4) return 'repeat(2, 1fr)'; // 2 columns for 3-4 players
-    return 'repeat(auto-fit, minmax(125px, 1fr))'; // Auto-fit for 5+ players
+    if (playerCount <= 4) return 'repeat(2, 1fr)';
+    return 'repeat(auto-fit, minmax(125px, 1fr))';
   };
 
   const togglePlayer = (playerId) => {
@@ -72,23 +68,23 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
     <div 
       style={{
         position: 'fixed',
-        top: '60px', // Below header
+        top: '65px',
         left: '0',
         right: '0',
         backgroundColor: '#f8fafc',
         borderBottom: '2px solid #d1d5db',
         zIndex: 1000,
-        padding: '0.375rem 0.75rem', // Reduced padding
-        overflowX: 'hidden' // Prevent horizontal overflow
+        padding: '0.375rem 0.75rem',
+        overflowX: 'hidden'
       }}
     >
       {/* Compact horizontal bar */}
       <div 
         style={{
           display: 'grid',
-          gridTemplateColumns: isMultiplayer ? getGridColumns() : '1fr', // Single column for single player
-          gap: '0.5rem', // Reduced gap
-          justifyItems: isMultiplayer ? 'stretch' : 'center', // Center for single player, stretch for multiplayer
+          gridTemplateColumns: isMultiplayer ? getGridColumns() : '1fr',
+          gap: '0.5rem',
+          justifyItems: isMultiplayer ? 'stretch' : 'center',
           maxWidth: '100%',
           overflow: 'hidden'
         }}
@@ -106,26 +102,26 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.375rem', // Reduced gap
-                  padding: '0.2rem 0.6rem', // Reduced padding
+                  gap: '0.375rem',
+                  padding: '0.2rem 0.6rem',
                   backgroundColor: isCurrentUser ? '#dbeafe' : '#ffffff',
-                  border: `1px solid ${isComplete ? '#10b981' : '#cbd5e1'}`, // Thinner border
-                  borderRadius: '0.75rem', // Slightly smaller radius
+                  border: `1px solid ${isComplete ? '#10b981' : '#cbd5e1'}`,
+                  borderRadius: '0.75rem',
                   cursor: 'pointer',
-                  fontSize: '0.8rem', // Smaller font
+                  fontSize: '0.8rem',
                   fontWeight: isCurrentUser ? '600' : '500',
-                  minWidth: '110px', // Reduced min width
-                  width: isMultiplayer ? '100%' : '160px', // Fixed width for single player, full width for multiplayer
-                  maxWidth: '160px', // Prevent too wide on large screens
+                  minWidth: '110px',
+                  width: isMultiplayer ? '100%' : '160px',
+                  maxWidth: '160px',
                   justifyContent: 'center',
                   opacity: isComplete ? 1 : 0.8,
-                  whiteSpace: 'nowrap' // Prevent text wrapping
+                  whiteSpace: 'nowrap'
                 }}
               >
                 <span style={{ 
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  maxWidth: '50px' // Limit name width
+                  maxWidth: '50px'
                 }}                >
                   {player.name}
                 </span>
@@ -146,7 +142,7 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                 )}
                 <FontAwesomeIcon 
                   icon={isExpanded ? faChevronUp : faChevronDown}
-                  style={{ fontSize: '0.6rem', color: '#9ca3af' }} // Smaller icon
+                  style={{ fontSize: '0.6rem', color: '#9ca3af' }}
                 />
               </div>
 
@@ -170,7 +166,7 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                   <div
                     style={{
                       position: 'fixed',
-                      top: '120px', // Position below the progress bar
+                      top: '120px',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       backgroundColor: '#ffffff',
@@ -179,10 +175,10 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                       padding: '1rem',
                       minWidth: '300px',
                       maxWidth: '90vw',
-                      maxHeight: 'calc(100vh - 140px)', // Ensure it doesn't go off screen
-                      overflowY: 'auto', // Allow scrolling if content is too long
+                      maxHeight: 'calc(100vh - 140px)',
+                      overflowY: 'auto',
                       boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                      zIndex: 1002 // Ensure it's above everything
+                      zIndex: 1002
                     }}
                   >
                   {/* Close button */}

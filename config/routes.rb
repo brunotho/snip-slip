@@ -40,7 +40,8 @@ Rails.application.routes.draw do
   get "fetch_snippets", to: "snippets#fetch_snippets"
   get "fetch_report", to: "report_reviews#fetch_report"
   get "reports", to: "report_reviews#reports"
-
+  get "languages", to: "snippets#languages"
+  
   # Social features
   resources :friendships, only: [ :index, :create, :update, :destroy ]
 

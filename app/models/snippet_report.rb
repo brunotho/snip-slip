@@ -1,6 +1,6 @@
 class SnippetReport < ApplicationRecord
-  belongs_to :lyric_snippet
-  belongs_to :user
+  belongs_to :lyric_snippet, dependent: :destroy
+  belongs_to :user, dependent: :destroy
 
   enum status: { pending: 0, approved: 1, rejected: 2 }
 

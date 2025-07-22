@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DifficultySlider from './DifficultySlider';
 
 function ReportModal({ snippet, onSubmit, onClose }) {
+  const [loading, setLoading] = useState(true);
   const [wrongFields, setWrongFields] = useState({});
   const [suggestions, setSuggestions] = useState({});  
   // todo make language use snippet.language
-  const [language, setLanguage] = useState('english');
+  const [languages, setLanguages] = useState([]);
   const [isBoring, setIsBoring] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
   const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    fetch('/languages')
+      .then(response => response.json())
+      .then(data => {
+        setLanguages(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching languages:', error);
+        setLoading(false);
+      });
+  }, []);
 
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
@@ -147,6 +161,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     );
   };
 
+  const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
+
   const renderFormContent = () => {
     return (
       <>
@@ -236,8 +252,9 @@ function ReportModal({ snippet, onSubmit, onClose }) {
               className="modal-suggestion-input form-select"
             >
               <option value="">Select correct language</option>
-              <option value="English">English</option>
-              <option value="German">German</option>
+              {selectableLanguages.map(language => (
+                <option key={language} value={language}>{language}</option>
+              ))}
             </select>
           )}
         </div>
@@ -269,7 +286,10 @@ function ReportModal({ snippet, onSubmit, onClose }) {
 
   return (
     <div className="report-modal-frame">
-      {showSuccessfulReportView ? renderSuccessContent() : renderFormContent()}
+      {loading ? 
+        <div>Loading...</div> : 
+        showSuccessfulReportView ? renderSuccessContent() : renderFormContent()
+      }
     </div>
   );
 }
