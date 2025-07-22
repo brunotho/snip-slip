@@ -1,4 +1,5 @@
 @import './variables';
+@import "snippets_grid";
 
 // =============================================================================
 // GLOBAL TYPOGRAPHY & BASE STYLES
@@ -78,6 +79,7 @@ li {
 @import './skeleton';
 @import './modal_styles';
 @import './text_styles';
+@import './badges';
 
 // Desktop-specific improvements
 @media (min-width: 768px) {

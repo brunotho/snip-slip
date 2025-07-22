@@ -185,6 +185,7 @@ function SnippetsGame({
   };
 
   const handleOpenReportModal = (snippet) => {
+    console.log('handleOpenReportModal called with snippet:', snippet);
     if (snippet.already_reported) {
       alert('This snippet has already been reported');
       return;
@@ -214,12 +215,11 @@ function SnippetsGame({
         onNext={handleNextSnippet}
       />
     ) : (
-      <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
+      <div className="snippets-grid">
         {snippets.map(snippet => (
           <div
             key={snippet.id}
-            className="col-12 col-md-6"
-            style={{ maxWidth: "100%" }}
+            className="snippets-grid-item"
           >
             <SnippetCard
               snippet={snippet}

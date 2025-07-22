@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  root "welcome#home"
+
   # Authentication
   devise_for :users
   get "/auth/spotify/callback", to: "spotify_auth#callback"
@@ -40,6 +42,8 @@ Rails.application.routes.draw do
   get "fetch_snippets", to: "snippets#fetch_snippets"
   get "fetch_report", to: "report_reviews#fetch_report"
   get "reports", to: "report_reviews#reports"
+  get "languages", to: "snippets#languages"
+  post "reports/:report_id/vote", to: "report_reviews#vote"
 
   # Social features
   resources :friendships, only: [ :index, :create, :update, :destroy ]
@@ -48,5 +52,4 @@ Rails.application.routes.draw do
   mount ActionCable.server => "/cable"
   post "record_play", to: "user_played_snippets#record_play"
 
-  root "welcome#home"
 end

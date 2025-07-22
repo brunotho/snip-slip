@@ -1,0 +1,15 @@
+.snippets-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 1rem;
+  margin-top: 1.5rem;
+}
+
+.snippets-grid-item {
+  flex: 1 1 50%;
+  max-width: 100%;
+  box-sizing: border-box;
+} 

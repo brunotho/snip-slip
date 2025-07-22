@@ -13,7 +13,7 @@ class LyricSnippet < ApplicationRecord
   validates :song, length: { minimum: 2, maxium: 30 }
   validates :difficulty, presence: true
   validates :difficulty, inclusion: { in: 0..1000 }
-  validates :language, inclusion: { in: %w[English German] }
+  validates :language, inclusion: { in: %w[Zulu English German].sort }
 
   def self.languages
     validators_on(:language).first.options[:in]
