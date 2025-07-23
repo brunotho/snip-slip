@@ -11,6 +11,10 @@ class UsersController < ApplicationController
   def update
   end
 
+  def current_user_id
+    render json: { id: current_user.id }
+  end
+
   def search
     Rails.logger.debug "Search action called"
     Rails.logger.debug "Search params: #{params.inspect}"

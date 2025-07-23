@@ -43,6 +43,12 @@ class SnippetsController < ApplicationController
     }
   end
 
+  def fetch_alternative_album_covers
+    artist_name = params[:artist_name]
+    alternative_album_covers = LyricSnippet.find_alternative_album_covers(artist_name)
+    render json: alternative_album_covers
+  end
+
   def languages
     render json: LyricSnippet.languages
   end

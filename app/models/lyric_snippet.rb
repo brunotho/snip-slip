@@ -27,12 +27,12 @@ class LyricSnippet < ApplicationRecord
     artist_name = artist
     song_name = song
 
-    image_url = find_best_album_match(spotify_api_call(artist_name, song_name), artist_name)
+    image_url = find_best_album_match
     # return unless image_url
 
-    p "IMAGE_URL:"
-    p image_url
-    p "😎😋😊😎😋 END"
+    # p "IMAGE_URL:"
+    # p image_url
+    # p "😎😋😊😎😋 END"
 
     if image_url
       downloaded_image = URI.open(image_url)
@@ -54,7 +54,10 @@ class LyricSnippet < ApplicationRecord
     name.downcase.gsub(/[^a-z0-9\s]/i, "").strip
   end
 
-  def find_best_album_match(response, artist_name)
+  def find_best_album_cover(artist_name, song_name)
+    url = "https://api.spotify.com/v1/search?q=20track%3A#{song_name.downcase}%2520artist%3A#{artist_name.downcase}&type=album"
+    response = spotify_api_call(url)
+
     albums = response.dig("albums", "items")
     return nil unless albums&.any?
 
@@ -68,17 +71,41 @@ class LyricSnippet < ApplicationRecord
     best_match&.dig("images", 0, "url")
   end
 
-  def spotify_api_call(artist_name, song_name)
-    token = SpotifyService.get_access_token
-    url = "https://api.spotify.com/v1/search?q=20track%3A#{song_name.downcase}%2520artist%3A#{artist_name.downcase}&type=album"
+  def find_alternative_album_covers(artist_name)
+    url = "https://api.spotify.com/v1/search?q=artist:#{artist_name.downcase}&type=album&limit=20"
+    response = spotify_api_call(url)
 
-    response = HTTParty.get(
+    albums = response.dig("albums", "items")
+    return nil unless albums&.any?
+
+    log_spotify_response(response, artist_name)
+
+    image_url_arrays = albums.map do |album|
+      (album["images"] || []).map do |img|
+        img["url"]
+      end
+    end
+
+    all_image_urls = image_url_arrays.flatten.uniq
+    # all_image_urls = all_image_urls.reject { |url| url == current_image_url } if current_image_url.present?
+
+    all_image_urls.first(4)
+  end
+
+  def spotify_api_call(url)
+    url = url
+    token = SpotifyService.get_access_token
+
+    HTTParty.get(
       url,
       headers: {
         "Authorization" => "Bearer #{token}"
       }
     )
+  end
 
+  # for testing
+  def log_spotify_response(response, artist_name = "nil", song_name = "nil")
     p "🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰 START #{artist_name} -- #{song_name}"
     p "Query string: #{response.request.uri.query}"
     p "HTT🥳 encoded params: #{URI.decode_www_form(response.request.uri.query).to_h}"
@@ -86,7 +113,6 @@ class LyricSnippet < ApplicationRecord
     # p response
     p JSON.pretty_generate(response.parsed_response)
     p "😶 full response END"
-    # response["albums"]["items"][0]["images"][0]["url"]
-    response
+    response["albums"]["items"][0]["images"][0]["url"]
   end
 end
