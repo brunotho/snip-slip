@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import DifficultySlider from './DifficultySlider';
+import ImageSelector from './ImageSelector';
 
 function ReportModal({ snippet, onSubmit, onClose }) {
   const [loading, setLoading] = useState(true);
+  const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
   const [wrongFields, setWrongFields] = useState({});
   const [suggestions, setSuggestions] = useState({});  
-  // todo make language use snippet.language
   const [languages, setLanguages] = useState([]);
   const [isBoring, setIsBoring] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
   const [userName, setUserName] = useState('');
-
+  
   useEffect(() => {
     fetch('/languages')
-      .then(response => response.json())
-      .then(data => {
-        setLanguages(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching languages:', error);
-        setLoading(false);
-      });
+    .then(response => response.json())
+    .then(data => {
+      setLanguages(data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('Error fetching languages:', error);
+      setLoading(false);
+    });
   }, []);
-
+  
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
-
+    
     if (wrongFields[fieldName]) {
       classes += ' report-field--selected';
     }
@@ -38,14 +38,16 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     
     return classes;
   };
-
+  
   const calculateWordSimilarity = (original, suggestion) => {
     const originalWords = original.toLowerCase().split(/\s+/);
     const suggestedWords = suggestion.toLowerCase().split(/\s+/); 
     const matches = originalWords.filter(word => suggestedWords.includes(word));
-
+    
     return matches.length / originalWords.length;
   };
+  
+  const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
 
   const validateSubmission = () => {
     if (isBoring) {
@@ -134,11 +136,11 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           }, 2500);
         } else {
           const error = await response.json();
-          setErrorMessage(error.message || 'Failed to submit report');
+          setErrorMessage(error.message || 'Failed to submit report (handleSubmit - else');
         }
       } catch (error) {
         console.error('Error submitting report:', error);
-        setErrorMessage('Failed to submit report');
+        setErrorMessage('Failed to submit report (handleSubmit - catch');
       }
     } else {
       setErrorMessage(validation.message);
@@ -160,8 +162,6 @@ function ReportModal({ snippet, onSubmit, onClose }) {
       </div>
     );
   };
-
-  const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
 
   const renderFormContent = () => {
     return (
@@ -268,6 +268,29 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             />
             Too boring! - Delete!
           </label>
+        </div>
+
+        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
+          <label>
+            <input 
+              type="checkbox" 
+              className="form-check-input"
+              checked={wrongFields.image || false} 
+              onChange={() => !isBoring && toggleField('image')} 
+            />
+            Wrong image
+          </label>
+          {wrongFields.image && (
+            <div className="suggestion-section">
+              <p className="small text-muted mb-2">Select the correct album cover:</p>
+              <ImageSelector 
+                artist={snippet?.artist}
+                song={snippet?.song}
+                currentImageUrl={snippet?.image_url}
+                onImageSelect={(imageUrl) => setSuggestions({...suggestions, image: imageUrl})}
+              />
+            </div>
+          )}
         </div>
 
         <div className='modal-button-group'> 

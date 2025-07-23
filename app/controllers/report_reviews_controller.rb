@@ -4,12 +4,13 @@ class ReportReviewsController < ApplicationController
 
   def fetch_report
     @snippet_report = SnippetReport
+      # TODO: add filtering out of reports from current user
       .where(status: "pending")
       .where.not(
         id: ReportVote.select(:snippet_report_id).where(user_id: current_user.id)
       )
       .sample
-      
+
     if @snippet_report
       render json: report_data(@snippet_report)
     else
