@@ -14,7 +14,7 @@ class SnippetsController < ApplicationController
 
     if @lyric_snippet.save
       @snippet_data = @lyric_snippet.as_json.merge(
-        image_url: @lyric_snippet.image.url
+        image: @lyric_snippet.image.url
       )
       render :thank_you
     else
@@ -43,9 +43,9 @@ class SnippetsController < ApplicationController
     }
   end
 
-  def fetch_alternative_album_covers
-    artist_name = params[:artist_name]
-    alternative_album_covers = LyricSnippet.find_alternative_album_covers(artist_name)
+  def alternative_album_covers
+    snippet = LyricSnippet.find(params[:id])
+    alternative_album_covers = snippet.send(:find_alternative_album_covers)
     render json: alternative_album_covers
   end
 

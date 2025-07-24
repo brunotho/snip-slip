@@ -41,7 +41,7 @@ class SnippetReportsController < ApplicationController
       :is_boring, :wrong_artist, :wrong_song, :wrong_snippet,
       :wrong_difficulty, :wrong_language, :wrong_image,
       :suggested_artist, :suggested_song, :suggested_snippet,
-      :suggested_difficulty, :suggested_language, :suggested_image_url
+      :suggested_difficulty, :suggested_language, :suggested_image
     )
   end
 end
