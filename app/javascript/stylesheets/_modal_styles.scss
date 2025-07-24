@@ -1,3 +1,5 @@
+@import './variables';
+
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -20,10 +22,11 @@
 
 .report-modal-frame {
   background: white;
-  padding: 2rem;
+  padding: 1.5rem;
   margin-top: 1rem;
   border-radius: 8px;
   min-width: 300px;
+  width: 90vw;
   max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -45,6 +48,7 @@
     }
   }
 }
+
 // Report modal styles
 .report-field {
     cursor: pointer;
@@ -133,3 +137,64 @@
       }
     }
   } 
+
+.report-image {
+  width: 100%;
+  max-width: 150px;
+  border-radius: $radius-md;
+  cursor: pointer;
+  aspect-ratio: 1/1;
+}
+
+.image-crossed-out {
+  position: relative;
+  display: inline-block;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  
+  &::before {
+    background: linear-gradient(
+      45deg,
+      transparent 45%,
+      rgba(35, 35, 35, 0.8) 47%,
+      rgba(35, 35, 35, 0.9) 50%,
+      rgba(35, 35, 35, 0.8) 53%,
+      transparent 55%
+    );
+    transform: rotate(1deg);
+  }
+  
+  &::after {
+    background: linear-gradient(
+      -45deg,
+      transparent 45%,
+      rgba(35, 35, 35, 0.8) 47%,
+      rgba(35, 35, 35, 0.9) 50%,
+      rgba(35, 35, 35, 0.8) 53%,
+      transparent 55%
+    );
+    transform: rotate(-1deg);
+  }
+  
+  img {
+    opacity: 0.4;
+  }
+}
+
+
+.image-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  min-width: 150px;
+}

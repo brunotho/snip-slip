@@ -38,6 +38,9 @@ Rails.application.routes.draw do
   # Snippets and reports
   resources :snippets, only: [ :index, :new, :create ] do
     resources :snippet_reports, only: [ :create ], path: "reports"
+    member do
+      get :alternative_album_covers
+    end
   end
   get "fetch_snippets", to: "snippets#fetch_snippets"
   get "fetch_report", to: "report_reviews#fetch_report"

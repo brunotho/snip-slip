@@ -2,6 +2,7 @@ Friendship.destroy_all
 LyricSnippet.destroy_all
 User.destroy_all
 GameSession.destroy_all
+SnippetReport.destroy_all
 
 LyricSnippet.find_or_create_by!(
   snippet: "Dummy snippet for failed rounds",
@@ -55,7 +56,11 @@ users = [
   { name: "50Cent", email: "50cent@gmail.com", password: "123123", language: "English" }
 ]
 
-created_users = User.create!(users)
+created_users = users.map do |attrs|
+  User.find_or_create_by!(name: attrs[:name], email: attrs[:email], language: attrs[:language]) do |user|
+    user.password = attrs[:password]
+  end
+end
 
 alice, bobusa, charlie, david, eva, frank, grace, henry, ivy, jack, dannojapan, fiftycent = created_users
 

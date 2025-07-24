@@ -11,6 +11,9 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   const [isBoring, setIsBoring] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [userName, setUserName] = useState('');
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [alternativeCovers, setAlternativeCovers] = useState([]);
+  const [loadingCovers, setLoadingCovers] = useState(false);
   
   useEffect(() => {
     fetch('/languages')
@@ -39,6 +42,10 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     return classes;
   };
   
+  const toggleField = (field) => {
+    setWrongFields({...wrongFields, [field]: !wrongFields[field]});
+  };
+
   const calculateWordSimilarity = (original, suggestion) => {
     const originalWords = original.toLowerCase().split(/\s+/);
     const suggestedWords = suggestion.toLowerCase().split(/\s+/); 
@@ -99,11 +106,13 @@ function ReportModal({ snippet, onSubmit, onClose }) {
         wrong_snippet: wrongFields.snippet || false,
         wrong_difficulty: wrongFields.difficulty || false,
         wrong_language: wrongFields.language || false,
+        wrong_image: wrongFields.image || false,
         suggested_artist: suggestions.artist || null,
         suggested_song: suggestions.song || null,
         suggested_snippet: suggestions.snippet || null,
         suggested_difficulty: suggestions.difficulty || null,
         suggested_language: suggestions.language || null,
+        suggested_image: suggestions.image || null,
       }
     }
   };
@@ -147,8 +156,18 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     }
   };
 
-  const toggleField = (field) => {
-    setWrongFields({...wrongFields, [field]: !wrongFields[field]});
+  const fetchAlternativeCovers = async () => {
+    if (alternativeCovers.length > 0) return;
+    setLoadingCovers(true);
+    try {
+      const response = await fetch(`/snippets/${snippet.id}/alternative_album_covers`);
+      const data = await response.json();
+      setAlternativeCovers(data);
+    } catch (error) {
+      console.error('Error fetching alternative covers:', error);
+    } finally {
+      setLoadingCovers(false);
+    }
   };
 
   const renderSuccessContent = () => {
@@ -174,6 +193,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
         <h3>Report Issues</h3>
         <h6>and suggest Edits</h6>
 
+        {/* ARTIST */}
         <div 
           className={buildFieldClasses('artist')}
           onClick={() => !isBoring && toggleField('artist')}
@@ -189,6 +209,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
+
+        {/* SONG */}
         <div 
           className={buildFieldClasses('song')}
           onClick={() => !isBoring && toggleField('song')}
@@ -204,6 +226,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
+
+        {/* SNIPPET */}
         <div 
           className={buildFieldClasses('snippet')}
           onClick={() => !isBoring && toggleField('snippet')}
@@ -219,6 +243,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
             />
         )}
+
+        {/* DIFFICULTY */}
         <div 
           className={buildFieldClasses('difficulty')}
           onClick={() => !isBoring && toggleField('difficulty')}
@@ -235,6 +261,8 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             />
           </div>
         )}
+
+        {/* LANGUAGE */}
         <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
           <label>
             <input 
@@ -258,6 +286,59 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             </select>
           )}
         </div>
+
+        {/* IMAGE */}
+        <div className="form-section">
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <div className="image-container">
+              <div className={`
+                ${suggestions.image ? 'image-crossed-out' : ''} 
+                ${isBoring ? ' report-field--disabled' : ''}
+              `}>
+                <img 
+                  src={snippet?.image_url} 
+                  onClick={() => {
+                    if (isBoring) return;
+            
+                    if (suggestions.image) {
+                      setSuggestions({...suggestions, image: null});
+                      setWrongFields({...wrongFields, image: false});
+                    } else {
+                      fetchAlternativeCovers();
+                      setShowImageSelector(true);
+                    }
+                  }}
+                  className={`report-image`}
+                  alt="Current album cover"
+                />
+              </div>
+            </div>
+            
+            {suggestions.image && (
+              <div className="image-container">
+                <img 
+                  src={suggestions.image} 
+                  className={`report-image ${isBoring ? 'report-field--disabled' : ''}`}
+                  alt="Selected album cover"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <ImageSelector 
+          isOpen={showImageSelector}
+          alternativeCovers={alternativeCovers}
+          loadingCovers={loadingCovers}
+          onSelect={(imageUrl) => {
+            setSuggestions({...suggestions, image: imageUrl});
+            setWrongFields({...wrongFields, image: true});
+            setShowImageSelector(false);
+          }}
+          onClose={() => setShowImageSelector(false)}
+        />
+
+        {/* BORING */}
         <div className='form-section'>
           <label>
             <input 
@@ -270,29 +351,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           </label>
         </div>
 
-        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
-          <label>
-            <input 
-              type="checkbox" 
-              className="form-check-input"
-              checked={wrongFields.image || false} 
-              onChange={() => !isBoring && toggleField('image')} 
-            />
-            Wrong image
-          </label>
-          {wrongFields.image && (
-            <div className="suggestion-section">
-              <p className="small text-muted mb-2">Select the correct album cover:</p>
-              <ImageSelector 
-                artist={snippet?.artist}
-                song={snippet?.song}
-                currentImageUrl={snippet?.image_url}
-                onImageSelect={(imageUrl) => setSuggestions({...suggestions, image: imageUrl})}
-              />
-            </div>
-          )}
-        </div>
-
+        {/* BUTTONS */}
         <div className='modal-button-group'> 
           <button 
             className='btn btn-neutral'

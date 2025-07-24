@@ -19,26 +19,18 @@ class LyricSnippet < ApplicationRecord
     validators_on(:language).first.options[:in]
   end
 
-  before_save :attach_album_cover
+  before_create :attach_album_cover
 
   private
 
   def attach_album_cover
-    artist_name = artist
-    song_name = song
-
-    image_url = find_best_album_match
-    # return unless image_url
-
-    # p "IMAGE_URL:"
-    # p image_url
-    # p "😎😋😊😎😋 END"
+    image_url = find_best_album_cover
 
     if image_url
       downloaded_image = URI.open(image_url)
       image.attach(
         io: downloaded_image,
-        filename: "#{artist_name}_#{song_name}.jpg"
+        filename: "#{artist}_#{song}.jpg"
       )
     else
       default_image = File.open(Rails.root.join("app/assets/images/placeholder_album_cover.jpg"))
@@ -54,31 +46,31 @@ class LyricSnippet < ApplicationRecord
     name.downcase.gsub(/[^a-z0-9\s]/i, "").strip
   end
 
-  def find_best_album_cover(artist_name, song_name)
-    url = "https://api.spotify.com/v1/search?q=20track%3A#{song_name.downcase}%2520artist%3A#{artist_name.downcase}&type=album"
+  def find_best_album_cover
+    url = "https://api.spotify.com/v1/search?q=20track%3A#{song.downcase}%2520artist%3A#{artist.downcase}&type=album"
     response = spotify_api_call(url)
 
     albums = response.dig("albums", "items")
-    return nil unless albums&.any?
+    return [] unless albums&.any?
 
     best_match = albums.find do |album|
       album["album_type"] == "album" &&
-      album["artists"].any? do |artist|
-        normalize_artist_name(artist["name"]) == normalize_artist_name(artist_name)
+      album["artists"].any? do |spotify_artist|
+        normalize_artist_name(spotify_artist["name"]) == normalize_artist_name(artist)
       end
     end
 
     best_match&.dig("images", 0, "url")
   end
 
-  def find_alternative_album_covers(artist_name)
-    url = "https://api.spotify.com/v1/search?q=artist:#{artist_name.downcase}&type=album&limit=20"
+  def find_alternative_album_covers
+    url = "https://api.spotify.com/v1/search?q=artist:#{artist.downcase}&type=album&limit=20"
     response = spotify_api_call(url)
 
     albums = response.dig("albums", "items")
-    return nil unless albums&.any?
+    return [] unless albums&.any?
 
-    log_spotify_response(response, artist_name)
+    log_spotify_response(response, artist)
 
     image_url_arrays = albums.map do |album|
       (album["images"] || []).map do |img|
@@ -89,7 +81,7 @@ class LyricSnippet < ApplicationRecord
     all_image_urls = image_url_arrays.flatten.uniq
     # all_image_urls = all_image_urls.reject { |url| url == current_image_url } if current_image_url.present?
 
-    all_image_urls.first(4)
+    all_image_urls.first(6)
   end
 
   def spotify_api_call(url)
