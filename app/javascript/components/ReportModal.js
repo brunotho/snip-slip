@@ -23,7 +23,6 @@ function ReportModal({ snippet, onSubmit, onClose }) {
       setLoading(false);
     })
     .catch((error) => {
-      console.error('Error fetching languages:', error);
       setLoading(false);
     });
   }, []);
@@ -122,7 +121,6 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     if (validation.valid) {
       try {
         const report = reportData(wrongFields, suggestions, isBoring);
-        console.log(report);
         
         const response = await fetch(`/snippets/${snippet.id}/reports`, {
           method: 'POST',
@@ -138,7 +136,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           setShowSuccessfulReportView(true);
           setErrorMessage('');
           setUserName(data.user_name);
-          console.log('Report submitted successfully');
+
 
           setTimeout(() => {
             onClose();
@@ -148,7 +146,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           setErrorMessage(error.message || 'Failed to submit report (handleSubmit - else');
         }
       } catch (error) {
-        console.error('Error submitting report:', error);
+
         setErrorMessage('Failed to submit report (handleSubmit - catch');
       }
     } else {
@@ -164,7 +162,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
       const data = await response.json();
       setAlternativeCovers(data);
     } catch (error) {
-      console.error('Error fetching alternative covers:', error);
+
     } finally {
       setLoadingCovers(false);
     }
