@@ -39,7 +39,6 @@ function ReportReviews() {
                     setReportData(data);
                 }
             setLoading(false);
-            console.log(data);
             })
             .catch(error => {
                 console.error('Error fetching report data:', error);
@@ -74,7 +73,6 @@ function ReportReviews() {
             }}),
         });
         if (response.ok) {
-            console.log('Vote submitted successfully');
             setShowSuccessfulVoteView(true);
         } else {
             console.error('Failed to submit vote');

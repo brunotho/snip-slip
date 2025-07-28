@@ -53,7 +53,6 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handl
   }
 
   if (!snippet) {
-    console.error('No snippet data provided to SnippetCard');
     return (
       <div>
         <p>No snippet data available</p>
