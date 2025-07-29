@@ -106,16 +106,16 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handl
           </div>
         </div>
         <div style={{ height: "100%", aspectRatio: "1/1", flexShrink: "0" }}>
-          <img
-            src={snippet.image_url}
-            alt={`${snippet.song} Album Cover`}
-            style={{ 
-              height: '100%', 
-              width: '100%',
-              objectFit: 'cover', 
-              borderRadius: '0 0.375rem 0.375rem 0' 
-            }}
-            />
+        <img
+          src={variant === "original" ? snippet.image_url : suggestedSnippet.image_url}
+          alt={`${variant === "original" ? snippet.song : suggestedSnippet.song} Album Cover`}
+          style={{ 
+            height: '100%', 
+            width: '100%',
+            objectFit: 'cover', 
+            borderRadius: '0 0.375rem 0.375rem 0' 
+          }}
+        />
         </div>
       </div>
     </div>
