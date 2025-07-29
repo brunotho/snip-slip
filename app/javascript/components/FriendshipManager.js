@@ -47,7 +47,7 @@ const FriendshipManager = () => {
   const fetchFriendships = async () => {
     try {
       setIsLoadingFriends(true);
-      console.log("fetching friendships");
+
 
       const response = await fetch('/friendships', {
         headers: {
@@ -59,13 +59,13 @@ const FriendshipManager = () => {
         throw new Error('Failed to fetch friendships');
       }
       const data = await response.json();
-      console.log("fetched friendship data:", data);
+      
 
       setFriends(data.friends);
       setPendingRequests(data.pending_requests);
       setReceivedRequests(data.received_requests);
     } catch (error) {
-      console.error("Error fetching friendships:", error);
+      // Silently handle friendship fetch errors
     } finally {
       setIsLoadingFriends(false);
     }
@@ -79,22 +79,22 @@ const FriendshipManager = () => {
     }
     try {
       setIsSearching(true);
-      console.log("Sending search request for:", term);
+
       const response = await fetch(`/users/search?q=${encodeURIComponent(term)}`, {
         headers: {
           "Accept": "application/json",
           "X-CSRF-Token": getCSRFToken(),
         },
       });
-      console.log("Search response status:", response.status);
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Search results:", data);
+      
       setSearchResults(data);
     } catch (error) {
-      console.error("Error searching users:", error);
+      // Silently handle search errors
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -116,7 +116,7 @@ const FriendshipManager = () => {
       });
       fetchFriendships();
     } catch (error) {
-      console.error("Error sending friend request:", error);
+      // Silently handle friend request errors
     } finally {
       setActionLoading(actionId, false);
     }
@@ -126,7 +126,7 @@ const FriendshipManager = () => {
     const actionId = `accept-${friendshipId}`;
     try {
       setActionLoading(actionId, true);
-      console.log("accepting friend request for id:", friendshipId);
+
 
       const response = await fetch(`/friendships/${friendshipId}`, {
         method: "PATCH",
@@ -137,11 +137,11 @@ const FriendshipManager = () => {
         },
         body: JSON.stringify({ status: "accepted" }),
       });
-      console.log("Response status:", response.status);
+      
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
+        
         if (data.updated_data) {
 
           setFriends(data.updated_data.friends);
@@ -152,10 +152,10 @@ const FriendshipManager = () => {
           await fetchFriendships();
         }
       } else {
-        console.error("Error accepting friend request (1)");
+        // Handle non-OK response
       }
     } catch (error) {
-      console.error("Error accepting friend request (2)", error)
+      // Silently handle accept friend request errors
     } finally {
       setActionLoading(actionId, false);
     }
@@ -176,7 +176,7 @@ const FriendshipManager = () => {
       });
       fetchFriendships();
     } catch (error) {
-      console.error("Error declining friend request:", error);
+      // Silently handle decline friend request errors
     } finally {
       setActionLoading(actionId, false);
     }
@@ -195,12 +195,12 @@ const FriendshipManager = () => {
       });
       if (response.ok) {
 
-        fetchFriendships();
+                fetchFriendships();
       } else {
-        console.error("Error removing friend (else)");
+        // Handle non-OK response
       }
     } catch (error) {
-      console.error("Error removing friend:", error);
+      // Silently handle remove friend errors
     } finally {
       setActionLoading(actionId, false);
     }

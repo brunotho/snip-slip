@@ -33,7 +33,7 @@ consumer.subscriptions.create("NotificationsChannel", {
       .then(response => {
         if (response.ok) {
           return response.json().then(responseData => {
-            console.log("Accepting invitation succeeded:", responseData)
+    
             window.location.href = `/game_sessions/${gameSessionId}/invite`;
           });
         } else {

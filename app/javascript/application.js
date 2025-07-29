@@ -26,15 +26,14 @@ import "./channels/notifications_channel"
 
 // Mount all components on turbo:load
 document.addEventListener('turbo:load', () => {
-  console.log("Application.js HELLO - turbo:load fired");
+  
 
   // Main container
   const mainContainer = document.getElementById('main')
   if (mainContainer) {
     const gameSessionId = mainContainer.dataset.gameSessionId || null
     const userLanguage = mainContainer.dataset.userLanguage || 'English'
-    console.log("gameSessionId:", gameSessionId);
-    console.log("userLanguage:", userLanguage);
+
     const root = createRoot(mainContainer)
     root.render(<MainComponent gameSessionId={gameSessionId} userLanguage={userLanguage} />)
   }
@@ -42,7 +41,7 @@ document.addEventListener('turbo:load', () => {
   // SnippetsGame
   const container = document.getElementById('snippets-game')
   if (container) {
-    console.log('Mounting SnippetsGame component')
+    
     const root = createRoot(container)
     const gameSessionId = container.dataset.gameSessionId || null
     root.render(<SnippetsGame game_session_id={gameSessionId} />)
@@ -51,7 +50,7 @@ document.addEventListener('turbo:load', () => {
   // ReportReviews
   const reportReviewsContainer = document.getElementById('report-reviews')
   if (reportReviewsContainer) {
-    console.log('Mounting ReportReviews component')
+    
     const root = createRoot(reportReviewsContainer)
     root.render(<ReportReviews />)
   }
@@ -59,7 +58,7 @@ document.addEventListener('turbo:load', () => {
   // SnippetCard for thank_you view
   const snippetLastElement = document.getElementById("snippet-last")
   if (snippetLastElement && snippetLastElement.dataset.snippet) {
-    console.log("Mounting SnippetCard for thank_you view")
+    
     const snippetData = JSON.parse(snippetLastElement.dataset.snippet)
     const root = createRoot(snippetLastElement)
     root.render(
@@ -82,7 +81,7 @@ document.addEventListener('turbo:load', () => {
   // FriendshipManager
   const friendshipManagerContainer = document.getElementById('friendship-manager')
   if (friendshipManagerContainer) {
-    console.log('Mounting FriendshipManager component')
+    
     const root = createRoot(friendshipManagerContainer)
     root.render(<FriendshipManager />)
   }
@@ -108,7 +107,7 @@ document.addEventListener('turbo:load', () => {
   // AddSnippetFormWrapper
   const wrapperElement = document.getElementById('add-snippet-form-wrapper')
   if (wrapperElement) {
-    console.log('Mounting AddSnippetFormWrapper component')
+    
     const wrapperRoot = createRoot(wrapperElement)
     const content = wrapperElement.innerHTML
     wrapperElement.innerHTML = ''
@@ -122,7 +121,7 @@ document.addEventListener('turbo:load', () => {
   // BottomNavigation
   const bottomNavContainer = document.getElementById('bottom-navigation')
   if (bottomNavContainer) {
-    console.log('Mounting BottomNavigation component')
+    
     const userSignedIn = bottomNavContainer.dataset.userSignedIn === 'true'
     const root = createRoot(bottomNavContainer)
     root.render(<BottomNavigation userSignedIn={userSignedIn} />)

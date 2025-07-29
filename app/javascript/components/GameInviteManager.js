@@ -5,7 +5,7 @@ import { createGameSessionChannel } from "../channels/game_session_channel";
 const GameInviteManager = () => {
   const container = document.getElementById("game-invite-manager");
   const gameSessionId = container.dataset.gameSessionId
-  console.log("GameInviteManager initializing with sessionId:", gameSessionId);
+
   const [isHost, setIsHost] = useState(false);
   const [friends, setFriends] = useState([]);
   const [joinedPlayers, setJoinedPlayers] = useState([]);
@@ -13,16 +13,14 @@ const GameInviteManager = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("GameInviteManager mounted, gameSessionId:", gameSessionId);
+
     fetchInitialState();
     fetchFriends();
-    console.log("About to setup game channel");
+    
     const channel = setupGameChannel();
-    console.log("Game channel setup completed");
 
     return () => {
       if (channel) {
-        console.log("Cleaning up lobby channel subscription");
         channel.unsubscribe();
       }
     };
@@ -35,10 +33,7 @@ const GameInviteManager = () => {
 
   const fetchInitialState = async () => {
     try {
-      console.log("Fetching initial state for session:", gameSessionId);
-
       if (!gameSessionId) {
-        console.error("No gameSessionId available");
         return;
       }
 
@@ -48,14 +43,13 @@ const GameInviteManager = () => {
           "X-CSRF-Token": getCSRFToken(),
         },
       });
-      console.log("Got response:", response);
+      
 
       if (!response || !response.ok) {
         throw new Error(`Failed to fetch initial state: ${response ? response.statusText : 'No response'}`);
       }
 
-      const data = await response.json();
-      console.log("Initial game session state:", data);
+      const data = await response.json();      
 
       setIsHost(data.is_host);
 
@@ -64,14 +58,12 @@ const GameInviteManager = () => {
           id: player.id,
           name: player.name
         })));
-        console.log("Set initial players:", data.players);
+        
       } else {
-        console.log("No players in initial state");
+        // Handle no players case
       }
     } catch (error) {
-      console.error("Error in fetchInitialState:", error);
-      console.error("gameSessionId was:", gameSessionId);
-      console.error("Full error:", error);
+      // Silently handle initial state fetch errors
     }
   };
 
@@ -89,35 +81,29 @@ const GameInviteManager = () => {
       setFriends(data.friends);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching friends:", error);
+      // Silently handle friends fetch errors
       setLoading(false);
     }
   };
 
   const setupGameChannel = () => {
-    console.log("Setting up game channel for GameInviteManager (lobby)");
     const gameChannel = createGameSessionChannel(gameSessionId);
 
     const originalConnected = gameChannel.connected;
     gameChannel.connected = () => {
-      console.log("lobby channel connect");
+      
       if (originalConnected) originalConnected.call(gameChannel);
     };
 
     gameChannel.received = (data) => {
-      console.log("GameInviteManagermessage:", data);
-      console.log("Message type:", data.type);
-
       if (data.type === "player_joined") {
-        console.log("new player:", data.player);
         setJoinedPlayers(prevPlayers => {
           const newPlayers = [...prevPlayers, data.player];
-          console.log("newPlayers:", newPlayers);
+          
           return newPlayers;
         });
       }
       else if (data.type === "game_start") {
-        console.log("game start");
         window.location.href = `/game_sessions/${gameSessionId}`;
       }
     };
@@ -141,7 +127,7 @@ const GameInviteManager = () => {
 
       setInvitedPlayers(prev => [...prev, friendToInvite.user_id]);
     } catch (error) {
-      console.error("Error inviting friend:", error);
+      // Silently handle invite errors
     }
   };
 
@@ -160,11 +146,11 @@ const GameInviteManager = () => {
 
 
       const data = await response.json();
-      console.log("Start game response:", data);
+      
 
       // window.location.href = `/game_sessions/${gameSessionId}`;
     } catch (error) {
-      console.error("Error starting game:", error);
+      // Silently handle start game errors
     }
   };
 
@@ -186,8 +172,6 @@ const GameInviteManager = () => {
       </ConstrainedLayout>
     );
   }
-
-  console.log("GameInviteManager with players:", joinedPlayers);
 
   return (
     <ConstrainedLayout>

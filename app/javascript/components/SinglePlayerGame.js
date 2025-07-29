@@ -58,8 +58,6 @@ function SinglePlayerGame({
     );
   }
 
-  console.log("SINGLEPLAYER before return gameData:", gameData);
-
   // Convert single player data to players format for GameProgressBar
   const players = gameData.totalScore !== undefined ? {
     [gameData.currentPlayerId || 'player1']: {

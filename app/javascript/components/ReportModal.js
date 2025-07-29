@@ -162,7 +162,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
       const data = await response.json();
       setAlternativeCovers(data);
     } catch (error) {
-
+      // Silently handle error - alternative covers are optional
     } finally {
       setLoadingCovers(false);
     }
