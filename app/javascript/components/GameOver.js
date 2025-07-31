@@ -7,15 +7,13 @@ import { faCheck, faXmark, faTrophy, faUsers, faUser } from '@fortawesome/free-s
 function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOthers = false }) {
   if (!gameData) return null;
 
-  console.log("GAMEOVER gameData:", { gameData, waitingForOthers });
+
 
   useEffect(() => {
-    console.log("Setting up GameOver channel with session:", gameData.game_session_id);
+    
     const gameChannel = createGameSessionChannel(gameData.game_session_id);
 
     gameChannel.received = (data) => {
-      console.log("GameOver received update:", data);
-
       if (data.type === "round_completed") {
         setGameData(prevGameData => ({
           ...prevGameData,
@@ -29,7 +27,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
     };
 
     return () => {
-      console.log("Cleaning up GameOver channel");
+
       gameChannel.unsubscribe();
     };
   }, [gameData.game_session_id]);

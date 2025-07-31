@@ -1,7 +1,7 @@
 import consumer from "./consumer"
 
 export const createGameSessionChannel = (gameSessionId) => {
-  console.log("Creating channel for game session:", gameSessionId);
+
 
   const channel = consumer.subscriptions.create(
     {
@@ -21,16 +21,16 @@ export const createGameSessionChannel = (gameSessionId) => {
         console.log("GAMESESSIONCHANNEL received data 😍:", data);
         switch(data.type) {
           case "player_joined":
-            console.log("Player joined:", data.player.name);
+            
             break;
           case "player_left":
-            console.log("Player left:", data.player.name);
+            
             break;
           case "round_completed":
-            console.log("Round completed:", data.player.name);
+            
             break;
           default:
-            console.log("Unknown message type:", data.type);
+            
         }
           return data;
       },
@@ -49,6 +49,5 @@ export const createGameSessionChannel = (gameSessionId) => {
     }
   };
 
-  console.log("", channel)
   return channel;
 };

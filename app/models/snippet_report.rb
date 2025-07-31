@@ -65,9 +65,16 @@ class SnippetReport < ApplicationRecord
       changes[:snippet]    = suggested_snippet    if wrong_snippet
       changes[:difficulty] = suggested_difficulty if wrong_difficulty
       changes[:language]   = suggested_language   if wrong_language
-      changes[:image]      = suggested_image      if wrong_image
 
       lyric_snippet.update(changes) if changes.any?
+
+      if wrong_image && suggested_image
+        lyric_snippet.image.purge
+        lyric_snippet.image.attach(
+            io: URI.open(suggested_image),
+            filename: "#{lyric_snippet.artist}_#{lyric_snippet.song}.jpg"
+          )
+      end
     end
   end
 

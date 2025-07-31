@@ -7,7 +7,6 @@ function SnippetCard({ snippet, onClick, onLongPress }) {
   const containerRef = useRef(null);
   
   const longPressProps = useLongPress(() => {
-    console.log('long press');
     if (onLongPress) {
       onLongPress(snippet);
     }
@@ -16,7 +15,6 @@ function SnippetCard({ snippet, onClick, onLongPress }) {
   });
 
   if (!snippet) {
-    console.error('No snippet data provided to SnippetCard');
     return <div>No snippet data available</div>;
   }
 

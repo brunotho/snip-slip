@@ -185,7 +185,7 @@ function SnippetsGame({
   };
 
   const handleOpenReportModal = (snippet) => {
-    console.log('handleOpenReportModal called with snippet:', snippet);
+
     if (snippet.already_reported) {
       alert('This snippet has already been reported');
       return;
@@ -273,8 +273,6 @@ function SnippetsGame({
       </div>
     );
   }
-
-  console.log("SNIPPETSGAME before return gameData:", gameData);
 
   return (
     <>

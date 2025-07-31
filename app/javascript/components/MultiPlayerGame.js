@@ -17,13 +17,9 @@ function MultiPlayerGame({
   game_session_id,
   mainContent
 }) {
-  // const initialized = useRef(false);
 
   useEffect(() => {
     if (!game_session_id) return;
-
-    console.log("🤡🤡🤡🤡");
-    console.log("MULTIPLAYER initial gameData:", gameData)
 
     const gameChannel = createGameSessionChannel(game_session_id);
 
@@ -43,18 +39,9 @@ function MultiPlayerGame({
 
     return () => {
       gameChannel.unsubscribe();
-      console.log("UNSUBBED");
+
     };
   }, [game_session_id, gameData]);
-
-  // const handleMultiplayerSubmit = async (snippet_id, success) => {
-  //   try {
-  //     await handleSubmit(snippet_id, success);
-
-  //   } catch (error) {
-  //     console.error("Error submitting round (MultiPlayer):", error)
-  //   }
-  // };
 
   if (error) {
     return (
@@ -96,8 +83,6 @@ function MultiPlayerGame({
       </div>
     );
   }
-
-  console.log("MULTIPLAYER before return gameData 🌷🌷🌷:", gameData)
 
   const progressBarHeight = calculateProgressBarHeight(Object.keys(gameData.players || {}).length);
 

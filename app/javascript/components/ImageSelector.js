@@ -1,11 +1,12 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 
 function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCovers }) {
   if (!isOpen) return null;
 
-  return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content-centered" onClick={(e) => e.stopPropagation()}>
+  return createPortal(
+    <div className="image-modal-backdrop" onClick={onClose}>
+      <div className="image-modal-content-centered" onClick={(e) => e.stopPropagation()}>
         <div style={{ padding: '2rem', background: 'white', borderRadius: '8px' }}>
           <h3>Select Alternative Image</h3>
           
@@ -34,7 +35,8 @@ function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCo
           <button onClick={onClose} style={{ marginTop: '1rem' }}>Cancel</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

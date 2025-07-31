@@ -99,9 +99,11 @@ function ReportReviews() {
 
             Object.keys(changes).forEach(key => {
                 if (changes[key] != null) {
+            
                     suggestedSnippet[key] = changes[key];
                 }
             });
+
             return suggestedSnippet;
         }
     }   
