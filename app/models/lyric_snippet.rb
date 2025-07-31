@@ -70,18 +70,14 @@ class LyricSnippet < ApplicationRecord
     albums = response.dig("albums", "items")
     return [] unless albums&.any?
 
-    log_spotify_response(response, artist)
+    log_spotify_response(response, artist, song)
 
-    image_url_arrays = albums.map do |album|
-      (album["images"] || []).map do |img|
-        img["url"]
-      end
-    end
+    images = albums.uniq { |album| album["id"] }
+      .map { |album| album.dig("images", 0, "url") }
+      .compact
+      .first(6)
 
-    all_image_urls = image_url_arrays.flatten.uniq
-    # all_image_urls = all_image_urls.reject { |url| url == current_image_url } if current_image_url.present?
-
-    all_image_urls.first(6)
+    images
   end
 
   def spotify_api_call(url)
@@ -101,10 +97,11 @@ class LyricSnippet < ApplicationRecord
     p "🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰 START #{artist_name} -- #{song_name}"
     p "Query string: #{response.request.uri.query}"
     p "HTT🥳 encoded params: #{URI.decode_www_form(response.request.uri.query).to_h}"
+
     p "😶 full response START:"
-    # p response
     p JSON.pretty_generate(response.parsed_response)
     p "😶 full response END"
+
     response["albums"]["items"][0]["images"][0]["url"]
   end
 end
