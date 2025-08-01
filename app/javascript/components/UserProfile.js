@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import ConstrainedLayout from './ConstrainedLayout';
 
 const UserProfile = ({ initialUser = {}, languages = [] }) => {
+  // UI State
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false);
+  const [changingSensitiveInfo, setChangingSensitiveInfo] = useState(false);
+  
+  // Form State
   const [user, setUser] = useState(initialUser);
   const [errors, setErrors] = useState({});
-  const [changingSensitiveInfo, setChangingSensitiveInfo] = useState(false);
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -61,43 +64,46 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
 
   if (!isEditing) {
     return (
-      <div className="container form-container" style={{ margin: "6rem auto 2rem auto" }}>
-        <h2>{user.name}</h2>
-        <div className="card-body-custom">
-        <p>Snippet Settings:</p>
-        <p>Language: {user.language}</p>
+      <ConstrainedLayout>
+        <div className="form-container">
+          <h2>{user.name}</h2>
+          <div className="card-body-custom">
+          <p>Snippet Settings:</p>
+          <p>Language: {user.language}</p>
+          </div>
+          <div className="d-flex justify-content-end">
+            <button
+              className="btn btn-accent"
+              onClick={() => setIsEditing(true)}
+              >
+              Edit Profile
+            </button>
+          </div>
         </div>
-        <div className="d-flex justify-content-end">
-          <button
-            className="btn btn-accent"
-            onClick={() => setIsEditing(true)}
-            >
-            Edit Profile
-          </button>
-        </div>
-      </div>
+      </ConstrainedLayout>
     );
   }
 
   return (
-    <div className="container form-container" style={{ margin: "6rem auto 2rem auto" }}>
-      <h2>Edit your profile</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-inputs">
-          <input
-            type="text"
-            id="name"
-            name="name"
-            defaultValue={user.name}
-            className="form-control"
-            placeholder="Name"
-            autoComplete="name"
-          />
-          {errors.name && (
-            <div className="invalid-feedback d-block">
-              {errors.name.join(", ")}
-            </div>
-          )}
+    <ConstrainedLayout>
+      <div className="form-container">
+        <h2>Edit your profile</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-inputs">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              defaultValue={user.name}
+              className="form-control"
+              placeholder="Name"
+              autoComplete="name"
+            />
+            {errors.name && (
+              <div className="invalid-feedback d-block">
+                {errors.name.join(", ")}
+              </div>
+            )}
 
           <select
             id="language"
@@ -189,6 +195,7 @@ const UserProfile = ({ initialUser = {}, languages = [] }) => {
         </div>
       </form>
     </div>
+    </ConstrainedLayout>
   );
 };
 

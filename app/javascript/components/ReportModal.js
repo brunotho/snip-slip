@@ -2,31 +2,48 @@ import React, { useState, useEffect } from 'react';
 import DifficultySlider from './DifficultySlider';
 import ImageSelector from './ImageSelector';
 
-function ReportModal({ snippet, onSubmit, onClose }) {
+function ReportModal({ snippet, onClose }) {
+  // UI State
   const [loading, setLoading] = useState(true);
   const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [loadingCovers, setLoadingCovers] = useState(false);
+  const [error, setError] = useState(null);
+  
+  // Form State
   const [wrongFields, setWrongFields] = useState({});
   const [suggestions, setSuggestions] = useState({});  
-  const [languages, setLanguages] = useState([]);
   const [isBoring, setIsBoring] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [userName, setUserName] = useState('');
-  const [showImageSelector, setShowImageSelector] = useState(false);
+  
+  // External Data
+  const [languages, setLanguages] = useState([]);
   const [alternativeCovers, setAlternativeCovers] = useState([]);
-  const [loadingCovers, setLoadingCovers] = useState(false);
+  const [userName, setUserName] = useState('');
   
   useEffect(() => {
-    fetch('/languages')
-    .then(response => response.json())
-    .then(data => {
-      setLanguages(data);
-      setLoading(false);
-    })
-    .catch((error) => {
-      setLoading(false);
-    });
-  }, []);
-  
+    const fetchLanguages = async () => {
+      try {
+        const response = await fetch('/languages')
+        if (response.ok) {
+          const data = await response.json()
+          setLanguages(data)
+        } else {
+          setError('Failed to load languages - Please try again');
+        }
+      } catch (error) {
+        setError('Failed to load languages - Please try again');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchLanguages();
+  }, [])
+
+  // Computed Values
+  const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
+
+  // Utility/Helper Functions
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
     
@@ -40,10 +57,6 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     
     return classes;
   };
-  
-  const toggleField = (field) => {
-    setWrongFields({...wrongFields, [field]: !wrongFields[field]});
-  };
 
   const calculateWordSimilarity = (original, suggestion) => {
     const originalWords = original.toLowerCase().split(/\s+/);
@@ -52,8 +65,16 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     
     return matches.length / originalWords.length;
   };
-  
-  const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
+
+  const getCSRFToken = () => {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta && meta.getAttribute('content');
+  };
+
+  // Form Logic
+  const toggleField = (field) => {
+    setWrongFields({...wrongFields, [field]: !wrongFields[field]});
+  };
 
   const validateSubmission = () => {
     if (isBoring) {
@@ -68,10 +89,10 @@ function ReportModal({ snippet, onSubmit, onClose }) {
             if (!suggestion) {
               return { valid: false, message: "Please adjust the difficulty slider" };
             }
-          } else if (field === 'language') {
-            if (!suggestion || suggestion === snippet?.language) {
-              return { valid: false, message: "Please select a different language" };
-            }
+          // } else if (field === 'language') {
+          //   if (!suggestion || suggestion === snippet?.language) {
+          //     return { valid: false, message: "Please select a different language" };
+          //   }
           } else {
             if (!suggestion) {
               return { valid: false, message: `Please provide a suggestion for ${field}` };
@@ -89,11 +110,6 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   
     const hasIssues = Object.values(wrongFields).some(val => val);
     return hasIssues ? { valid: true } : { valid: false, message: "Select at least one issue" };
-  };
-
-  const getCSRFToken = () => {
-    const meta = document.querySelector('meta[name="csrf-token"]');
-    return meta && meta.getAttribute('content');
   };
 
   const reportData = (wrongFields, suggestions, isBoring) => {
@@ -116,6 +132,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     }
   };
 
+  // API/Side Effects
   const handleSubmit = async() => {
     const validation = validateSubmission();
     if (validation.valid) {
@@ -134,7 +151,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
         if (response.ok) {
           const data = await response.json();
           setShowSuccessfulReportView(true);
-          setErrorMessage('');
+          setError(null);
           setUserName(data.user_name);
 
 
@@ -143,14 +160,13 @@ function ReportModal({ snippet, onSubmit, onClose }) {
           }, 2500);
         } else {
           const error = await response.json();
-          setErrorMessage(error.message || 'Failed to submit report (handleSubmit - else');
+          setError(error.message || 'Unable to submit report - Please try again');
         }
       } catch (error) {
-
-        setErrorMessage('Failed to submit report (handleSubmit - catch');
+        setError(error.message || 'Unable to submit report - Please try again');
       }
     } else {
-      setErrorMessage(validation.message);
+      setError(validation.message);
     }
   };
 
@@ -168,6 +184,7 @@ function ReportModal({ snippet, onSubmit, onClose }) {
     }
   };
 
+  // Render Helpers
   const renderSuccessContent = () => {
     return (
       <div className="text-center">
@@ -183,9 +200,9 @@ function ReportModal({ snippet, onSubmit, onClose }) {
   const renderFormContent = () => {
     return (
       <>
-        {errorMessage && (
+        {error && (
           <div style={{ color: 'red', marginBottom: '1rem' }}>
-            {errorMessage}
+            {error}
           </div>
         )}
         <h3>Report Issues</h3>

@@ -79,7 +79,8 @@ class SnippetReport < ApplicationRecord
   end
 
   def destroy_lyric_snippet!
-    # this could cause issues for ongoing games
+    # FIXME: Should check for active game sessions before deletion
+    # Current implementation prioritizes content moderation over game continuity
     lyric_snippet.destroy
   end
 end

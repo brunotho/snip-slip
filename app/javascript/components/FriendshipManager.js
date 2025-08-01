@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
 import { debounce } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import ConstrainedLayout from './ConstrainedLayout';
 import InviteSection from './InviteSection';
 import { SkeletonFriendItem } from './SkeletonLoader';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");
   const initialData = JSON.parse(container.dataset.friendships || "{}");
 
+  // External Data
   const [friends, setFriends] = useState(initialData.friends || []);
   const [pendingRequests, setPendingRequests] = useState(initialData.pending_requests || []);
   const [receivedRequests, setReceivedRequests] = useState(initialData.received_requests || []);
-
+  
+  // Search State
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  
-  const [isLoadingFriends, setIsLoadingFriends] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  
+  // UI State
+  const [isLoadingFriends, setIsLoadingFriends] = useState(false);
   const [loadingActions, setLoadingActions] = useState(new Set());
 
   const debouncedSearch = debounce((term) => searchUsers(term), 300);

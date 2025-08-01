@@ -33,25 +33,28 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
   };
 
   useEffect(() => {
-    if (gameSessionId) {
-      fetch(`/game_sessions/${gameSessionId}.json`, {
-        headers: {
-          "Accept": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} - Failed to fetch game session data`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          setGameMode(Object.keys(data.players).length > 1 ? "multi" : "single");
-        })
-        .catch(error => {
-          console.error("Error fetching game sessions details:", error);
+    const fetchGameSession = async () => {
+      try {
+        const response = await fetch(`/game_sessions/${gameSessionId}.json`, {
+          headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
         });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch game session data. HTTP error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setGameMode(Object.keys(data.players).length > 1 ? "multi" : "single");
+      } catch (error) {
+        console.error("Error fetching game sessions details:", error);
+      }
+    };
+
+    if (gameSessionId) {
+      fetchGameSession();
     }
   }, [gameSessionId]);
 
