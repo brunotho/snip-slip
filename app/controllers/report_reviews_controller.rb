@@ -4,7 +4,8 @@ class ReportReviewsController < ApplicationController
 
   def fetch_report
     @snippet_report = SnippetReport
-      # TODO: add filtering out of reports from current user
+      # NOTE: In production, should exclude reports created by current user
+      # Currently allowing self-voting for easier development/testing workflow
       .where(status: "pending")
       .where.not(
         id: ReportVote.select(:snippet_report_id).where(user_id: current_user.id)

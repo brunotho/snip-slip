@@ -72,16 +72,16 @@ class LyricSnippet < ApplicationRecord
 
     log_spotify_response(response, artist, song)
 
-    images = albums.uniq { |album| album["id"] }
+    images = albums
+      .uniq { |album| album["name"] }
+      .reject { |album| album["name"].match?(/\((deluxe|remaster|edition)\)/i) }
       .map { |album| album.dig("images", 0, "url") }
-      .compact
       .first(6)
 
     images
   end
 
   def spotify_api_call(url)
-    url = url
     token = SpotifyService.get_access_token
 
     HTTParty.get(
@@ -98,9 +98,15 @@ class LyricSnippet < ApplicationRecord
     p "Query string: #{response.request.uri.query}"
     p "HTT🥳 encoded params: #{URI.decode_www_form(response.request.uri.query).to_h}"
 
-    p "😶 full response START:"
-    p JSON.pretty_generate(response.parsed_response)
-    p "😶 full response END"
+    # Clean up response for logging - remove noisy available_markets arrays
+    cleaned_response = response.parsed_response.deep_dup
+    cleaned_response["albums"]["items"].each do |item|
+      item["available_markets"] = []
+    end
+
+    puts "😶 full response START:"
+    puts JSON.pretty_generate(cleaned_response)
+    puts "😶 full response END"
 
     response["albums"]["items"][0]["images"][0]["url"]
   end

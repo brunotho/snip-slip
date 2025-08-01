@@ -8,45 +8,44 @@ import Modal from './Modal';
 import ReportModal from './ReportModal';
 import { SkeletonSnippetCard } from './SkeletonLoader';
 
-function SnippetsGame({
-  game_session_id = null,
-  gameMode,
-  gameData,
-  setGameData
-}) {
-  const [snippets, setSnippets] = useState([]);
+function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData }) {
+  // UI State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedSnippet, setSelectedSnippet] = useState(null);
   const [initialized, setInitialized] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportingSnippet, setReportingSnippet] = useState(null);
+  
+  // External Data
+  const [snippets, setSnippets] = useState([]);
 
-  const fetchSnippets = () => {
+  const fetchSnippets = async () => {
     setLoading(true);
-    fetch('/fetch_snippets', {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status} - Failed to fetch snippets`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setSnippets(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching snippets:', error);
-        setError(error);
-        setLoading(false);
-      });
-  };
+    setError(null);
+    try {
+      const response = await fetch('/fetch_snippets', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch snippets. HTTP error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setSnippets(data);
+  } catch (error) {
+    console.error('Failed to fetch snippets:', error);
+    setError(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchGameSessionData = async () => {
     if (!game_session_id) return;
@@ -58,6 +57,10 @@ function SnippetsGame({
           "X-Requested-With": "XMLHttpRequest",
         },
       });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch game session data. HTTP error: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -207,6 +210,12 @@ function SnippetsGame({
           </div>
         ))}
       </div>
+    ) : error ? (
+      <div className="text-center">
+        <div className="text-danger mb-3" style={{ fontSize: '2rem' }}>⚠️</div>
+        <h4 className="text-danger mb-2">Unable to load snippets</h4>
+        <p className="text-muted">{error.message}</p>
+      </div>
     ) : selectedSnippet ? (
       <ExpandedSnippet
         snippet={selectedSnippet}
@@ -281,7 +290,6 @@ function SnippetsGame({
       <Modal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)}>
         <ReportModal
           snippet={reportingSnippet}
-          onSubmit={() => {}}
           onClose={() => setReportModalOpen(false)}
         />
       </Modal>

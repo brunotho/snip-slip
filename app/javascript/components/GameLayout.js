@@ -9,7 +9,7 @@ const GameLayout = ({
   gameOver = false,
   progressBarHeight = 56
 }) => {
-  const topMargin = showProgressBar ? `${progressBarHeight + 16}px` : '0px'; // Add 16px gap
+  const topMargin = showProgressBar ? `${progressBarHeight + 16}px` : '0px';
 
   return (
     <div className="container-fluid mt-0 px-0">

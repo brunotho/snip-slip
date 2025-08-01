@@ -3,15 +3,17 @@ import DiffSnippetCard from './DiffSnippetCard';
 import ConstrainedLayout from './ConstrainedLayout';
 
 function ReportReviews() {
+    // UI State
     const [loading, setLoading] = useState(true);
-    const [reportData, setReportData] = useState(null);
     const [allReportsDone, setAllReportsDone] = useState(false);
+    const [error, setError] = useState(null);
+    const [showSuccessfulVoteView, setShowSuccessfulVoteView] = useState(false);
+    
+    // External Data
+    const [reportData, setReportData] = useState(null);
     
     const changes = reportData?.changes;
     const originalSnippet = reportData?.original_snippet;
-
-    const [errorMessage, setErrorMessage] = useState('');
-    const [showSuccessfulVoteView, setShowSuccessfulVoteView] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -19,31 +21,28 @@ function ReportReviews() {
     }, []);
     
     const fetchReport = async () => {
-        fetch('/fetch_report', {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - Failed to fetch report data`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.message === "No more reports to review") {
-                    setAllReportsDone(true);
-                } else {
-                    setReportData(data);
-                }
-            setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching report data:', error);
-                setLoading(false);
+        try {
+            const response = await fetch('/fetch_report', {
+                method: "GET",
+                headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                },
             });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch report data. HTTP error: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.message === "No more reports to review") {
+                setAllReportsDone(true);
+            } else {
+                setReportData(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch report data:', error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleVote = async (variant) => {
@@ -59,24 +58,30 @@ function ReportReviews() {
             throw new Error(`Invalid variant ${variant}`);
         }
 
-        const response = await fetch(`/reports/${reportId}/vote`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-Token': getCSRFToken(),
-            },
-            body: JSON.stringify({
-                report_vote: {
-                snippet_report_id: reportId,
-                vote: vote,
-            }}),
-        });
-        if (response.ok) {
+        try {
+            const response = await fetch(`/reports/${reportId}/vote`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    report_vote: {
+                    snippet_report_id: reportId,
+                    vote: vote,
+                    }
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to submit vote. HTTP error: ${response.status}`);
+            }
+
             setShowSuccessfulVoteView(true);
-        } else {
-            console.error('Failed to submit vote');
-            setErrorMessage('Failed to submit vote');
+        } catch (error) {
+            console.error('Failed to submit vote:', error);
+            setError('Failed to submit vote. Please try again.');
         }
     }
     
@@ -148,7 +153,7 @@ function ReportReviews() {
 
     const renderSuccessfulVoteView = () => {
         return (
-            <div>
+            <>
                 <p>Thank you ❤️</p>
                 <p>Vote submitted successfully</p>
 
@@ -158,15 +163,15 @@ function ReportReviews() {
                 >
                     Another one!
                 </button>
-            </div>
+            </>
         )
     }
     
     return (
         <ConstrainedLayout>
-            {errorMessage && (
+            {error && (
                 <div style={{ color: 'red', marginBottom: '1rem' }}>
-                    {errorMessage}
+                    {error}
                 </div>
             )}
 

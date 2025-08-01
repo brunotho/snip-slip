@@ -19,28 +19,27 @@ consumer.subscriptions.create("NotificationsChannel", {
   },
 
   showGameInvitation(data) {
-    const acceptInvitation = () => {
+    const acceptInvitation = async () => {
       const token = document.querySelector('[name="csrf-token"]').content;
       const gameSessionId = data.game_session_id;
 
-      fetch(`/game_sessions/${gameSessionId}/accept_invitation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': token
-        },
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json().then(responseData => {
-    
-            window.location.href = `/game_sessions/${gameSessionId}/invite`;
-          });
-        } else {
-          throw new Error("Failed to accept invitation");
+      try {
+        const response = await fetch(`/game_sessions/${gameSessionId}/accept_invitation`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': token
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to accept invitation. HTTP error: ${response.status}`);
         }
-      })
-      .catch(error => console.error('Error accepting invitation:', error));
+
+        window.location.href = `/game_sessions/${gameSessionId}/invite`;
+      } catch (error) {
+        console.error('Error accepting invitation:', error);
+      }
     }
 
     const modal = document.createElement('div')

@@ -1,22 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import GameLayout from "./GameLayout";
-import SnippetCard from "./SnippetCard";
-import ExpandedSnippet from "./ExpandedSnippet";
 import GameProgressBar, { calculateProgressBarHeight } from "./GameProgressBar";
 import { createGameSessionChannel } from "../channels/game_session_channel";
 
-function MultiPlayerGame({
-  snippets,
-  loading,
-  error,
-  selectedSnippet,
-  setSelectedSnippet,
-  gameData,
-  setGameData,
-  handleSubmit,
-  game_session_id,
-  mainContent
-}) {
+function MultiPlayerGame({ loading, error, gameData, setGameData, game_session_id, mainContent }) {
 
   useEffect(() => {
     if (!game_session_id) return;

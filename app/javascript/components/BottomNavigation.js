@@ -2,14 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const BottomNavigation = ({ userSignedIn = false }) => {
-  const handleSinglePlayerClick = () => {
+  const handlePlaySinglePlayer = () => {
     if (userSignedIn) {
-      // Create a form and submit it for POST request
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = '/game_sessions/start_single_player';
       
-      // Add CSRF token
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
       if (csrfToken) {
         const csrfInput = document.createElement('input');
@@ -26,14 +24,12 @@ const BottomNavigation = ({ userSignedIn = false }) => {
     }
   };
 
-  const handleMultiPlayerClick = () => {
+  const handlePlayMultiPlayer = () => {
     if (userSignedIn) {
-      // Create a form and submit it for POST request
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = '/game_sessions/start_multiplayer';
       
-      // Add CSRF token
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
       if (csrfToken) {
         const csrfInput = document.createElement('input');
@@ -53,13 +49,13 @@ const BottomNavigation = ({ userSignedIn = false }) => {
   return (
     <div className="bottom-nav-buttons">
       <button
-        onClick={handleSinglePlayerClick}
+        onClick={handlePlaySinglePlayer}
         className="btn btn-accent btn-pill btn-md"
       >
         Play Alone :{'<'}
       </button>
       <button
-        onClick={handleMultiPlayerClick}
+        onClick={handlePlayMultiPlayer}
         className="btn btn-accent btn-pill btn-md"
       >
         Play with Friends :{'>'}

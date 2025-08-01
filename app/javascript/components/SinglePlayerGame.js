@@ -1,21 +1,8 @@
 import React from 'react';
 import GameLayout from './GameLayout';
-import SnippetCard from './SnippetCard';
-import ExpandedSnippet from './ExpandedSnippet';
 import GameProgressBar, { calculateProgressBarHeight } from './GameProgressBar';
 
-function SinglePlayerGame({
-  snippets,
-  loading,
-  error,
-  selectedSnippet,
-  setSelectedSnippet,
-  gameData,
-  handleSubmit,
-  handleNextSnippet,
-  game_session_id,
-  mainContent
-}) {
+function SinglePlayerGame({ loading, error, gameData, mainContent }) {
 
   if (error) {
     return (

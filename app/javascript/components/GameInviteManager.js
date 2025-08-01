@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import ConstrainedLayout from "./ConstrainedLayout";
 import { createGameSessionChannel } from "../channels/game_session_channel";
+import ConstrainedLayout from "./ConstrainedLayout";
 
 const GameInviteManager = () => {
   const container = document.getElementById("game-invite-manager");
   const gameSessionId = container.dataset.gameSessionId
 
+  // UI State
+  const [loading, setLoading] = useState(true);
   const [isHost, setIsHost] = useState(false);
+  
+  // External Data
   const [friends, setFriends] = useState([]);
   const [joinedPlayers, setJoinedPlayers] = useState([]);
   const [invitedPlayers, setInvitedPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
