@@ -1,0 +1,19 @@
+// Layout containers and spacing
+.constrained-container {
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.constrained-content {
+  padding: 0rem 0;
+}
+
+.constrained-container--centered {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+} 

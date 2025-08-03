@@ -68,18 +68,19 @@ li {
 
 // =============================================================================
 
-@import './_button_styles';
+@import './_buttons';
 @import './_difficulty_slider';
 @import './_devise_alerts';
-@import './navbar';
-@import './card_styles';
-@import './form';
-@import './containers';
-@import './rules';
-@import './skeleton';
-@import './modal_styles';
-@import './text_styles';
-@import './badges';
+@import './_navbar';
+@import './_cards';
+@import './_form';
+@import './_containers';
+@import './_rules';
+@import './_skeleton';
+@import './_modals';
+@import './_diff_text';
+@import './_badges';
+@import './_layout';
 
 // Desktop-specific improvements
 @media (min-width: 768px) {
