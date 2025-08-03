@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import ConstrainedLayout from "./ConstrainedLayout";
 
 const GameLayout = ({
   mainContent,
@@ -24,9 +25,9 @@ const GameLayout = ({
               width: '100%'
             }}
           >
-            <div style={{ width: '100%', maxWidth: '100%' }}>
-            {mainContent}
-            </div>
+            <ConstrainedLayout>
+              {mainContent}
+            </ConstrainedLayout>
           </div>
         </div>
         
