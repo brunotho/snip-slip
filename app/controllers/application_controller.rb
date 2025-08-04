@@ -30,6 +30,10 @@ class ApplicationController < ActionController::Base
     stored_path || root_path
   end
 
+  def after_sign_out_path_for(resource_or_scope)
+    new_user_session_path
+  end
+
 
   def current_game_session
     if user_signed_in?
