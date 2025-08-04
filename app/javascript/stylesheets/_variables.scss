@@ -43,15 +43,16 @@ $gray-900: #0f172a;
 $black: #000000;
 
 // Brand Colors
-$color-brand-primary: $gray-50;    // Light background
-$color-brand-secondary: $gray-900; // Dark text
-$color-brand-accent: #553d67;      // Purple accent
+$color-brand-primary: $gray-50;
+$color-brand-secondary: $gray-900;
+$color-brand-accent: #553d67;
 
 // Semantic Colors
 $color-success: #10b981;
 $color-warning: #f59e0b;
 $color-error: #ef4444;
 $color-info: #3b82f6;
+$color-current-user: #773dff;
 
 // -----------------------------------------------------------------------------
 // Spacing
@@ -101,12 +102,19 @@ $card-modal-shadow: $shadow-xl;
 $card-accent-border: 1px solid rgba($color-brand-accent, 0.2);
 
 // -----------------------------------------------------------------------------
+// Layout
+// -----------------------------------------------------------------------------
+$header-height: 7vh;
+
+// -----------------------------------------------------------------------------
 // CSS Custom Properties (for JS access)
 // -----------------------------------------------------------------------------
 :root {
   --color-brand-primary: #{$color-brand-primary};
   --color-brand-secondary: #{$color-brand-secondary};
   --color-brand-accent: #{$color-brand-accent};
+  --color-current-user: #{$color-current-user};
   --font-family-primary: #{$font-family-primary};
   --font-family-display: #{$font-family-display};
+  --header-height: #{$header-height};
 }

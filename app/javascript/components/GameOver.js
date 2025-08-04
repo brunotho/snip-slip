@@ -4,7 +4,7 @@ import { faCheck, faXmark, faTrophy, faUsers, faUser } from '@fortawesome/free-s
 import { createGameSessionChannel } from '../channels/game_session_channel';
 import GameLayout from './GameLayout';
 
-function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOthers = false }) {
+function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false }) {
   if (!gameData) return null;
 
 
@@ -63,7 +63,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
 
   const getResultSubtext = () => {
     if (waitingForOthers) {
-      return "Waiting for other players to finish...";
+      return;
     }
     if (isMultiplayer) {
       const winnerCount = winnerIds.length;
@@ -107,7 +107,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
               <div key={index} className="mb-1 small" style={{ display: 'block' }}>
                 <FontAwesomeIcon
                   icon={round.success ? faCheck : faXmark}
-                  className={`me-2 ${round.success ? 'text-success' : 'text-danger'}`}
+                  className="me-2 text-muted"
                   style={{ float: 'left', marginTop: '2px' }}
                 />
                 <div style={{ 
@@ -178,22 +178,13 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
           {/* Action Buttons */}
           {!waitingForOthers && (
             <div className="text-center">
-              <div className="d-flex flex-column flex-sm-row gap-2 justify-content-center">
-                <button
-                  className="btn btn-accent btn-lg"
-                  onClick={onPlayAgain}
-                  style={{ minWidth: '140px' }}
-                >
-                  Play Again
-                </button>
-                <button
-                  className="btn btn-outline-secondary btn-lg"
-                  onClick={onMainMenu}
-                  style={{ minWidth: '140px' }}
-                >
-                  Main Menu
-                </button>
-              </div>
+              <button
+                className="btn btn-accent btn-lg"
+                onClick={onPlayAgain}
+                style={{ minWidth: '140px', marginBottom: '1.5rem' }}
+              >
+                Play Again
+              </button>
             </div>
           )}
 
@@ -201,19 +192,9 @@ function GameOver({ gameData, setGameData, onPlayAgain, onMainMenu, waitingForOt
           {waitingForOthers && (
             <div className="text-center">
               <div className="card-elevated p-4">
-                <div className="d-flex align-items-center justify-content-center mb-3">
-                  <div className="spinner-border text-primary me-3" role="status">
-                    <span className="visually-hidden">Waiting...</span>
-                  </div>
-                  <span className="text-muted">Game will continue automatically when all players finish</span>
+                <div className="d-flex align-items-center justify-content-center">
+                  <span className="loading-ellipsis text-muted me-2">Waiting for other players</span>
                 </div>
-                <button
-                  className="btn btn-outline-secondary"
-                  onClick={onMainMenu}
-                  style={{ minWidth: '140px' }}
-                >
-                  Leave Game
-                </button>
               </div>
         </div>
           )}

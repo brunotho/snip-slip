@@ -10,11 +10,11 @@ class User < ApplicationRecord
   has_many :user_played_snippets
   has_many :played_snippets, through: :user_played_snippets, source: :lyric_snippet
   has_many :snippet_reports, dependent: :destroy
-  
+
   has_many :friendships, dependent: :destroy
   has_many :friends, -> { where(friendships: { status: :accepted }) }, through: :friendships, source: :friend
-  has_many :pending_sent_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'user_id'
-  has_many :pending_received_requests, -> { where(status: :pending) }, class_name: 'Friendship', foreign_key: 'friend_id'
+  has_many :pending_sent_requests, -> { where(status: :pending) }, class_name: "Friendship", foreign_key: "user_id"
+  has_many :pending_received_requests, -> { where(status: :pending) }, class_name: "Friendship", foreign_key: "friend_id"
 
   validate :name_presence_and_length
   validate :language_presence_and_inclusion
@@ -40,7 +40,7 @@ class User < ApplicationRecord
   end
 
   def invitable_friend?(friend)
-    friendships.where(friend: friend, status: [:pending, :accepted]).exists?
+    friendships.where(friend: friend, status: [ :pending, :accepted ]).exists?
   end
 
   def total_score
@@ -54,8 +54,12 @@ class User < ApplicationRecord
   private
 
   def name_presence_and_length
-    if name.blank? || name.length < 2
+    if name.blank?
+      errors.add(:name, "can't be blank")
+    elsif name.length < 2
       errors.add(:name, "must be at least 2 characters long")
+    elsif name.length > 12
+      errors.add(:name, "must be 12 characters or less")
     end
   end
 

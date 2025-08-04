@@ -81,6 +81,7 @@ li {
 @import './_diff_text';
 @import './_badges';
 @import './_layout';
+@import './_game_progress_bar';
 
 // Desktop-specific improvements
 @media (min-width: 768px) {
@@ -106,11 +107,6 @@ li {
   }
 }
 
-.page-without-header {
-  margin-top: max(7vh, 60px);
-  // padding-top: .25rem;
-}
-
 // Animation for rules overlay
 @keyframes slideUp {
   from {
@@ -121,4 +117,24 @@ li {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.loading-ellipsis {
+  white-space: nowrap;
+}
+
+.loading-ellipsis::after {
+  content: '...';
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+  0% { content: '   '; }
+  25% { content: '.  '; }
+  50% { content: '.. '; }
+  75% { content: '...'; }
+  100% { content: '   '; }
 }

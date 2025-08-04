@@ -1,14 +1,13 @@
-// Layout containers and spacing
 .constrained-container {
   max-width: 400px;
   margin: 0 auto;
-  margin-top: 1.5rem;
+  margin-top: calc($header-height + 1.5rem);
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
 .constrained-content {
-  padding: 0rem 0;
+  padding: 0;
 }
 
 .constrained-container--centered {

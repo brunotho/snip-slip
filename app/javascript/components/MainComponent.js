@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import HeroSection from './HeroSection';
 import SnippetsGame from './SnippetsGame';
 import GameOver from './GameOver';
+import BottomNavigation from './BottomNavigation';
 
-function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
+function MainComponent({ gameSessionId = null, userLanguage = 'English', userSignedIn = false }) {
   const [gameData, setGameData] = useState({});
   const [gameMode, setGameMode] = useState(null);
 
@@ -58,24 +59,50 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
     }
   }, [gameSessionId]);
 
-  const handlePlayAgain = () => {
-    // Reset game state and start a new game with the same mode
+  const handlePlayAgain = async () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
     if (gameMode === 'quick') {
       // For quick play, just reset to home and let user start fresh
       setGameData({});
       setGameMode(null);
       window.location.href = '/';
+    } else if (gameMode === 'single') {
+      // For single player, start a new single player game directly
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/game_sessions/start_single_player';
+      
+      if (csrfToken) {
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'authenticity_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      }
+      
+      document.body.appendChild(form);
+      form.submit();
+    } else if (gameMode === 'multi') {
+      // For multiplayer, start a new multiplayer session (goes to lobby)
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/game_sessions/start_multiplayer';
+      
+      if (csrfToken) {
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'authenticity_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      }
+      
+      document.body.appendChild(form);
+      form.submit();
     } else {
-      // For multiplayer/single player games, redirect to start new session
+      // Fallback: redirect to home
       window.location.href = '/';
     }
-  };
-
-  const handleMainMenu = () => {
-    // Navigate back to main menu
-    setGameData({});
-    setGameMode(null);
-    window.location.href = '/';
   };
 
   const currentView = getView();
@@ -83,13 +110,16 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
   return (
     <div>
       {currentView === 'home' && (
+        <>
           <HeroSection 
             userLanguage={userLanguage}
             onPlay={() => {
-            setGameMode('quick');
-            setGameData({ status: true });
-          }}
-        />
+              setGameMode('quick');
+              setGameData({ status: true });
+            }}
+          />
+          <BottomNavigation userSignedIn={userSignedIn} />
+        </>
       )}
 
       {currentView === 'game' && (
@@ -106,7 +136,6 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
           gameData={gameData}
           setGameData={setGameData}
           onPlayAgain={handlePlayAgain}
-          onMainMenu={handleMainMenu}
           waitingForOthers={true}
         />
       )}
@@ -116,7 +145,6 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
           gameData={gameData}
           setGameData={setGameData}
           onPlayAgain={handlePlayAgain}
-          onMainMenu={handleMainMenu}
         />
       )}
     </div>
