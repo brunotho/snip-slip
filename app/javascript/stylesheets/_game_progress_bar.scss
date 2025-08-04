@@ -1,0 +1,214 @@
+@import './variables';
+
+.game-progress-bar {
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  background-color: #f8fafc;
+  border-bottom: 2px solid #d1d5db;
+  z-index: 1000;
+  padding: 0.375rem 0.75rem;
+  overflow-x: hidden;
+}
+
+.game-progress-grid {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: stretch;
+  max-width: 100%;
+  overflow: hidden;
+
+  &--single-player {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.6rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  min-width: 120px;
+  justify-content: center;
+  opacity: 0.8;
+  white-space: nowrap;
+
+  &--current-user {
+    background-color: #dbeafe;
+    font-weight: 600;
+  }
+
+  &--complete {
+    border-color: #10b981;
+    opacity: 1;
+  }
+
+  &--multiplayer {
+    width: 100%;
+    max-width: 160px;
+  }
+
+  &--single-player {
+    min-width: 160px;
+    max-width: 280px;
+  }
+}
+
+.player-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.player-separator {
+  color: #6b7280;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.player-score {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.player-rounds {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6b7280;
+  flex-shrink: 0;
+
+  &--complete {
+    color: #10b981;
+    font-weight: 600;
+  }
+}
+
+.player-complete-icon {
+  color: #10b981;
+  font-size: 0.6rem;
+  margin-left: 0.125rem;
+  flex-shrink: 0;
+}
+  
+.player-chevron {
+  font-size: 0.6rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.expanded-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.expanded-modal {
+  position: fixed;
+  top: calc(#{$header-height} + 70px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  border: 2px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-width: 300px;
+  max-width: 90vw;
+  max-height: calc(100vh - #{$header-height} - 90px);
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 1002;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.player-header {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.player-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+
+  &--current-user {
+    color: #3b82f6;
+    background-color: #dbeafe;
+  }
+
+  &--complete {
+    color: #10b981;
+    background-color: #d1fae5;
+  }
+}
+
+.player-stats {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.round-history-title {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.round-history-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+.round-icon {
+  font-size: 0.7rem;
+  flex-shrink: 0;
+
+  &--success {
+    color: #10b981;
+  }
+
+  &--failure {
+    color: #ef4444;
+  }
+}
+
+.round-snippet {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+} 

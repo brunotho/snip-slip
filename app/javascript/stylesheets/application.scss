@@ -81,6 +81,7 @@ li {
 @import './_diff_text';
 @import './_badges';
 @import './_layout';
+@import './_game_progress_bar';
 
 // Desktop-specific improvements
 @media (min-width: 768px) {
@@ -104,11 +105,6 @@ li {
       max-width: 600px;
     }
   }
-}
-
-.page-without-header {
-  margin-top: max(7vh, 60px);
-  // padding-top: .25rem;
 }
 
 // Animation for rules overlay

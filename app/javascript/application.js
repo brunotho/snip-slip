@@ -12,7 +12,6 @@ import GameInviteManager from "./components/GameInviteManager"
 import FriendshipManager from "./components/FriendshipManager"
 import UserProfile from "./components/UserProfile"
 import ReportReviews from "./components/ReportReviews"
-import BottomNavigation from "./components/BottomNavigation"
 import AddSnippetFormWrapper from "./components/AddSnippetForm"
 import ConstrainedLayout from "./components/ConstrainedLayout"
 
@@ -33,9 +32,10 @@ document.addEventListener('turbo:load', () => {
   if (mainContainer) {
     const gameSessionId = mainContainer.dataset.gameSessionId || null
     const userLanguage = mainContainer.dataset.userLanguage || 'English'
+    const userSignedIn = mainContainer.dataset.userSignedIn === 'true'
 
     const root = createRoot(mainContainer)
-    root.render(<MainComponent gameSessionId={gameSessionId} userLanguage={userLanguage} />)
+    root.render(<MainComponent gameSessionId={gameSessionId} userLanguage={userLanguage} userSignedIn={userSignedIn} />)
   }
 
   // SnippetsGame
@@ -118,14 +118,7 @@ document.addEventListener('turbo:load', () => {
     )
   }
 
-  // BottomNavigation
-  const bottomNavContainer = document.getElementById('bottom-navigation')
-  if (bottomNavContainer) {
-    
-    const userSignedIn = bottomNavContainer.dataset.userSignedIn === 'true'
-    const root = createRoot(bottomNavContainer)
-    root.render(<BottomNavigation userSignedIn={userSignedIn} />)
-  }
+
 })
 
 window.bootstrap = bootstrap

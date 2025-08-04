@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title><%= content_for(:title) || "SnipSlip" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -15,9 +16,9 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <!-- Primary Font: Inter for clean, modern UI -->
+    <!-- Primary Font: Inter -->
     <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap", rel: "stylesheet" %>
-    <!-- Display Font: Fredoka for playful headers -->
+    <!-- Display Font: Fredoka -->
     <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap", rel: "stylesheet" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
@@ -27,58 +28,14 @@
 
     <%= render "layouts/header" %>
 
-    <% hide_bottom_nav = (controller_name == 'game_sessions' && action_name == 'show') || 
-                          (controller_name == 'snippets' && action_name == 'index') %>
-    
-    <% game_session_padding = hide_bottom_nav ? '' : '' %>
-    
-    <div class="page-without-header" style="<%= game_session_padding %> padding-bottom: <%= hide_bottom_nav ? '20px' : '80px' %>;">
-      <%= yield %>
-    </div>
+    <%= yield %>
 
-    <!-- Bottom Navigation - Hide during game sessions and snippet browsing -->
-    <% unless hide_bottom_nav %>
-      <div id="bottom-navigation" data-user-signed-in="<%= user_signed_in? %>"></div>
+    <% if alert %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
     <% end %>
-
-    <!-- JavaScript to hide bottom navigation during quickplay mode -->
-    <script>
-      // Hide bottom navigation when quickplay mode is active
-      function toggleBottomNavigation() {
-        const bottomNav = document.getElementById('bottom-navigation');
-        const mainContainer = document.getElementById('main');
-        const pageContainer = document.querySelector('.page-without-header');
-        
-        if (bottomNav && mainContainer) {
-          // Check if we're in game mode (SnippetsGame component is showing)
-          const heroSection = mainContainer.querySelector('[class*="jumbotron"]');
-          const isInQuickplayMode = !heroSection && mainContainer.children.length > 0;
-          
-          if (isInQuickplayMode) {
-            bottomNav.style.display = 'none';
-            if (pageContainer) pageContainer.style.paddingBottom = '20px';
-          } else {
-            bottomNav.style.display = 'block';
-            if (pageContainer) pageContainer.style.paddingBottom = '80px';
-          }
-        }
-      }
-
-      // Check on page load and periodically during React state changes
-      document.addEventListener('DOMContentLoaded', toggleBottomNavigation);
-      
-      // Use MutationObserver to detect when React changes the content
-      if (document.getElementById('main')) {
-        const observer = new MutationObserver(toggleBottomNavigation);
-        observer.observe(document.getElementById('main'), { 
-          childList: true, 
-          subtree: true 
-        });
-      }
-    </script>
   </body>
 
 </html>
-<!--
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>

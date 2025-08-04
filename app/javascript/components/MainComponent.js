@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import HeroSection from './HeroSection';
 import SnippetsGame from './SnippetsGame';
 import GameOver from './GameOver';
+import BottomNavigation from './BottomNavigation';
 
-function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
+function MainComponent({ gameSessionId = null, userLanguage = 'English', userSignedIn = false }) {
   const [gameData, setGameData] = useState({});
   const [gameMode, setGameMode] = useState(null);
 
@@ -83,13 +84,16 @@ function MainComponent({ gameSessionId = null, userLanguage = 'English' }) {
   return (
     <div>
       {currentView === 'home' && (
+        <>
           <HeroSection 
             userLanguage={userLanguage}
             onPlay={() => {
-            setGameMode('quick');
-            setGameData({ status: true });
-          }}
-        />
+              setGameMode('quick');
+              setGameData({ status: true });
+            }}
+          />
+          <BottomNavigation userSignedIn={userSignedIn} />
+        </>
       )}
 
       {currentView === 'game' && (

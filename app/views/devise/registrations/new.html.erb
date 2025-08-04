@@ -1,45 +1,49 @@
-<div class="container form-container">
-  <h2>Sign up for SnipSlip</h2>
+<div class="constrained-container">
+  <div class="constrained-content">
+    <div class="form-container">
+      <h2>Sign up for SnipSlip</h2>
 
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <%= f.error_notification %>
+      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= f.error_notification %>
 
-    <div class="form-inputs">
-      <%= f.input :name,
-                  required: true,
-                  autofocus: true,
-                  label: false,
-                  input_html: { autocomplete: "name", placeholder: "Name" } %>
-      <%= f.input :email,
-                  required: true,
-                  autofocus: true,
-                  label: false,
-                  input_html: { autocomplete: "email", placeholder: "Email" } %>
-      <%= f.input :language,
-                  collection: LyricSnippet.languages,
-                  # selected: "English",
-                  include_blank: "Language",
-                  required: true,
-                  label: false,
-                  autofocus: true,
-                  input_html: { autocomplete: "language" } %>
-      <%= f.input :password,
-                  required: true,
-                  label: false,
-                  # hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                  input_html: { autocomplete: "new-password", placeholder: "Password" } %>
-      <%= f.input :password_confirmation,
-                  required: true,
-                  label: false,
-                  input_html: { autocomplete: "new-password", placeholder: "Confirm Password" } %>
+        <div class="form-inputs">
+          <%= f.input :name,
+                      required: true,
+                      autofocus: true,
+                      label: false,
+                      input_html: { autocomplete: "name", placeholder: "Name" } %>
+          <%= f.input :email,
+                      required: true,
+                      autofocus: true,
+                      label: false,
+                      input_html: { autocomplete: "email", placeholder: "Email" } %>
+          <%= f.input :language,
+                      collection: LyricSnippet.languages,
+                      # selected: "English",
+                      include_blank: "Language",
+                      required: true,
+                      label: false,
+                      autofocus: true,
+                      input_html: { autocomplete: "language" } %>
+          <%= f.input :password,
+                      required: true,
+                      label: false,
+                      # hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+                      input_html: { autocomplete: "new-password", placeholder: "Password" } %>
+          <%= f.input :password_confirmation,
+                      required: true,
+                      label: false,
+                      input_html: { autocomplete: "new-password", placeholder: "Confirm Password" } %>
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, "Sign up", class: "btn btn-accent btn-login" %>
+        </div>
+      <% end %>
+
+      <div class="link-container d-flex justify-content-center mt-3">
+        <%= render "devise/shared/links" %>
+      </div>
     </div>
-
-    <div class="form-actions">
-      <%= f.button :submit, "Sign up", class: "btn btn-accent btn-login" %>
-    </div>
-  <% end %>
-
-  <div class="link-container d-flex justify-content-center mt-3">
-    <%= render "devise/shared/links" %>
   </div>
 </div>

@@ -101,6 +101,11 @@ $card-modal-shadow: $shadow-xl;
 $card-accent-border: 1px solid rgba($color-brand-accent, 0.2);
 
 // -----------------------------------------------------------------------------
+// Layout
+// -----------------------------------------------------------------------------
+$header-height: 7vh;
+
+// -----------------------------------------------------------------------------
 // CSS Custom Properties (for JS access)
 // -----------------------------------------------------------------------------
 :root {
@@ -109,4 +114,5 @@ $card-accent-border: 1px solid rgba($color-brand-accent, 0.2);
   --color-brand-accent: #{$color-brand-accent};
   --font-family-primary: #{$font-family-primary};
   --font-family-display: #{$font-family-display};
+  --header-height: #{$header-height};
 }
