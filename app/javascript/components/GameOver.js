@@ -63,7 +63,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false
 
   const getResultSubtext = () => {
     if (waitingForOthers) {
-      return "Waiting for other players to finish...";
+      return;
     }
     if (isMultiplayer) {
       const winnerCount = winnerIds.length;
@@ -107,7 +107,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false
               <div key={index} className="mb-1 small" style={{ display: 'block' }}>
                 <FontAwesomeIcon
                   icon={round.success ? faCheck : faXmark}
-                  className={`me-2 ${round.success ? 'text-success' : 'text-danger'}`}
+                  className="me-2 text-muted"
                   style={{ float: 'left', marginTop: '2px' }}
                 />
                 <div style={{ 

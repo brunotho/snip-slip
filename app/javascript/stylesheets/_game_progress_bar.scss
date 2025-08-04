@@ -15,7 +15,7 @@
 .game-progress-grid {
   display: grid;
   gap: 0.5rem;
-  justify-items: stretch;
+  justify-items: center;
   max-width: 100%;
   overflow: hidden;
 
@@ -42,23 +42,23 @@
   white-space: nowrap;
 
   &--current-user {
-    background-color: #dbeafe;
+    background-color: rgba($color-current-user, 0.1);
+    border-color: rgba($color-current-user, 0.3);
     font-weight: 600;
   }
 
   &--complete {
-    border-color: #10b981;
+    border-color: #6b7280;
     opacity: 1;
   }
 
   &--multiplayer {
-    width: 100%;
-    max-width: 160px;
+    max-width: 100%;
   }
 
   &--single-player {
     min-width: 160px;
-    max-width: 280px;
+    max-width: 70%;
   }
 }
 
@@ -87,13 +87,13 @@
   flex-shrink: 0;
 
   &--complete {
-    color: #10b981;
+    color: #6b7280;
     font-weight: 600;
   }
 }
 
 .player-complete-icon {
-  color: #10b981;
+  color: #6b7280;
   font-size: 0.6rem;
   margin-left: 0.125rem;
   flex-shrink: 0;
@@ -161,8 +161,8 @@
   border-radius: 0.25rem;
 
   &--current-user {
-    color: #3b82f6;
-    background-color: #dbeafe;
+    color: $color-current-user;
+    background-color: rgba($color-current-user, 0.1);
   }
 
   &--complete {
@@ -197,14 +197,15 @@
 .round-icon {
   font-size: 0.7rem;
   flex-shrink: 0;
+  color: $gray-600;
 
-  &--success {
-    color: #10b981;
-  }
+  // &--success {
+  //   color: #10b981;
+  // }
 
-  &--failure {
-    color: #ef4444;
-  }
+  // &--failure {
+  //   color: #ef4444;
+  // }
 }
 
 .round-snippet {
