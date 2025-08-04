@@ -38,6 +38,18 @@
   margin-bottom: 1rem;
 }
 
+.form-control.is-valid {
+  background-image: none !important;
+}
+
+.form-check-input.is-valid {
+  border-color: #ced4da !important;
+}
+
+.form-check-input.is-valid ~ .form-check-label {
+  color: inherit !important;
+}
+
 .form-container {
   @extend .card-accent;
   max-width: 400px;
