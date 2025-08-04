@@ -181,7 +181,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false
               <button
                 className="btn btn-accent btn-lg"
                 onClick={onPlayAgain}
-                style={{ minWidth: '140px' }}
+                style={{ minWidth: '140px', marginBottom: '1.5rem' }}
               >
                 Play Again
               </button>
@@ -193,10 +193,7 @@ function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false
             <div className="text-center">
               <div className="card-elevated p-4">
                 <div className="d-flex align-items-center justify-content-center">
-                  <div className="spinner-border text-primary me-3" role="status">
-                    <span className="visually-hidden">Waiting...</span>
-                  </div>
-                  <span className="text-muted">Game will continue automatically when all players finish</span>
+                  <span className="loading-ellipsis text-muted me-2">Waiting for other players</span>
                 </div>
               </div>
         </div>
