@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import QuickPlayGame from './singleplayer/QuickPlayGame';
-import SinglePlayerGame from './singleplayer/SinglePlayerGame';
-import MultiPlayerGame from './multiplayer/MultiPlayerGame';
+import GameLayout from './layouts/GameLayout';
 import SnippetCard from './display/SnippetCard';
 import ExpandedSnippet from './display/ExpandedSnippet';
 import Modal from '../shared/Modal';
 import ReportModal from '../moderation/ReportModal';
-import { SkeletonSnippetCard } from '../shared/SkeletonLoader';
+import Loading from '../shared/Loading';
+import ErrorDisplay from '../shared/ErrorDisplay';
+import { createGameSessionChannel } from '../../channels/game_session_channel';
 
 function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData }) {
   // UI State
@@ -45,7 +45,6 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     setLoading(false);
   }
 };
-
 
   const fetchGameSessionData = async () => {
     if (!game_session_id) return;
@@ -89,6 +88,29 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     }
     init();
   }, [game_session_id]);
+
+  useEffect(() => {
+    if (gameMode !== 'multi' || !game_session_id) return;
+
+    const gameChannel = createGameSessionChannel(game_session_id);
+
+    gameChannel.received = (data) => {
+      if (data.type === "round_completed") {
+        setGameData(prevGameData => ({
+          ...prevGameData,
+          players: {
+            ...prevGameData.players,
+            [data.player.id]: data.player
+          },
+          gameOver: data.game_over
+        }));
+      }
+    };
+
+    return () => {
+      gameChannel.unsubscribe();
+    };
+  }, [gameMode, game_session_id, setGameData]);
 
   const handleNextSnippet = () => {
     setSelectedSnippet(null);
@@ -197,95 +219,70 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     setReportModalOpen(true);
   };
 
-  const mainContent =
-    loading ? (
-      <div className="row align-self-center gx-0 gx-md-2 gy-3" style={{ marginTop: "0", width: "100%", maxWidth: "100%", padding: "0 1rem" }}>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div
-            key={`skeleton-${index}`}
-            className="col-12 col-md-6"
-            style={{ maxWidth: "100%" }}
-          >
-            <SkeletonSnippetCard />
-          </div>
-        ))}
-      </div>
-    ) : error ? (
-      <div className="text-center">
-        <div className="text-danger mb-3" style={{ fontSize: '2rem' }}>⚠️</div>
-        <h4 className="text-danger mb-2">Unable to load snippets</h4>
-        <p className="text-muted">{error.message}</p>
-      </div>
-    ) : selectedSnippet ? (
-      <ExpandedSnippet
-        snippet={selectedSnippet}
-        onSubmit={gameMode === 'quick' ? handleNextSnippet : handleSubmit}
-        game_session_id={game_session_id}
-        onNext={handleNextSnippet}
-      />
-    ) : (
-      <div className="snippets-grid">
-        {snippets.map(snippet => (
-          <div
-            key={snippet.id}
-            className="snippets-grid-item"
-          >
-            <SnippetCard
-              snippet={snippet}
-              onClick={() => setSelectedSnippet(snippet)}
-              onLongPress={gameMode === 'quick' ? null : () => handleOpenReportModal(snippet)}
-            />
-          </div>
-        ))}
-      </div>
-    )
+  const mainContent = selectedSnippet ? (
+    <ExpandedSnippet
+      snippet={selectedSnippet}
+      onSubmit={gameMode === 'quick' ? handleNextSnippet : handleSubmit}
+      game_session_id={game_session_id}
+      onNext={handleNextSnippet}
+    />
+  ) : (
+    <div className="snippets-grid">
+      {snippets.map(snippet => (
+        <div
+          key={snippet.id}
+          className="snippets-grid-item"
+        >
+          <SnippetCard
+            snippet={snippet}
+            onClick={() => setSelectedSnippet(snippet)}
+            onLongPress={gameMode === 'quick' ? null : () => handleOpenReportModal(snippet)}
+          />
+        </div>
+      ))}
+    </div>
+  )
 
-  const gameProps = {
-    snippets,
-    loading,
-    error,
-    selectedSnippet,
-    setSelectedSnippet,
-    gameData,
-    setGameData,
-    handleSubmit: gameMode === 'quick' ? null : handleSubmit,
-    handleNextSnippet: gameMode === 'quick' ? handleNextSnippet : null,
-    game_session_id: gameMode === 'quick' ? null : game_session_id,
-    mainContent
-  };
-
-  const renderGameMode = () => {
-    switch (gameMode) {
-      case 'single':
-        return <SinglePlayerGame {...gameProps} />;
-      case 'multi':
-        return <MultiPlayerGame {...gameProps} />;
-      case 'quick':
-      default:
-        return <QuickPlayGame {...gameProps} />;
+  const shouldShowProgressBar = gameMode !== 'quick';
+  
+  const progressBarPlayers = shouldShowProgressBar ? (() => {
+    if (gameMode === 'single') {
+      return gameData.totalScore !== undefined ? {
+        [gameData.currentPlayerId || 'player1']: {
+          id: gameData.currentPlayerId || 'player1',
+          name: gameData.currentPlayerName || 'Player',
+          total_score: gameData.totalScore,
+          rounds_played: gameData.roundsPlayed,
+          round_history: gameData.roundHistory || []
+        }
+      } : {};
+    } else {
+      return gameData.players || {};
     }
-  };
+  })() : {};
 
-  if (!initialized) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '60vh',
-        flexDirection: 'column',
-        gap: '1rem'
-      }}>
-        <div className="skeleton-circle skeleton-circle-lg"></div>
-        <div className="skeleton-line" style={{ width: '200px' }}></div>
-        <div className="skeleton-line skeleton-line-sm" style={{ width: '150px' }}></div>
-      </div>
-    );
+  if (!initialized || loading) {
+    return <Loading message="Loading game..." />;
   }
+
+  if (error) {
+    return <ErrorDisplay error={error} title="Unable to load snippets" />;
+  }
+
+  // Progress bar loading (only for progress bar, not whole component)
+  const progressBarLoading = (gameMode === 'single' && gameData.totalScore === undefined) || 
+    (gameMode === 'multi' && !gameData.players);
 
   return (
     <>
-      {renderGameMode()}
+      <GameLayout
+        mainContent={mainContent}
+        showProgressBar={shouldShowProgressBar}
+        progressBarPlayers={progressBarPlayers}
+        currentUserId={gameData?.currentPlayerId}
+        isMultiplayer={gameMode === 'multi'}
+        progressBarLoading={progressBarLoading}
+      />
 
       <Modal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)}>
         <ReportModal
