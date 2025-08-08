@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HeroSection from './game/layouts/HeroSection';
 import SnippetsGame from './game/SnippetsGame';
-import GameOver from './game/GameOver';
+import GameOver from './game/game-over/GameOver';
 import BottomNavigation from './navigation/BottomNavigation';
 
 function MainComponent({ gameSessionId = null, userLanguage = 'English', userSignedIn = false }) {
