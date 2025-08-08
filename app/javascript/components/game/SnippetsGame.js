@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import QuickPlayGame from './QuickPlayGame';
-import SinglePlayerGame from './SinglePlayerGame';
-import MultiPlayerGame from './MultiPlayerGame';
-import SnippetCard from './SnippetCard';
-import ExpandedSnippet from './ExpandedSnippet';
-import Modal from './Modal';
-import ReportModal from './ReportModal';
-import { SkeletonSnippetCard } from './SkeletonLoader';
+import QuickPlayGame from './modes/QuickPlayGame';
+import SinglePlayerGame from './modes/SinglePlayerGame';
+import MultiPlayerGame from './modes/MultiPlayerGame';
+import SnippetCard from './display/SnippetCard';
+import ExpandedSnippet from './display/ExpandedSnippet';
+import Modal from '../shared/Modal';
+import ReportModal from '../moderation/ReportModal';
+import { SkeletonSnippetCard } from '../shared/SkeletonLoader';
 
 function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData }) {
   // UI State

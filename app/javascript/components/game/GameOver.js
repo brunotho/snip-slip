@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark, faTrophy, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
-import { createGameSessionChannel } from '../channels/game_session_channel';
-import GameLayout from './GameLayout';
+import { createGameSessionChannel } from '../../channels/game_session_channel';
+import GameLayout from './layouts/GameLayout';
 
 function GameOver({ gameData, setGameData, onPlayAgain, waitingForOthers = false }) {
   if (!gameData) return null;

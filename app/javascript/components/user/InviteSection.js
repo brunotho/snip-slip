@@ -68,7 +68,7 @@ function InviteSection() {
                 icon={copied ? faCheck : faCopy} 
                 className="me-2" 
                 style={{ color: copied ? '#10b981' : undefined }}
-              />
+              /> 
               {copied ? 'Copied!' : 'Copy Link'}
             </button>
           </div>

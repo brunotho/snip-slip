@@ -6,14 +6,14 @@ import { createRoot } from 'react-dom/client'
 // Components
 import MainComponent from "./components/MainComponent"
 
-import SnippetsGame from "./components/SnippetsGame"
-import SnippetCard from "./components/SnippetCard"
-import GameInviteManager from "./components/GameInviteManager"
-import FriendshipManager from "./components/FriendshipManager"
-import UserProfile from "./components/UserProfile"
-import ReportReviews from "./components/ReportReviews"
-import AddSnippetFormWrapper from "./components/AddSnippetForm"
-import ConstrainedLayout from "./components/ConstrainedLayout"
+import SnippetsGame from "./components/game/SnippetsGame"
+import SnippetCard from "./components/game/display/SnippetCard"
+import GameInviteManager from "./components/game/multiplayer/GameInviteManager"
+import FriendshipManager from "./components/user/FriendshipManager"
+import UserProfile from "./components/user/UserProfile"
+import ReportReviews from "./components/moderation/ReportReviews"
+import AddSnippetFormWrapper from "./components/forms/AddSnippetForm"
+import ConstrainedLayout from "./components/shared/ConstrainedLayout"
 
 // Styles
 import "bootstrap/dist/css/bootstrap"

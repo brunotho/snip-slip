@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ConstrainedLayout from "./ConstrainedLayout";
+import ConstrainedLayout from "../../shared/ConstrainedLayout";
 
 const GameLayout = ({
   mainContent,

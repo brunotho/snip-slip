@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import DiffSnippetCard from './DiffSnippetCard';
-import ConstrainedLayout from './ConstrainedLayout';
+import DiffSnippetCard from '../game/display/DiffSnippetCard';
+import ConstrainedLayout from '../shared/ConstrainedLayout';
 
 function ReportReviews() {
     // UI State

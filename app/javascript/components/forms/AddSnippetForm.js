@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { createRoot } from 'react-dom/client';
-import ConstrainedLayout from './ConstrainedLayout';
+import ConstrainedLayout from '../shared/ConstrainedLayout';
 import DifficultySlider from "./DifficultySlider";
 
 const AddSnippetFormWrapper = ({ children }) => {
