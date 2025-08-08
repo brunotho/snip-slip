@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import QuickPlayGame from './modes/QuickPlayGame';
-import SinglePlayerGame from './modes/SinglePlayerGame';
-import MultiPlayerGame from './modes/MultiPlayerGame';
+import QuickPlayGame from './singleplayer/QuickPlayGame';
+import SinglePlayerGame from './singleplayer/SinglePlayerGame';
+import MultiPlayerGame from './multiplayer/MultiPlayerGame';
 import SnippetCard from './display/SnippetCard';
 import ExpandedSnippet from './display/ExpandedSnippet';
 import Modal from '../shared/Modal';
