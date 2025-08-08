@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import GameLayout from "./GameLayout";
-import GameProgressBar, { calculateProgressBarHeight } from "./GameProgressBar";
-import { createGameSessionChannel } from "../channels/game_session_channel";
+import GameLayout from "../layouts/GameLayout";
+import GameProgressBar, { calculateProgressBarHeight } from "../display/GameProgressBar";
+import { createGameSessionChannel } from "../../../channels/game_session_channel";
 
 function MultiPlayerGame({ loading, error, gameData, setGameData, game_session_id, mainContent }) {
 

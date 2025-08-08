@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import ConstrainedLayout from './ConstrainedLayout';
+import ConstrainedLayout from '../shared/ConstrainedLayout';
 import InviteSection from './InviteSection';
-import { SkeletonFriendItem } from './SkeletonLoader';
+import { SkeletonFriendItem } from '../shared/SkeletonLoader';
 
 const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");

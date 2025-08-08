@@ -1,6 +1,6 @@
 import React from 'react';
-import GameLayout from './GameLayout';
-import GameProgressBar, { calculateProgressBarHeight } from './GameProgressBar';
+import GameLayout from '../layouts/GameLayout';
+import GameProgressBar, { calculateProgressBarHeight } from '../display/GameProgressBar';
 
 function SinglePlayerGame({ loading, error, gameData, mainContent }) {
 

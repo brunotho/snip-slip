@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { createGameSessionChannel } from "../channels/game_session_channel";
-import ConstrainedLayout from "./ConstrainedLayout";
+import { createGameSessionChannel } from "../../../channels/game_session_channel";
+import ConstrainedLayout from "../../shared/ConstrainedLayout";
 
 const GameInviteManager = () => {
   const container = document.getElementById("game-invite-manager");

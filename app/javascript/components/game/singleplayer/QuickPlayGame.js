@@ -1,5 +1,5 @@
 import React from 'react';
-import GameLayout from './GameLayout';
+import GameLayout from '../layouts/GameLayout';
 
 function QuickPlayGame({ loading, mainContent}) {
   if (loading) {
