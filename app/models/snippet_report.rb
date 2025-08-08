@@ -5,7 +5,11 @@ class SnippetReport < ApplicationRecord
 
   enum status: { pending: 0, approved: 1, rejected: 2 }
 
-  validates :user, uniqueness: { scope: :lyric_snippet }
+  validates :user, uniqueness: {
+    scope: :lyric_snippet,
+    conditions: -> { where(status: :pending) },
+    message: "can only have one pending report per snippet"
+  }
   validate :at_least_one_issue_selected
   validate :suggestions_for_wrong_fields_present
 
@@ -17,7 +21,7 @@ class SnippetReport < ApplicationRecord
   end
 
   def update_status!
-    # do a comparative count of approved/disapproved or 'best of X' when completed? number is increased
+    # in production: do a comparative count of approved/disapproved or 'best of X' when completed? increase number when sufficient amount of users
     if report_votes&.where(vote: "approve").count >= 1
       self.status = "approved"
     elsif report_votes&.where(vote: "disapprove").count >= 1
