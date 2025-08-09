@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DifficultySlider from '../forms/DifficultySlider';
+import DifficultySlider from '../shared/DifficultySlider';
 import ImageSelector from './ImageSelector';
 
 function ReportModal({ snippet, onClose }) {
