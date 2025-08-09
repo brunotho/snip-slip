@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client'
 import MainComponent from "./components/MainComponent"
 
 import SnippetsGame from "./components/game/SnippetsGame"
-import SnippetCard from "./components/game/display/SnippetCard"
+import SnippetCard from "./components/game/snippets/SnippetCard"
 import GameInviteManager from "./components/game/multiplayer/GameInviteManager"
 import FriendshipManager from "./components/friends/FriendshipManager"
 import UserProfile from "./components/profile/UserProfile"
