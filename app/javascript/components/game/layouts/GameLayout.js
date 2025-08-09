@@ -1,6 +1,6 @@
 import React from "react";
 import ConstrainedLayout from "../../shared/ConstrainedLayout";
-import GameProgressBar, { calculateProgressBarHeight } from "../display/GameProgressBar";
+import GameProgressBar, { calculateProgressBarHeight } from "../progress/GameProgressBar";
 
 const GameLayout = ({
   mainContent,

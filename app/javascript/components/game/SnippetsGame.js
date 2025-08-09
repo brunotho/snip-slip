@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GameLayout from './layouts/GameLayout';
-import SnippetCard from './display/SnippetCard';
-import ExpandedSnippet from './display/ExpandedSnippet';
+import SnippetCard from './snippets/SnippetCard';
+import ExpandedSnippet from './snippets/ExpandedSnippet';
 import Modal from '../shared/Modal';
 import ReportModal from '../reports/ReportModal';
 import Loading from '../shared/Loading';
