@@ -11,7 +11,7 @@ import SnippetCard from "./components/game/display/SnippetCard"
 import GameInviteManager from "./components/game/multiplayer/GameInviteManager"
 import FriendshipManager from "./components/user/FriendshipManager"
 import UserProfile from "./components/user/UserProfile"
-import ReportReviews from "./components/moderation/ReportReviews"
+import ReportReviews from "./components/reports/ReportReviews"
 import AddSnippetFormWrapper from "./components/forms/AddSnippetForm"
 import ConstrainedLayout from "./components/shared/ConstrainedLayout"
 

@@ -3,7 +3,7 @@ import GameLayout from './layouts/GameLayout';
 import SnippetCard from './display/SnippetCard';
 import ExpandedSnippet from './display/ExpandedSnippet';
 import Modal from '../shared/Modal';
-import ReportModal from '../moderation/ReportModal';
+import ReportModal from '../reports/ReportModal';
 import Loading from '../shared/Loading';
 import ErrorDisplay from '../shared/ErrorDisplay';
 import { createGameSessionChannel } from '../../channels/game_session_channel';

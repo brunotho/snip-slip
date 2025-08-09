@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DifficultySlider from '../forms/DifficultySlider';
-import ImageSelector from '../forms/ImageSelector';
+import ImageSelector from './ImageSelector';
 
 function ReportModal({ snippet, onClose }) {
   // UI State
