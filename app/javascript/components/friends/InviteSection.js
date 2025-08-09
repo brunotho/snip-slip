@@ -11,7 +11,7 @@ function InviteSection() {
   
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(`${inviteMessage}\n\n${inviteUrl}`);
+      await navigator.clipboard.writeText(`${inviteUrl}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
