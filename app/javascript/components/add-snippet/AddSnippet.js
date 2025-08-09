@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import ConstrainedLayout from '../shared/ConstrainedLayout';
 import DifficultySlider from "../shared/DifficultySlider";
 
-const AddSnippetFormWrapper = ({ children }) => {
+const AddSnippet = ({ html = "" }) => {
   useEffect(() => {
     const sliderContainer = document.getElementById('difficulty-slider-container');
     if (sliderContainer) {
@@ -14,9 +14,9 @@ const AddSnippetFormWrapper = ({ children }) => {
 
   return (
     <ConstrainedLayout>
-      { children }
+      <div dangerouslySetInnerHTML={{ __html: html }} />
     </ConstrainedLayout>
   )
 }
 
-export default AddSnippetFormWrapper;
+export default AddSnippet;

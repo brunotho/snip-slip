@@ -12,7 +12,7 @@ import GameInviteManager from "./components/game/multiplayer/GameInviteManager"
 import FriendshipManager from "./components/friends/FriendshipManager"
 import UserProfile from "./components/profile/UserProfile"
 import ReportReviews from "./components/reports/ReportReviews"
-import AddSnippetFormWrapper from "./components/forms/AddSnippetForm"
+import AddSnippet from "./components/add-snippet/AddSnippet"
 import ConstrainedLayout from "./components/shared/ConstrainedLayout"
 
 // Styles
@@ -112,9 +112,7 @@ document.addEventListener('turbo:load', () => {
     const content = wrapperElement.innerHTML
     wrapperElement.innerHTML = ''
     wrapperRoot.render(
-      <AddSnippetFormWrapper>
-        <div dangerouslySetInnerHTML={{ __html: content }} />
-      </AddSnippetFormWrapper>
+      <AddSnippet html={content} />
     )
   }
 
