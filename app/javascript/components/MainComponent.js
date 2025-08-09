@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import HeroSection from './game/layouts/HeroSection';
+import HeroSection from './home/HeroSection';
 import SnippetsGame from './game/SnippetsGame';
 import GameOver from './game/game-over/GameOver';
-import BottomNavigation from './navigation/BottomNavigation';
+import BottomNavigation from './home/BottomNavigation';
 
 function MainComponent({ gameSessionId = null, userLanguage = 'English', userSignedIn = false }) {
   const [gameData, setGameData] = useState({});
