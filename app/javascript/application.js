@@ -8,7 +8,7 @@ import MainComponent from "./components/MainComponent"
 
 import SnippetsGame from "./components/game/SnippetsGame"
 import SnippetCard from "./components/game/snippets/SnippetCard"
-import GameInviteManager from "./components/game/multiplayer/GameInviteManager"
+import GameInviteManager from "./components/game/multiplayer-lobby/GameInviteManager"
 import FriendshipManager from "./components/friends/FriendshipManager"
 import UserProfile from "./components/profile/UserProfile"
 import ReportReviews from "./components/reports/ReportReviews"
