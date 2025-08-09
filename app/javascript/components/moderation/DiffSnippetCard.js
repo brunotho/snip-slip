@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import DiffText from '../../moderation/DiffText';
+import DiffText from './DiffText';
 
 function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handleSkip }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
