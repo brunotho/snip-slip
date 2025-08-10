@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { createGameSessionChannel } from "../../../channels/game_session_channel";
 import ConstrainedLayout from "../../shared/ConstrainedLayout";
+import Loading from "../../shared/Loading";
+import FriendsList from "./parts/FriendsList";
+import PlayersList from "./parts/PlayersList";
+import GameControls from "./parts/GameControls";
 
 const GameInviteManager = () => {
   const container = document.getElementById("game-invite-manager");
@@ -16,7 +20,6 @@ const GameInviteManager = () => {
   const [invitedPlayers, setInvitedPlayers] = useState([]);
 
   useEffect(() => {
-
     fetchInitialState();
     fetchFriends();
     
@@ -160,18 +163,7 @@ const GameInviteManager = () => {
   if (loading) {
     return (
       <ConstrainedLayout>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '60vh',
-          flexDirection: 'column',
-          gap: '1rem'
-        }}>
-          <div className="skeleton-circle skeleton-circle-lg"></div>
-          <div className="skeleton-line" style={{ width: '250px' }}></div>
-          <div className="skeleton-line skeleton-line-sm" style={{ width: '180px' }}></div>
-        </div>
+        <Loading message="Loading lobby..." />
       </ConstrainedLayout>
     );
   }
@@ -189,22 +181,11 @@ const GameInviteManager = () => {
               <div className="card-elevated mb-4">
                 <div className="card-header-custom">Your Friends</div>
                 <div className="card-body-custom">
-                  {friends.length === 0 ? (
-                    <p>No friends :((</p>
-                  ) : (
-                    friends.map((friend) => (
-                      <div key={friend.id} className="d-flex justify-content-between align-items-center mb-2">
-                        <span>{friend.name}</span>
-                        <button
-                          className="btn btn-accent btn-sm"
-                          onClick={() => inviteFriend(friend)}
-                          disabled={invitedPlayers.includes(friend.user_id)}
-                        >
-                          {invitedPlayers.includes(friend.user_id) ? 'Invited' : 'Invite'}
-                        </button>
-                      </div>
-                    ))
-                  )}
+                  <FriendsList
+                    friends={friends}
+                    invitedPlayers={invitedPlayers}
+                    onInviteFriend={inviteFriend}
+                  />
                 </div>
               </div>
             </div>
@@ -214,41 +195,17 @@ const GameInviteManager = () => {
             <div className="card-elevated mb-4">
               <div className="card-header-custom">Players Joined</div>
               <div className="card-body-custom">
-                {joinedPlayers.length === 0 ? (
-                  <p>Waiting for players to join...</p>
-                ) : (
-                  joinedPlayers.map((player) => (
-                    <div key={player.id} className="mb-2">
-                      {player.name}
-                    </div>
-                  ))
-                )}
+                <PlayersList joinedPlayers={joinedPlayers} />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-center mt-4">
-          {isHost ? (
-            <button
-              className="btn btn-accent-emphasized btn-lg"
-              disabled={joinedPlayers.length < 2}
-              onClick={startGame}
-            >
-              Start Game
-            </button>
-          ) : (
-            <div className="alert alert-info">
-              Waiting for host to start the game...
-            </div>
-          )}
-          <p className="text-muted mt-2">
-            {joinedPlayers.length < 2
-              ? 'Waiting for players to join...'
-              : `${joinedPlayers.length} players ready`
-            }
-          </p>
-        </div>
+        <GameControls
+          isHost={isHost}
+          joinedPlayers={joinedPlayers}
+          onStartGame={startGame}
+        />
       </div>
     </ConstrainedLayout>
   );
