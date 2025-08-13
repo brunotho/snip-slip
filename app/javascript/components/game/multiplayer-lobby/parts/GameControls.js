@@ -12,14 +12,19 @@ function GameControls({ isHost, joinedPlayers, onStartGame }) {
           Start Game
         </button>
       ) : (
-        <div className="alert alert-info">
+        <div className="lobby-info-display">
           Waiting for host to start the game...
         </div>
       )}
       <p className="text-muted mt-2">
-        {joinedPlayers.length < 2
-          ? 'Waiting for players to join...'
-          : `${joinedPlayers.length} players ready`
+        {joinedPlayers.length < 2 ? 
+        <p className="text-muted mt-2">
+          Waiting for players to join...
+        </p>
+          : 
+        <p className="text-muted mt-2">
+          {joinedPlayers.length} players ready
+        </p>
         }
       </p>
     </div>

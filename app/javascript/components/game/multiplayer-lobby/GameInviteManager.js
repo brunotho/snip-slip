@@ -150,10 +150,8 @@ const GameInviteManager = () => {
 
       if (!response.ok) throw new Error("Failed to start game");
 
-
       const data = await response.json();
       
-
       // window.location.href = `/game_sessions/${gameSessionId}`;
     } catch (error) {
       // Silently handle start game errors
@@ -170,15 +168,15 @@ const GameInviteManager = () => {
 
   return (
     <ConstrainedLayout>
-      <div className="container mt-4">
-        <h3 className="text-center mb-4">
+      <div className="lobby-container">
+        <h3 className="lobby-title">
           {isHost ? "Invite Friends to Play" : "Waiting for Game to Start"}
         </h3>
 
-        <div className="row">
+        <div className="lobby-grid row">
           {isHost && (
-            <div className="col-md-6">
-              <div className="card-elevated mb-4">
+            <div className="lobby-card-host">
+              <div className="card-elevated lobby-card">
                 <div className="card-header-custom">Your Friends</div>
                 <div className="card-body-custom">
                   <FriendsList
@@ -191,8 +189,8 @@ const GameInviteManager = () => {
             </div>
           )}
 
-          <div className={isHost ? "col-md-6" : "col-md-8 mx-auto"}>
-            <div className="card-elevated mb-4">
+          <div className={`lobby-card-players ${isHost ? 'is-host' : ''}`}>
+            <div className="card-elevated lobby-card">
               <div className="card-header-custom">Players Joined</div>
               <div className="card-body-custom">
                 <PlayersList joinedPlayers={joinedPlayers} />

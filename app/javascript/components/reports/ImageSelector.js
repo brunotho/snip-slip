@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import Loading from '../shared/Loading';
 
 function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCovers }) {
   if (!isOpen) return null;
@@ -11,9 +12,7 @@ function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCo
           <h3>Select Alternative Image</h3>
           
           {loadingCovers ? (
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
-              Loading alternative covers...
-            </div>
+            <Loading message="Loading alternative covers..." />
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginTop: '1rem' }}>
               {alternativeCovers.map((url, index) => (

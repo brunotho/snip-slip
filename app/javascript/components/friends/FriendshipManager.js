@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import ConstrainedLayout from '../shared/ConstrainedLayout';
 import InviteSection from './InviteSection';
-import { SkeletonFriendItem } from '../shared/SkeletonLoader';
+import Loading from '../shared/Loading';
 
 const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");
@@ -218,7 +218,7 @@ const FriendshipManager = () => {
           </div>
           <div className="card-body-custom">
             {isLoadingFriends ? (
-              <SkeletonFriendItem count={3} />
+              <Loading message="Loading friends..." />
             ) : friends.length > 0 ? (
               friends.map((friend) => (
                 <div key={friend.id}
@@ -266,7 +266,7 @@ const FriendshipManager = () => {
             </div>
 
             {isSearching ? (
-              <SkeletonFriendItem count={2} />
+              <Loading message="Searching..." />
             ) : searchResults.length > 0 ? (
               searchResults.map((user) => (
               <div key={user.id}
@@ -303,9 +303,9 @@ const FriendshipManager = () => {
               <strong>Friend Requests</strong>
             </div>
             <div className="card-body-custom">
-              {isLoadingFriends ? (
-                <SkeletonFriendItem count={2} />
-              ) : (
+                          {isLoadingFriends ? (
+              <Loading message="Loading friends..." />
+            ) : (
                 receivedRequests.map((request) => (
                   <div key={request.id}
                       className="d-flex justify-content-between align-items-center p-2 mb-2 rounded">
@@ -345,7 +345,7 @@ const FriendshipManager = () => {
             </div>
             <div className="card-body-custom">
               {isLoadingFriends ? (
-                <SkeletonFriendItem count={1} />
+                <Loading message="Loading requests..." />
               ) : (
               pendingRequests.map((request) => (
                 <div key={request.id}

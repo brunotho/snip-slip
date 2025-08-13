@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DiffSnippetCard from './DiffSnippetCard';
 import ConstrainedLayout from '../shared/ConstrainedLayout';
+import Loading from '../shared/Loading';
 
 function ReportReviews() {
     // UI State
@@ -167,6 +168,14 @@ function ReportReviews() {
         )
     }
     
+    if (loading) {
+        return (
+            <ConstrainedLayout>
+                <Loading message="Loading reports..." />
+            </ConstrainedLayout>
+        );
+    }
+
     return (
         <ConstrainedLayout>
             {error && (
@@ -175,11 +184,7 @@ function ReportReviews() {
                 </div>
             )}
 
-            {loading ? (
-                <div>
-                    <p>Loading...</p>
-                </div>
-            ) : allReportsDone ? (
+            {allReportsDone ? (
                 <div>
                     <p>No more reports to review</p>
                 </div>

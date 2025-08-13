@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DifficultySlider from '../shared/DifficultySlider';
 import ImageSelector from './ImageSelector';
+import Loading from '../shared/Loading';
 
 function ReportModal({ snippet, onClose }) {
   // UI State
@@ -381,12 +382,17 @@ function ReportModal({ snippet, onClose }) {
     )
   };
 
+  if (loading) {
+    return (
+      <div className="report-modal-frame">
+        <Loading message="Loading report form..." />
+      </div>
+    );
+  }
+
   return (
     <div className="report-modal-frame">
-      {loading ? 
-        <div>Loading...</div> : 
-        showSuccessfulReportView ? renderSuccessContent() : renderFormContent()
-      }
+      {showSuccessfulReportView ? renderSuccessContent() : renderFormContent()}
     </div>
   );
 }

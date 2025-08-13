@@ -1,0 +1,33 @@
+.lobby-container {
+  margin-top: 1.5rem;
+}
+
+.lobby-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.lobby-grid {
+  margin-bottom: 1.5rem;
+}
+
+.lobby-card {
+  margin-bottom: 1.5rem;
+}
+
+.lobby-card-players {
+  &:not(.is-host) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.lobby-info-display {
+  background-color: rgba($color-brand-accent, 0.5);
+  border: 1px solid rgba($color-brand-accent, 0.2);
+  color: $color-brand-secondary;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  text-align: center;
+  font-size: $font-size-base;
+} 

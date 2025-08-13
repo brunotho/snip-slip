@@ -1,6 +1,5 @@
 import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import ReactLoading from 'react-loading';
 
 const Loading = ({ message = "Loading..." }) => (
   <div style={{
@@ -11,9 +10,7 @@ const Loading = ({ message = "Loading..." }) => (
     flexDirection: 'column',
     gap: '1rem'
   }}>
-    <Skeleton circle width={60} height={60} />
-    <Skeleton width={200} height={20} />
-    <Skeleton width={150} height={16} />
+    <ReactLoading type="spin" color="#6c757d" height={50} width={50} />
     <p className="text-muted mt-3">{message}</p>
   </div>
 );
