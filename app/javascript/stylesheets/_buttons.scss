@@ -144,7 +144,7 @@
   }
 }
 
-// (removed) .btn-floating was unused
+ 
 
 // Icon buttons
 .btn-icon {
@@ -213,6 +213,21 @@
   .btn {
     flex: 1;
     max-width: 48%;
+  }
+}
+
+@media (min-width: 992px) { // desktop
+  .bottom-nav-buttons {
+    left: 0;
+    right: 0;
+    justify-content: center;
+    gap: 16px;
+
+    .btn {
+      flex: 0 0 auto;
+      max-width: none;
+      min-width: 220px;
+    }
   }
 }
 

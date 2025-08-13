@@ -19,6 +19,12 @@
   cursor: pointer;
 }
 
+@media (min-width: 768px) {
+  .hero-play-button {
+    margin-bottom: 2.5rem;
+  }
+}
+
 .hero-play-icon {
   color: black;
 }

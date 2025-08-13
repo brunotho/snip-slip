@@ -76,7 +76,7 @@ class LyricSnippet < ApplicationRecord
       .uniq { |album| album["name"] }
       .reject { |album| album["name"].match?(/\((deluxe|remaster|edition)\)/i) }
       .map { |album| album.dig("images", 0, "url") }
-      .first(16)
+      .first(6)
 
     images
   end

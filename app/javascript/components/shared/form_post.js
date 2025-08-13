@@ -1,4 +1,4 @@
-export function submitPost(path) {
+export function submitFormPost(path) {
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = path;

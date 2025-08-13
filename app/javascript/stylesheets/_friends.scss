@@ -1,0 +1,13 @@
+.search-result-row {
+  transition: opacity 0.9s ease, max-height 0.9s ease, margin 0.9s ease, padding 0.9s ease;
+  overflow: hidden;
+  &.fade-out {
+    opacity: 0;
+    max-height: 0;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+

@@ -3,9 +3,10 @@
     <div class="form-container">
       <h2>Log into SnipSlip</h2>
 
-      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name),
-      data: { turbo: false }) do |f| %>
-        <%= f.error_notification %>
+      <% content_for :suppress_global_alert, true %>
+
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
+        
         
         <div class="form-inputs">
           <%= f.input :email,
@@ -22,6 +23,11 @@
 
         <div class="form-actions">
           <%= f.button :submit, "Log in", class: "btn btn-login" %>
+          <div class="form-feedback-inline" aria-live="polite">
+            <% if alert.present? %>
+              <span class="text-danger small"><%= alert %></span>
+            <% end %>
+          </div>
         </div>
       <% end %>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Modal({ children, onClose, isOpen = false }) {
+function Modal({ children, onClose, isOpen = false, contentClassName = "modal-content-centered" }) {
   if (!isOpen) return null;
 
   return (
@@ -12,7 +12,7 @@ function Modal({ children, onClose, isOpen = false }) {
       />
       {/* Modal Content */}
       <div
-        className="modal-content-centered"
+        className={contentClassName}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

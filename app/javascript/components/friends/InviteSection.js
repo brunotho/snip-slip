@@ -53,12 +53,11 @@ function InviteSection() {
   return (
     <div className="card-elevated mb-4">
       <div className="card-header-custom">
-        <strong>Invite Friends to SnipSlip</strong>
+        <strong>Share SnipSlip</strong>
       </div>
       <div className="card-body-custom">
-        {/* Share buttons */}
-        <div className="row g-2 mb-3">
-          <div className="col-6 col-md-3">
+        <div className="row row-cols-2 g-2 mb-3">
+          <div className="col">
             <button
               onClick={copyToClipboard}
               className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
@@ -73,7 +72,7 @@ function InviteSection() {
             </button>
           </div>
           
-          <div className="col-6 col-md-3">
+          <div className="col">
             <button
               onClick={shareWhatsApp}
               className="btn btn-outline-success w-100 d-flex align-items-center justify-content-center"
@@ -84,7 +83,7 @@ function InviteSection() {
             </button>
           </div>
           
-          <div className="col-6 col-md-3">
+          <div className="col">
             <button
               onClick={shareSMS}
               className="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center"
@@ -95,7 +94,7 @@ function InviteSection() {
             </button>
           </div>
           
-          <div className="col-6 col-md-3">
+          <div className="col">
             <button
               onClick={shareEmail}
               className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"

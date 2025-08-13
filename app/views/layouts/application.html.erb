@@ -30,11 +30,15 @@
 
     <%= yield %>
 
-    <% if alert %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= alert %>
-      </div>
+    <% unless content_for?(:suppress_global_alert) %>
+      <% if alert %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= alert %>
+        </div>
+      <% end %>
     <% end %>
+
+    <div id="realtime-modal-root"></div>
   </body>
 
 </html>

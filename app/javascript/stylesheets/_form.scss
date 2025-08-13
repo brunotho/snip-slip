@@ -70,3 +70,14 @@
     text-align: center;
   }
 }
+
+.form-container--spaced {
+  margin-bottom: $spacing-xl;
+}
+
+// Reserve space for inline feedback so layout doesn't jump
+.form-feedback-inline {
+  min-height: 1.25rem; // ~ one line of small text
+  margin-top: 0.5rem;
+  text-align: center;
+}

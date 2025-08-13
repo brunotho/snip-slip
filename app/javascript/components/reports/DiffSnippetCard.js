@@ -62,12 +62,12 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handl
   
   return (
     <div
-    className="card snippet-card shadow"
+    className="card-elevated is-interactive snippet-card"
     onClick={handleVote}
     >
       <div className="d-flex h-100">
         <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>
-          <div className="card-body d-flex flex-column h-100">
+          <div className="card-body-custom d-flex flex-column h-100">
             <div
               ref={containerRef}
               className="flex-grow-1 d-flex align-items-center"

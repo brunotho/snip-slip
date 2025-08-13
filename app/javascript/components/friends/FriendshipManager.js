@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -10,21 +10,29 @@ const FriendshipManager = () => {
   const container = document.getElementById("friendship-manager");
   const initialData = JSON.parse(container.dataset.friendships || "{}");
 
-  // External Data
+  
   const [friends, setFriends] = useState(initialData.friends || []);
   const [pendingRequests, setPendingRequests] = useState(initialData.pending_requests || []);
   const [receivedRequests, setReceivedRequests] = useState(initialData.received_requests || []);
   
-  // Search State
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   
-  // UI State
+  
   const [isLoadingFriends, setIsLoadingFriends] = useState(false);
   const [loadingActions, setLoadingActions] = useState(new Set());
+  const [recentlyAdded, setRecentlyAdded] = useState(new Set());
+  const [fadingOut, setFadingOut] = useState(new Set());
 
-  const debouncedSearch = debounce((term) => searchUsers(term), 300);
+  const debouncedSearch = useMemo(() => debounce((term) => searchUsers(term), 300), [friends, pendingRequests, receivedRequests]);
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   const setActionLoading = (actionId, isLoading) => {
     setLoadingActions(prev => {
@@ -66,7 +74,7 @@ const FriendshipManager = () => {
       setPendingRequests(data.pending_requests);
       setReceivedRequests(data.received_requests);
     } catch (error) {
-      // Silently handle friendship fetch errors
+      
     } finally {
       setIsLoadingFriends(false);
     }
@@ -92,10 +100,19 @@ const FriendshipManager = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      
-      setSearchResults(data);
+      const currentUserId = document.body?.dataset?.currentUserId || null;
+      const friendIds = new Set(friends.map(f => f.user_id));
+      const pendingIds = new Set(pendingRequests.map(p => p.user_id));
+      const receivedIds = new Set(receivedRequests.map(r => r.user_id));
+      const filtered = data.filter(u => {
+        if (String(u.id) === String(currentUserId)) return false;
+        if (friendIds.has(u.id)) return false;
+        if (pendingIds.has(u.id)) return false;
+        return true;
+      });
+      setSearchResults(filtered);
     } catch (error) {
-      // Silently handle search errors
+      
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -115,9 +132,26 @@ const FriendshipManager = () => {
         },
         body: JSON.stringify({ friend_id: userId })
       });
+      setRecentlyAdded(prev => new Set(prev).add(userId));
+      setTimeout(() => {
+        setFadingOut(prev => new Set(prev).add(userId));
+        setTimeout(() => {
+          setRecentlyAdded(prev => {
+            const next = new Set(prev);
+            next.delete(userId);
+            return next;
+          });
+          setFadingOut(prev => {
+            const next = new Set(prev);
+            next.delete(userId);
+            return next;
+          });
+          setSearchResults(prev => prev.filter(u => u.id !== userId));
+        }, 900);
+      }, 1500);
       fetchFriendships();
     } catch (error) {
-      // Silently handle friend request errors
+      
     } finally {
       setActionLoading(actionId, false);
     }
@@ -153,7 +187,7 @@ const FriendshipManager = () => {
           await fetchFriendships();
         }
       } else {
-        // Handle non-OK response
+      
       }
     } catch (error) {
       // Silently handle accept friend request errors
@@ -201,11 +235,43 @@ const FriendshipManager = () => {
         // Handle non-OK response
       }
     } catch (error) {
-      // Silently handle remove friend errors
+      
     } finally {
       setActionLoading(actionId, false);
     }
   };
+
+  const cancelPendingRequest = async (friendshipId) => {
+    const actionId = `cancel-${friendshipId}`;
+    try {
+      setActionLoading(actionId, true);
+      const response = await fetch(`/friendships/${friendshipId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": getCSRFToken(),
+        },
+      });
+      if (response.ok) {
+        fetchFriendships();
+      }
+    } catch (error) {
+      // Silently handle cancel errors
+    } finally {
+      setActionLoading(actionId, false);
+    }
+  };
+
+  
+  const [showEmpty, setShowEmpty] = useState(false);
+  useEffect(() => {
+    if (isSearching || searchTerm.length < 2 || (searchResults && searchResults.length > 0)) {
+      setShowEmpty(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowEmpty(true), 300);
+    return () => clearTimeout(timer);
+  }, [isSearching, searchTerm, searchResults]);
 
   return (
     <ConstrainedLayout>
@@ -214,7 +280,7 @@ const FriendshipManager = () => {
         {/* 1. Friends List */}
         <div className="card-elevated mb-4">
           <div className="card-header-custom">
-            <strong>Your Friends</strong>
+            <strong>Friends ({friends.length})</strong>
           </div>
           <div className="card-body-custom">
             {isLoadingFriends ? (
@@ -226,7 +292,7 @@ const FriendshipManager = () => {
                   <div>
                     <span className="fw-medium me-2">{friend.name}</span>
                     <br />
-                    <small className="text-muted">{friend.email}</small>
+                    <small className="text-muted">{friend.email?.length > 22 ? `${friend.email.slice(0, 22)}…` : friend.email}</small>
                   </div>
                   <button 
                     className="btn-icon" 
@@ -248,7 +314,7 @@ const FriendshipManager = () => {
         {/* 2. Find Friends (Search) */}
         <div className="card-elevated mb-4">
           <div className="card-header-custom">
-            <strong>Find Friends</strong>
+            <strong>Find people</strong>
           </div>
           <div className="card-body-custom">
             <div className="mb-3">
@@ -256,6 +322,7 @@ const FriendshipManager = () => {
                 type="text"
                 className="form-control"
                 placeholder="Search by name or email..."
+                aria-label="Search people by name or email"
                 value={searchTerm}
                 onChange={(e) => {
                   const newTerm = e.target.value;
@@ -270,22 +337,34 @@ const FriendshipManager = () => {
             ) : searchResults.length > 0 ? (
               searchResults.map((user) => (
               <div key={user.id}
-                  className="d-flex justify-content-between align-items-center p-2 mb-2">
-                <div>
-                  <span className="fw-medium me-2">{user.name}</span>
-                  <br />
-                  <small className="text-muted">{user.email}</small>
-                </div>
-                  <button 
-                    className="btn-icon" 
-                    onClick={() => sendFriendRequest(user.id)}
-                    disabled={isActionLoading(`send-${user.id}`)}
-                  >
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
+                  className={`d-flex justify-content-between align-items-center p-2 mb-2 search-result-row ${fadingOut.has(user.id) ? 'fade-out' : ''}`}>
+                {recentlyAdded.has(user.id) ? (
+                  <div className="text-muted">
+                    <span className="fw-medium">{user.name}</span> added
+                  </div>
+                ) : receivedRequests.some(r => r.user_id === user.id) ? (
+                  <div className="text-muted">
+                    <span className="fw-medium">{user.name}</span> already added you
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <span className="fw-medium me-2">{user.name}</span>
+                      <br />
+                      <small className="text-muted">{user.email?.length > 22 ? `${user.email.slice(0, 22)}…` : user.email}</small>
+                    </div>
+                    <button 
+                      className="btn-icon" 
+                      onClick={() => sendFriendRequest(user.id)}
+                      disabled={isActionLoading(`send-${user.id}`)}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                  </>
+                )}
                 </div>
               ))
-            ) : searchTerm.length >= 2 ? (
+            ) : showEmpty ? (
               <div className="text-center text-muted py-3">
                 No users found. Try inviting them to join!
               </div>
@@ -299,8 +378,8 @@ const FriendshipManager = () => {
         {/* 4. Friend Requests (Received) */}
         {(receivedRequests.length > 0 || isLoadingFriends) && (
           <div className="card-elevated mb-4">
-            <div className="card-header-custom">
-              <strong>Friend Requests</strong>
+          <div className="card-header-custom">
+            <strong>Requests received ({receivedRequests.length})</strong>
             </div>
             <div className="card-body-custom">
                           {isLoadingFriends ? (
@@ -312,7 +391,7 @@ const FriendshipManager = () => {
                     <div>
                       <span className="fw-medium me-2">{request.name}</span>
                       <br />
-                      <small className="text-muted">{request.email}</small>
+                      <small className="text-muted">{request.email?.length > 22 ? `${request.email.slice(0, 22)}…` : request.email}</small>
                     </div>
                     <div className="button-container">
                       <button 
@@ -340,8 +419,8 @@ const FriendshipManager = () => {
         {/* 5. Sent Requests (Only show if there are any) */}
         {(pendingRequests.length > 0 || isLoadingFriends) && (
           <div className="card-elevated mb-4">
-            <div className="card-header-custom">
-              <strong>Sent Requests</strong>
+          <div className="card-header-custom">
+            <strong>Requests sent ({pendingRequests.length})</strong>
             </div>
             <div className="card-body-custom">
               {isLoadingFriends ? (
@@ -349,12 +428,21 @@ const FriendshipManager = () => {
               ) : (
               pendingRequests.map((request) => (
                 <div key={request.id}
-                    className="p-2 mb-2 rounded hover-bg-light">
-                    <div>
-                      <span className="fw-medium me-2">{request.name}</span>
-                      <br />
-                      <small className="text-muted">{request.email}</small>
-                    </div>
+                    className="d-flex justify-content-between align-items-center p-2 mb-2 rounded hover-bg-light">
+                  <div>
+                    <span className="fw-medium me-2">{request.name}</span>
+                    <br />
+                    <small className="text-muted">{request.email?.length > 22 ? `${request.email.slice(0, 22)}…` : request.email}</small>
+                  </div>
+                  <div className="button-container">
+                    <button
+                      className="btn-icon"
+                      onClick={() => cancelPendingRequest(request.id)}
+                      disabled={isActionLoading(`cancel-${request.id}`)}
+                    >
+                      <FontAwesomeIcon icon={faXmark} />
+                    </button>
+                  </div>
                 </div>
               ))
             )}

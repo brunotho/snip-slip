@@ -109,7 +109,10 @@ function MainComponent({ gameSessionId = null }) {
   return (
     <div>
       {currentView === 'home' && (
-        <Home />
+        <Home onQuickPlay={() => {
+          setGameMode('quick');
+          setGameData({ status: true });
+        }} />
       )}
 
       {currentView === 'game' && (

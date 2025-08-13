@@ -14,6 +14,7 @@ import UserProfile from "./components/profile/UserProfile"
 import ReportReviews from "./components/reports/ReportReviews"
 import AddSnippet from "./components/add-snippet/AddSnippet"
 import ConstrainedLayout from "./components/shared/ConstrainedLayout"
+import GameInvitationPortal from "./components/realtime/GameInvitationPortal"
 
 // Styles
 import "bootstrap/dist/css/bootstrap"
@@ -25,6 +26,12 @@ import "./channels/notifications_channel"
 
 // Mount all components on turbo:load
 document.addEventListener('turbo:load', () => {
+  // Realtime modal portal (always available)
+  const realtimeRoot = document.getElementById('realtime-modal-root')
+  if (realtimeRoot) {
+    const root = createRoot(realtimeRoot)
+    root.render(<GameInvitationPortal />)
+  }
   
 
   // Main container

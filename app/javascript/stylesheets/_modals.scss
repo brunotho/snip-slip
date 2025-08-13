@@ -39,6 +39,16 @@
   touch-action: auto;
 }
 
+.modal-frame {
+  background: white;
+  padding: 1rem;
+  border-radius: $radius-2xl;
+  width: 90vw;
+  max-width: 500px;
+  min-width: 300px;
+  box-sizing: border-box;
+}
+
 .report-modal-frame {
   background: white;
   padding: 1.5rem;
@@ -109,9 +119,6 @@
     animation: slideIn 0.3s ease-out;
   }
   
-  // Overrides Bootstrap's form-control spacing for modal inputs.
-  // Uses !important to ensure left/right margin is 0 and padding is 0.5rem.
-  // NOTE: This class must be loaded after Bootstrap's CSS to take effect.
   .modal-suggestion-input {
     margin-left: 0 !important;
     margin-right: 0 !important;
