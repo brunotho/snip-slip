@@ -103,10 +103,6 @@
   border-radius: 50px;
 }
 
-.btn-square {
-  border-radius: 0.25rem;
-}
-
 // Size variants
 .btn-sm {
   padding: 0.5rem 1rem;
@@ -148,18 +144,7 @@
   }
 }
 
-// Floating action buttons
-.btn-floating {
-  position: fixed;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-  }
-}
+// (removed) .btn-floating was unused
 
 // Icon buttons
 .btn-icon {

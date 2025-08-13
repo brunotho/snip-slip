@@ -219,6 +219,8 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     setReportModalOpen(true);
   };
 
+  const isReportingAllowed = Boolean(gameData?.currentPlayerId);
+
   const mainContent = selectedSnippet ? (
     <ExpandedSnippet
       snippet={selectedSnippet}
@@ -236,7 +238,7 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
           <SnippetCard
             snippet={snippet}
             onClick={() => setSelectedSnippet(snippet)}
-            onLongPress={gameMode === 'quick' ? null : () => handleOpenReportModal(snippet)}
+            onLongPress={isReportingAllowed ? () => handleOpenReportModal(snippet) : null}
           />
         </div>
       ))}

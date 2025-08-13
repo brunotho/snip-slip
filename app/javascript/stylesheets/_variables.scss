@@ -50,9 +50,7 @@ $color-brand-accent-soft: rgba($color-brand-accent, 0.1);
 
 // Semantic Colors
 $color-success: #10b981;
-$color-warning: #f59e0b;
 $color-error: #ef4444;
-$color-info: #3b82f6;
 $color-current-user: #773dff;
 
 // -----------------------------------------------------------------------------
@@ -119,3 +117,5 @@ $header-height: 7vh;
   --font-family-display: #{$font-family-display};
   --header-height: #{$header-height};
 }
+
+$shadow-panel: $card-elevated-shadow;

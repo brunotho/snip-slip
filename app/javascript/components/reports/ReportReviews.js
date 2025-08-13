@@ -160,7 +160,7 @@ function ReportReviews() {
 
                 <button 
                     onClick={handleAnotherOne}
-                    className="btn btn-primary"
+                    className="btn btn-accent"
                 >
                     Another one!
                 </button>

@@ -18,7 +18,7 @@ const ErrorDisplay = ({
       <h4 className="text-danger mb-2">{title}</h4>
       <p className="text-muted">{error?.message || "An unexpected error occurred"}</p>
       <button 
-        className="btn btn-outline-primary" 
+        className="btn btn-accent" 
         onClick={onRetry}
       >
         Try Again

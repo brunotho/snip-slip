@@ -23,9 +23,10 @@
 }
 
 .lobby-info-display {
-  background-color: rgba($color-brand-accent, 0.5);
-  border: 1px solid rgba($color-brand-accent, 0.2);
+  background-color: rgba($color-brand-accent, 0.2);
   color: $color-brand-secondary;
+  border: 1px solid rgba($color-brand-accent, 0.3);
+  box-shadow: $shadow-panel;
   padding: $spacing-md;
   border-radius: $radius-md;
   text-align: center;

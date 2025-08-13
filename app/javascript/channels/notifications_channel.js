@@ -55,7 +55,7 @@ consumer.subscriptions.create("NotificationsChannel", {
               ${data.inviter.name} has invited you to join a game!
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Decline</button>
+              <button type="button" class="btn btn-neutral" data-bs-dismiss="modal">Decline</button>
               <button
                 type="button"
                 class="btn btn-accent"

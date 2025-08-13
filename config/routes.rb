@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :users, only: [ :update ]
+    get "users/me", to: "users#me"
   end
 
   # Game functionality
@@ -54,5 +55,4 @@ Rails.application.routes.draw do
   # Misc
   mount ActionCable.server => "/cable"
   post "record_play", to: "user_played_snippets#record_play"
-
 end
