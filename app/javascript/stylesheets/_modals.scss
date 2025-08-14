@@ -28,6 +28,8 @@
   transform: translate(-50%, -50%);
   z-index: 1001;
   touch-action: auto;
+  max-width: min(90vw, 600px);
+  width: auto;
 }
 
 .image-modal-content-centered {
@@ -37,6 +39,8 @@
   transform: translate(-50%, -50%);
   z-index: 1101;
   touch-action: auto;
+  max-width: min(90vw, 600px);
+  width: auto;
 }
 
 .modal-frame {
@@ -47,6 +51,10 @@
   max-width: 500px;
   min-width: 300px;
   box-sizing: border-box;
+}
+
+.modal-frame--compact {
+  max-width: 420px;
 }
 
 .report-modal-frame {
@@ -78,28 +86,118 @@
   }
 }
 
-// Report modal styles
+.modal-content-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal-content--compact {
+  padding: 1rem;
+}
+
+.modal-hint {
+  font-size: 0.9rem;
+  color: $gray-600;
+  margin-bottom: 0.25rem;
+}
+
+.modal-input-compact {
+  margin-bottom: 0.5rem !important;
+}
+
+.modal-footer-sticky {
+  flex: 0 0 auto;
+}
+
+.modal-footer--compact {
+  padding: 0.5rem 1rem 0.75rem 1rem;
+}
+
+.modal-header-subtext {
+  font-weight: 600;
+  color: $gray-700;
+  margin-bottom: 0.75rem;
+}
+
+.inline-error {
+  color: rgba(220, 53, 69, 0.9) !important;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+.form-section--disabled .inline-error {
+  color: #999 !important;
+  opacity: 0.7;
+}
+
 .report-field {
-    cursor: pointer;
-    padding: 0.5rem 0;
-    margin: 0.25rem 0;
-    
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin: 0.25rem 0;
+  
+  .report-field-content {
     &--selected {
       text-decoration: line-through;
       color: #666;
     }
-    
-    &--disabled {
-      opacity: 0.5;
-      color: #999;
-      pointer-events: none;
-      cursor: default;
+  }
+  
+  &--disabled {
+    opacity: 0.5;
+    color: #999;
+    pointer-events: none;
+    cursor: default;
 
-      &.report-field--selected {
-        text-decoration: line-through;
-      }
+    .report-field-content--selected {
+      text-decoration: line-through;
     }
   }
+}
+
+.report-field-label {
+  font-weight: 500;
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+.report-field-content {
+  font-weight: 400;
+  color: #333;
+}
+
+.report-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  
+  input[type="checkbox"] {
+    margin: 0;
+  }
+  
+  label {
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.difficulty-section {
+  margin: 0.75rem 0;
+  
+  .difficulty-suggestion {
+    margin-left: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    
+    .suggestion-label {
+      display: none;
+    }
+  }
+}
 
   .input-field {
     margin-left: 1rem;
@@ -148,9 +246,8 @@
     }
   }
 
-  // keep duplicate from _form.scss ?
   .form-section {
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     
     &--disabled {
       opacity: 0.5;
@@ -162,19 +259,22 @@
         color: #999;
       }
     }
-  } 
+  }
 
 .report-image {
   width: 100%;
-  max-width: 150px;
+  height: auto;
   border-radius: $radius-md;
   cursor: pointer;
   aspect-ratio: 1/1;
+  object-fit: cover;
 }
 
 .image-crossed-out {
   position: relative;
   display: inline-block;
+  width: 100%;
+  height: 100%;
   
   &::before,
   &::after {
@@ -185,6 +285,7 @@
     right: 0;
     bottom: 0;
     pointer-events: none;
+    z-index: 1;
   }
   
   &::before {
@@ -213,14 +314,30 @@
   
   img {
     opacity: 0.4;
+    position: relative;
+    z-index: 0;
   }
 }
 
-
 .image-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  min-width: 150px;
+  width: calc(50% - 0.5rem);
+  min-width: 0;
+}
+
+.image-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.modal-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }

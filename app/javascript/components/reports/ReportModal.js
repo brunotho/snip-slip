@@ -5,15 +5,30 @@ import Loading from '../shared/Loading';
 
 function ReportModal({ snippet, onClose }) {
   // UI State
-  const [loading, setLoading] = useState(true);
-  const [showSuccessfulReportView, setShowSuccessfulReportView] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   const [showImageSelector, setShowImageSelector] = useState(false);
   const [loadingCovers, setLoadingCovers] = useState(false);
   const [error, setError] = useState(null);
   
   // Form State
-  const [wrongFields, setWrongFields] = useState({});
-  const [suggestions, setSuggestions] = useState({});  
+  const [suggestions, setSuggestions] = useState({
+    artist: '',
+    song: '',
+    snippet: '',
+    difficulty: null,
+    language: '',
+    image: null
+  });
+  const [wrongFields, setWrongFields] = useState({
+    artist: false,
+    song: false,
+    snippet: false,
+    difficulty: false,
+    language: false,
+    image: false
+  });
+  const [fieldErrors, setFieldErrors] = useState({});
   const [isBoring, setIsBoring] = useState(false);
   
   // External Data
@@ -48,10 +63,6 @@ function ReportModal({ snippet, onClose }) {
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
     
-    if (wrongFields[fieldName]) {
-      classes += ' report-field--selected';
-    }
-    
     if (isBoring) {
       classes += ' report-field--disabled';
     }
@@ -74,43 +85,40 @@ function ReportModal({ snippet, onClose }) {
 
   // Form Logic
   const toggleField = (field) => {
+    // Don't allow toggling difficulty since it's always visible
+    if (field === 'difficulty') return;
     setWrongFields({...wrongFields, [field]: !wrongFields[field]});
   };
 
   const validateSubmission = () => {
     if (isBoring) {
-      return { valid: true };
+      return { valid: true, fieldErrors: {} };
     }
 
-    const fieldsNeedingSuggestions = ['artist', 'song', 'snippet', 'difficulty', 'language'];
-      for (const field of fieldsNeedingSuggestions) {
-        if (wrongFields[field]) {
-          const suggestion = suggestions[field];
-          if (field === 'difficulty') {
-            if (!suggestion) {
-              return { valid: false, message: "Please adjust the difficulty slider" };
-            }
-          // } else if (field === 'language') {
-          //   if (!suggestion || suggestion === snippet?.language) {
-          //     return { valid: false, message: "Please select a different language" };
-          //   }
-          } else {
-            if (!suggestion) {
-              return { valid: false, message: `Please provide a suggestion for ${field}` };
-            }
-          }
-        }
-      }
-  
+    const errors = {};
+    const needSuggestion = (field) => wrongFields[field] && !suggestions[field];
+
+    if (needSuggestion('artist')) errors.artist = 'Please suggest the correct artist';
+    if (needSuggestion('song')) errors.song = 'Please suggest the correct song';
+    if (needSuggestion('snippet')) errors.snippet = 'Please suggest the corrected snippet';
     if (wrongFields.snippet && suggestions.snippet) {
       const similarity = calculateWordSimilarity(snippet.snippet, suggestions.snippet);
-      if (similarity < 0.5) {
-        return { valid: false, message: "Snippet changes must be minor (keep half of the original words)" };
-      }
+      if (similarity < 0.5) errors.snippet = 'Keep at least half of the original words';
     }
-  
-    const hasIssues = Object.values(wrongFields).some(val => val);
-    return hasIssues ? { valid: true } : { valid: false, message: "Select at least one issue" };
+    // Difficulty validation - check if they've changed it from the original
+    if (suggestions.difficulty && suggestions.difficulty !== snippet?.difficulty) {
+      setWrongFields(prev => ({...prev, difficulty: true}));
+    }
+    if (wrongFields.language) {
+      if (!suggestions.language) errors.language = 'Please select the correct language';
+      else if (suggestions.language === snippet?.language) errors.language = 'Language must be different';
+    }
+
+    const hasIssues = Object.values(wrongFields).some(Boolean);
+    if (!hasIssues) return { valid: false, fieldErrors: {}, message: 'Select at least one issue' };
+
+    const valid = Object.keys(errors).length === 0;
+    return { valid, fieldErrors: errors, message: valid ? null : 'Please fix the highlighted fields' };
   };
 
   const reportData = (wrongFields, suggestions, isBoring) => {
@@ -134,40 +142,64 @@ function ReportModal({ snippet, onClose }) {
   };
 
   // API/Side Effects
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setFieldErrors({});
+
     const validation = validateSubmission();
-    if (validation.valid) {
-      try {
-        const report = reportData(wrongFields, suggestions, isBoring);
-        
-        const response = await fetch(`/snippets/${snippet.id}/reports`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': getCSRFToken()
-          },
-          body: JSON.stringify(report)
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setShowSuccessfulReportView(true);
-          setError(null);
-          setUserName(data.user_name);
-
-
-          setTimeout(() => {
-            onClose();
-          }, 2500);
-        } else {
-          const error = await response.json();
-          setError(error.message || 'Unable to submit report - Please try again');
-        }
-      } catch (error) {
-        setError(error.message || 'Unable to submit report - Please try again');
-      }
-    } else {
+    if (!validation.valid) {
       setError(validation.message);
+      if (validation.fieldErrors) {
+        setFieldErrors(validation.fieldErrors);
+      }
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const payload = isBoring ? {
+        boring: true,
+        lyric_snippet_id: snippet.id
+      } : {
+        lyric_snippet_id: snippet.id,
+        wrong_artist: wrongFields.artist,
+        wrong_song: wrongFields.song,
+        wrong_snippet: wrongFields.snippet,
+        wrong_difficulty: wrongFields.difficulty,
+        wrong_language: wrongFields.language,
+        wrong_image: wrongFields.image,
+        suggested_artist: suggestions.artist || null,
+        suggested_song: suggestions.song || null,
+        suggested_snippet: suggestions.snippet || null,
+        suggested_difficulty: suggestions.difficulty || null,
+        suggested_language: suggestions.language || null,
+        suggested_image: suggestions.image || null
+      };
+
+      const response = await fetch('/snippet_reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': getCSRFToken()
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        setShowThankYou(true);
+      } else {
+        const errorData = await response.json();
+        if (errorData.errors) {
+          setFieldErrors(errorData.errors);
+        } else {
+          setError(errorData.message || 'Failed to submit report');
+        }
+      }
+    } catch (err) {
+      setError('Network error - please try again');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -188,12 +220,18 @@ function ReportModal({ snippet, onClose }) {
   // Render Helpers
   const renderSuccessContent = () => {
     return (
-      <div className="text-center">
-        <h3>Thanks {userName}! 😍</h3>
-        <p>Report submitted!</p>
-        <button className="btn btn-neutral" onClick={onClose}>
-          Close
-        </button>
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>Thank you!</h3>
+        </div>
+        <div className="modal-body">
+          <p>Your report has been submitted successfully.</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-accent" onClick={onClose}>
+            Close
+          </button>
+        </div>
       </div>
     );
   };
@@ -201,170 +239,181 @@ function ReportModal({ snippet, onClose }) {
   const renderFormContent = () => {
     return (
       <>
-        {error && (
-          <div style={{ color: 'red', marginBottom: '1rem' }}>
-            {error}
-          </div>
-        )}
-        <h3>Report Issues</h3>
-        <h6>and suggest Edits</h6>
-
-        {/* ARTIST */}
-        <div 
-          className={buildFieldClasses('artist')}
-          onClick={() => !isBoring && toggleField('artist')}
-        >
-          Artist: {snippet?.artist}
-        </div>
-        {wrongFields.artist && (
-          <input
-            type="text"
-            placeholder='Suggest artist'
-            value={suggestions.artist || ''}
-            onChange={(e) => setSuggestions({...suggestions, artist: e.target.value})}
-            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
-            />
-        )}
-
-        {/* SONG */}
-        <div 
-          className={buildFieldClasses('song')}
-          onClick={() => !isBoring && toggleField('song')}
-        >
-          Song: {snippet?.song}
-        </div>
-        {wrongFields.song && (
-          <input
-            type="text"
-            placeholder='Suggest song'
-            value={suggestions.song || ''}
-            onChange={(e) => setSuggestions({...suggestions, song: e.target.value})}
-            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
-            />
-        )}
-
-        {/* SNIPPET */}
-        <div 
-          className={buildFieldClasses('snippet')}
-          onClick={() => !isBoring && toggleField('snippet')}
-        >
-          Snippet: {snippet?.snippet}
-        </div>
-        {wrongFields.snippet && (
-          <input
-            type="text"
-            placeholder='Suggest snippet'
-            value={suggestions.snippet || ''}
-            onChange={(e) => setSuggestions({...suggestions, snippet: e.target.value})}
-            className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
-            />
-        )}
-
-        {/* DIFFICULTY */}
-        <div 
-          className={buildFieldClasses('difficulty')}
-          onClick={() => !isBoring && toggleField('difficulty')}
-        >
-          Difficulty: {snippet?.difficulty}
-        </div>
-        {wrongFields.difficulty && (
-          <div 
-            className={`form-section ${isBoring ? 'form-section--disabled' : ''} suggestion-section`}
-          >
-            <DifficultySlider 
-              value={suggestions.difficulty || snippet?.difficulty}
-              onChange={(value) => setSuggestions({...suggestions, difficulty: value})}
-            />
-          </div>
-        )}
-
-        {/* LANGUAGE */}
-        <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
-          <label>
-            <input 
-              type="checkbox" 
-              className="form-check-input"
-              checked={wrongFields.language || false} 
-              onChange={() => !isBoring && toggleField('language')} 
-            />
-            Wrong language (currently: {snippet?.language})
-          </label>
-          {wrongFields.language && (
-            <select 
-              value={suggestions.language || ''} 
-              onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
-              className="modal-suggestion-input form-select"
-            >
-              <option value="">Select correct language</option>
-              {selectableLanguages.map(language => (
-                <option key={language} value={language}>{language}</option>
-              ))}
-            </select>
+        <div className="modal-header-subtext">Tap a field to suggest a fix.</div>
+        <div className={isBoring ? 'form-section--disabled' : ''}>
+          {error && Object.keys(fieldErrors || {}).length === 0 && (
+            <div className="inline-error">{error}</div>
           )}
-        </div>
 
-        {/* IMAGE */}
-        <div className="form-section">
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <div className="image-container">
-              <div className={`
-                ${suggestions.image ? 'image-crossed-out' : ''} 
-                ${isBoring ? ' report-field--disabled' : ''}
-              `}>
-                <img 
-                  src={snippet?.image_url} 
-                  onClick={() => {
-                    if (isBoring) return;
-            
-                    if (suggestions.image) {
-                      setSuggestions({...suggestions, image: null});
-                      setWrongFields({...wrongFields, image: false});
-                    } else {
-                      fetchAlternativeCovers();
-                      setShowImageSelector(true);
-                    }
-                  }}
-                  className={`report-image`}
-                  alt="Current album cover"
-                />
-              </div>
-            </div>
-            
-            {suggestions.image && (
-              <div className="image-container">
-                <img 
-                  src={suggestions.image} 
-                  className={`report-image ${isBoring ? 'report-field--disabled' : ''}`}
-                  alt="Selected album cover"
-                />
-              </div>
-            )}
+          {/* ARTIST */}
+          <div 
+            className={buildFieldClasses('artist')}
+            onClick={() => !isBoring && toggleField('artist')}
+          >
+            <span className="report-field-label">Artist:</span>
+            <span className={`report-field-content ${wrongFields.artist ? 'report-field-content--selected' : ''}`}>
+              {snippet?.artist}
+            </span>
           </div>
-        </div>
+          {wrongFields.artist && (
+            <input
+              type="text"
+              placeholder='Suggest artist'
+              value={suggestions.artist || ''}
+              onChange={(e) => setSuggestions({...suggestions, artist: e.target.value})}
+              className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
+            />
+          )}
+          {fieldErrors.artist && <div className="inline-error">{fieldErrors.artist}</div>}
 
-        <ImageSelector 
-          isOpen={showImageSelector}
-          alternativeCovers={alternativeCovers}
-          loadingCovers={loadingCovers}
-          onSelect={(imageUrl) => {
-            setSuggestions({...suggestions, image: imageUrl});
-            setWrongFields({...wrongFields, image: true});
-            setShowImageSelector(false);
-          }}
-          onClose={() => setShowImageSelector(false)}
-        />
+          {/* SONG */}
+          <div 
+            className={buildFieldClasses('song')}
+            onClick={() => !isBoring && toggleField('song')}
+          >
+            <span className="report-field-label">Song:</span>
+            <span className={`report-field-content ${wrongFields.song ? 'report-field-content--selected' : ''}`}>
+              {snippet?.song}
+            </span>
+          </div>
+          {wrongFields.song && (
+            <input
+              type="text"
+              placeholder='Suggest song'
+              value={suggestions.song || ''}
+              onChange={(e) => setSuggestions({...suggestions, song: e.target.value})}
+              className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
+            />
+          )}
+          {fieldErrors.song && <div className="inline-error">{fieldErrors.song}</div>}
+
+          {/* SNIPPET */}
+          <div 
+            className={buildFieldClasses('snippet')}
+            onClick={() => !isBoring && toggleField('snippet')}
+          >
+            <span className="report-field-label">Snippet:</span>
+            <span className={`report-field-content ${wrongFields.snippet ? 'report-field-content--selected' : ''}`}>
+              {snippet?.snippet}
+            </span>
+          </div>
+          {wrongFields.snippet && (
+            <input
+              type="text"
+              placeholder='Suggest snippet'
+              value={suggestions.snippet || ''}
+              onChange={(e) => setSuggestions({...suggestions, snippet: e.target.value})}
+              className={`${isBoring ? 'input-field--disabled' : ''} modal-suggestion-input form-control`}
+            />
+          )}
+          {fieldErrors.snippet && <div className="inline-error">{fieldErrors.snippet}</div>}
+
+          {/* DIFFICULTY */}
+          <div className={`difficulty-section ${isBoring ? 'form-section--disabled' : ''}`}>
+            <div className="difficulty-suggestion">
+              <DifficultySlider 
+                value={suggestions.difficulty || snippet?.difficulty}
+                onChange={(value) => setSuggestions({...suggestions, difficulty: value})}
+              />
+            </div>
+          </div>
+          {fieldErrors.difficulty && <div className="inline-error">{fieldErrors.difficulty}</div>}
+
+          {/* LANGUAGE */}
+          <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
+            <div className="report-checkbox">
+              <input 
+                type="checkbox" 
+                id="language-checkbox"
+                className="form-check-input"
+                checked={wrongFields.language || false} 
+                onChange={() => !isBoring && toggleField('language')} 
+              />
+              <label htmlFor="language-checkbox">
+                Language: {snippet?.language}
+              </label>
+            </div>
+            {wrongFields.language && (
+              <select 
+                value={suggestions.language || ''} 
+                onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
+                className="modal-suggestion-input form-select"
+              >
+                <option value="">Select correct language</option>
+                {selectableLanguages.map(language => (
+                  <option key={language} value={language}>{language}</option>
+                ))}
+              </select>
+            )}
+            {fieldErrors.language && <div className="inline-error">{fieldErrors.language}</div>}
+          </div>
+
+          {/* IMAGE */}
+          <div className="form-section">
+            <div className="image-row">
+              <div className="image-container">
+                <div className={`
+                  ${suggestions.image ? 'image-crossed-out' : ''} 
+                  ${isBoring ? ' report-field--disabled' : ''}
+                `}>
+                  <img 
+                    src={snippet?.image_url} 
+                    onClick={() => {
+                      if (isBoring) return;
+              
+                      if (suggestions.image) {
+                        setSuggestions({...suggestions, image: null});
+                        setWrongFields({...wrongFields, image: false});
+                      } else {
+                        fetchAlternativeCovers();
+                        setShowImageSelector(true);
+                      }
+                    }}
+                    className={`report-image`}
+                    alt="Current album cover"
+                  />
+                </div>
+              </div>
+              
+              {suggestions.image && (
+                <div className="image-container">
+                  <img 
+                    src={suggestions.image} 
+                    className={`report-image ${isBoring ? 'report-field--disabled' : ''}`}
+                    alt="Selected album cover"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <ImageSelector 
+            isOpen={showImageSelector}
+            alternativeCovers={alternativeCovers}
+            loadingCovers={loadingCovers}
+            onSelect={(imageUrl) => {
+              setSuggestions({...suggestions, image: imageUrl});
+              setWrongFields({...wrongFields, image: true});
+              setShowImageSelector(false);
+            }}
+            onClose={() => setShowImageSelector(false)}
+          />
+        </div>
 
         {/* BORING */}
         <div className='form-section'>
-          <label>
+          <div className="report-checkbox">
             <input 
               type="checkbox" 
+              id="boring-checkbox"
               className="form-check-input"
               checked={isBoring} 
               onChange={(e) => setIsBoring(e.target.checked)} 
             />
-            Too boring! - Delete!
-          </label>
+            <label htmlFor="boring-checkbox">
+              Too boring! - Delete!
+            </label>
+          </div>
         </div>
 
         {/* BUTTONS */}
@@ -375,7 +424,9 @@ function ReportModal({ snippet, onClose }) {
           </button>
           <button 
             className='btn btn-accent'
-            onClick={handleSubmit}>Submit
+            onClick={handleSubmit}
+            disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </>
@@ -392,7 +443,7 @@ function ReportModal({ snippet, onClose }) {
 
   return (
     <div className="report-modal-frame">
-      {showSuccessfulReportView ? renderSuccessContent() : renderFormContent()}
+      {showThankYou ? renderSuccessContent() : renderFormContent()}
     </div>
   );
 }

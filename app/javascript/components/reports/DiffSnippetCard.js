@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import DiffText from './DiffText';
 
-function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handleSkip }) {
+function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handleSkip, isBoring }) {
   const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
   const textRef = useRef(null);
   const containerRef = useRef(null);
@@ -64,7 +64,26 @@ function DiffSnippetCard({ snippet, suggestedSnippet, variant, handleVote, handl
     <div
     className="card-elevated is-interactive snippet-card"
     onClick={handleVote}
+    style={{ position: 'relative' }}
     >
+      {isBoring && variant === "proposed" && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: '5rem',
+          fontWeight: 'bold',
+          color: '#ef4444',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+          zIndex: 10,
+          pointerEvents: 'none',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em'
+        }}>
+          DELETE
+        </div>
+      )}
       <div className="d-flex h-100">
         <div style={{ flex: "1", display: "flex", flexDirection: "column", minWidth: "0" }}>
           <div className="card-body-custom d-flex flex-column h-100">

@@ -65,6 +65,9 @@ document.addEventListener('turbo:load', () => {
   if (snippetLastElement && snippetLastElement.dataset.snippet) {
     
     const snippetData = JSON.parse(snippetLastElement.dataset.snippet)
+    if (!snippetData.image_url) {
+      snippetData.image_url = '/assets/placeholder_album_cover.jpg'
+    }
     const root = createRoot(snippetLastElement)
     root.render(
       <ConstrainedLayout maxWidth="800px">

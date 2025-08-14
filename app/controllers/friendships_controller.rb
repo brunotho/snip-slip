@@ -16,11 +16,29 @@ class FriendshipsController < ApplicationController
 
   def create
     friend = User.find(params[:friend_id])
-    friendship = current_user.send_friend_request(friend)
-    if friendship.persisted?
-      render json: friendship, status: 201
+    incoming_friendship = Friendship.find_by(user_id: friend.id, friend_id: current_user.id)
+    if incoming_friendship&.pending?
+      ActiveRecord::Base.transaction do
+        incoming_friendship.update!(status: :accepted)
+        outgoing_friendship = Friendship.find_or_initialize_by(user_id: current_user.id, friend_id: friend.id)
+        outgoing_friendship.status = :accepted
+        outgoing_friendship.save!
+      end
+      render json: { success: true, message: "Friend request accepted" }, status: :ok
+      return
+    end
+
+    outgoing_friendship = Friendship.find_or_initialize_by(user_id: current_user.id, friend_id: friend.id)
+    if outgoing_friendship.accepted?
+      render json: { success: true, message: "Already friends" }, status: :ok
+      return
+    end
+
+    outgoing_friendship.status = :pending
+    if outgoing_friendship.save
+      render json: outgoing_friendship, status: :created
     else
-      render json: friendship.errors, status: 422
+      render json: outgoing_friendship.errors, status: 422
     end
   end
 
@@ -68,10 +86,18 @@ class FriendshipsController < ApplicationController
   def destroy
     friendship = Friendship.find(params[:id])
     if friendship && (friendship.user_id == current_user.id || friendship.friend_id == current_user.id)
-      friendship.destroy
+      if friendship.accepted?
+        reciprocal_friendship = Friendship.find_by(user_id: friendship.friend_id, friend_id: friendship.user_id)
+        ActiveRecord::Base.transaction do
+          friendship.destroy
+          reciprocal_friendship&.destroy
+        end
+      else
+        friendship.destroy
+      end
       render json: { success: true }, status: :ok
     else
-      render json: { error: "Friendship not found or unauthorized :<" }, status: 422
+      render json: { error: "Friendship not found or unauthorized" }, status: 422
     end
   end
 end

@@ -38,6 +38,15 @@
   margin-bottom: 1rem;
 }
 
+.field-saved {
+  animation: fieldSavedFlash 0.6s ease-out;
+}
+
+@keyframes fieldSavedFlash {
+  0% { background-color: rgba($color-success, 0.15); }
+  100% { background-color: transparent; }
+}
+
 .form-control.is-valid {
   background-image: none !important;
 }

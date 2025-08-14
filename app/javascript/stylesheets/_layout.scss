@@ -16,3 +16,23 @@
   flex-direction: column;
   justify-content: center;
 } 
+
+.toast-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1200;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.toast-notice.is-hiding {
+  opacity: 0;
+}

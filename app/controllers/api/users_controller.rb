@@ -30,6 +30,16 @@ class Api::UsersController < ApplicationController
     end
   end
 
+  def destroy
+    if current_user
+      current_user.destroy!
+      sign_out current_user
+      head :no_content
+    else
+      head :unauthorized
+    end
+  end
+
   private
 
   def user_params

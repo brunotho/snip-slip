@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function DifficultySlider({ value, onChange, standalone = false }) {
+function DifficultySlider({ value, onChange, standalone = false, showLabel = true }) {
   const [internalDifficulty, setInternalDifficulty] = useState(400);
   
   const currentValue = standalone ? internalDifficulty : (value || 400);
@@ -22,7 +22,7 @@ function DifficultySlider({ value, onChange, standalone = false }) {
 
   return (
     <div className="difficulty-slider-container">
-      <label htmlFor="difficulty">Difficulty: {currentValue}</label>
+      {showLabel && <label htmlFor="difficulty">Difficulty: {currentValue}</label>}
       <input
         type="range"
         id="difficulty"

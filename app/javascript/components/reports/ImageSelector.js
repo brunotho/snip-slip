@@ -31,7 +31,9 @@ function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCo
             </div>
           )}
           
-          <button onClick={onClose} style={{ marginTop: '1rem' }}>Cancel</button>
+          <div className="modal-button-group">
+            <button className="btn btn-neutral" onClick={onClose}>Cancel</button>
+          </div>
         </div>
       </div>
     </div>,

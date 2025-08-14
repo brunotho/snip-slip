@@ -17,10 +17,8 @@ function GameControls({ isHost, joinedPlayers, onStartGame }) {
         </div>
       )}
       <div className="text-muted mt-2">
-        {joinedPlayers.length < 2 ? (
+        {joinedPlayers.length < 2 && (
           <span>Waiting for players to join...</span>
-        ) : (
-          <span>{joinedPlayers.length} players ready</span>
         )}
       </div>
     </div>

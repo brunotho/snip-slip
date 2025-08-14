@@ -305,7 +305,7 @@ const FriendshipManager = () => {
               ))
             ) : (
               <div className="text-center text-muted py-3">
-                No friends yet :/ Search below or invite friends to join!
+                No friends yet :/<br />Search below or invite friends to join!
               </div>
             )}
           </div>

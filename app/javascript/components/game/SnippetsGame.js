@@ -5,6 +5,7 @@ import ExpandedSnippet from './snippets/ExpandedSnippet';
 import Modal from '../shared/Modal';
 import ReportModal from '../reports/ReportModal';
 import Loading from '../shared/Loading';
+import { useCurrentUser } from '../shared/hooks/useCurrentUser';
 import ErrorDisplay from '../shared/ErrorDisplay';
 import { createGameSessionChannel } from '../../channels/game_session_channel';
 
@@ -19,6 +20,7 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
   
   // External Data
   const [snippets, setSnippets] = useState([]);
+  const { userId } = useCurrentUser();
 
   const fetchSnippets = async () => {
     setLoading(true);
@@ -219,7 +221,7 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     setReportModalOpen(true);
   };
 
-  const isReportingAllowed = Boolean(gameData?.currentPlayerId);
+  const isReportingAllowed = Boolean(userId);
 
   const mainContent = selectedSnippet ? (
     <ExpandedSnippet
@@ -247,21 +249,22 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
 
   const shouldShowProgressBar = gameMode !== 'quick';
   
-  const progressBarPlayers = shouldShowProgressBar ? (() => {
-    if (gameMode === 'single') {
-      return gameData.totalScore !== undefined ? {
-        [gameData.currentPlayerId || 'player1']: {
-          id: gameData.currentPlayerId || 'player1',
-          name: gameData.currentPlayerName || 'Player',
-          total_score: gameData.totalScore,
-          rounds_played: gameData.roundsPlayed,
-          round_history: gameData.roundHistory || []
-        }
-      } : {};
-    } else {
-      return gameData.players || {};
-    }
-  })() : {};
+  // Simplified progress data for the progress bar
+  const progressData = shouldShowProgressBar ? {
+    currentRound: gameData.roundsPlayed || 0,
+    totalRounds: 5,
+    isComplete: (gameData.roundsPlayed || 0) >= 5,
+    currentUserId: gameData?.currentPlayerId,
+    players: gameMode === 'single' ? {
+      [gameData.currentPlayerId || 'player1']: {
+        id: gameData.currentPlayerId || 'player1',
+        name: gameData.currentPlayerName || 'Player',
+        total_score: gameData.totalScore || 0,
+        rounds_played: gameData.roundsPlayed || 0,
+        round_history: gameData.roundHistory || []
+      }
+    } : (gameData.players || {})
+  } : null;
 
   if (!initialized || loading) {
     return <Loading message="Loading game..." />;
@@ -271,19 +274,12 @@ function SnippetsGame({ game_session_id = null, gameMode, gameData, setGameData 
     return <ErrorDisplay error={error} title="Unable to load snippets" />;
   }
 
-  // Progress bar loading (only for progress bar, not whole component)
-  const progressBarLoading = (gameMode === 'single' && gameData.totalScore === undefined) || 
-    (gameMode === 'multi' && !gameData.players);
-
   return (
     <>
       <GameLayout
         mainContent={mainContent}
         showProgressBar={shouldShowProgressBar}
-        progressBarPlayers={progressBarPlayers}
-        currentUserId={gameData?.currentPlayerId}
-        isMultiplayer={gameMode === 'multi'}
-        progressBarLoading={progressBarLoading}
+        progressData={progressData}
       />
 
       <Modal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)}>

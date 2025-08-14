@@ -144,7 +144,65 @@
   }
 }
 
- 
+// Destructive actions
+.btn-danger {
+  @include button-variant($color-error, $white);
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-danger-outline {
+  background-color: #ffffff;
+  color: rgba($color-error, 0.7);
+  border: 2px solid rgba($color-error, 0.7);
+  transition: all 0.2s ease;
+  font-weight: 500;
+
+  &:hover {
+    color: $white;
+    background-color: rgba($color-error, 0.9);
+    border-color: rgba($color-error, 0.9);
+  }
+
+  &:active {
+    color: $white;
+    background-color: rgba($color-error, 1);
+    border-color: rgba($color-error, 1);
+  }
+}
+
+// Subtle button elevation (utility)
+.btn-subtle-shadow {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Temporary success state styling for buttons
+.btn-saved {
+  box-shadow: 0 0 0 4px rgba($color-success, 0.2);
+}
+
+// Profile action buttons: force equal dimensions
+.btn-profile-equal {
+  box-sizing: border-box;
+  min-width: 144px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
 
 // Icon buttons
 .btn-icon {
@@ -236,5 +294,15 @@
   gap: 0.5rem;
   justify-content: flex-end;
   width: 100%;
-  margin-top: 1.5rem;
+}
+
+.modal-button-group--center {
+  justify-content: center;
+}
+
+.btn-profile-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  width: 100%;
 }

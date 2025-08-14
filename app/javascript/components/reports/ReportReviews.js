@@ -129,34 +129,23 @@ function ReportReviews() {
 
     const renderChangedSnippet = () => {
         return (
-            reportData.changes.is_boring ? (
-                <div>
-                    {/* add big red DELETE */}
-                    <DiffSnippetCard 
-                        snippet={originalSnippet}
-                        suggestedSnippet={buildSuggestedSnippet()}
-                        variant="proposed"
-                        handleVote={() => handleVote("proposed")}
-                    />
-                </div>
-            ) : (
-                <div>
-                    <DiffSnippetCard 
+            <div>
+                <DiffSnippetCard 
                     snippet={originalSnippet}
                     suggestedSnippet={buildSuggestedSnippet()}
                     variant="proposed"
                     handleVote={() => handleVote("proposed")}
-                    />
-                </div>
-            )
+                    isBoring={reportData.changes.is_boring}
+                />
+            </div>
         )
     }
 
     const renderSuccessfulVoteView = () => {
         return (
-            <>
-                <p>Thank you ❤️</p>
-                <p>Vote submitted successfully</p>
+            <div style={{ textAlign: 'center' }}>
+                <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Thank you ❤️</h2>
+                <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>Vote submitted successfully</p>
 
                 <button 
                     onClick={handleAnotherOne}
@@ -164,7 +153,7 @@ function ReportReviews() {
                 >
                     Another one!
                 </button>
-            </>
+            </div>
         )
     }
     
@@ -185,16 +174,16 @@ function ReportReviews() {
             )}
 
             {allReportsDone ? (
-                <div>
-                    <p>No more reports to review</p>
+                <div style={{ textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>No more reports to review</h2>
+                    <p style={{ fontSize: '1.2rem' }}>Thank you for your service 🫡</p>
                 </div>
             ) : showSuccessfulVoteView ? (
                 renderSuccessfulVoteView()
             ) : (
                 <div>
                     <h1>Report Review</h1>
-                    <p>Select between the original snippet and the suggested changes</p>
-                    <p>Click the one you think is correct</p>
+                    <p>Click the snippet you think is correct</p>
                     <div className="snippets-grid">
                         <div className="snippets-grid-item">
                             {renderOriginalSnippet()}

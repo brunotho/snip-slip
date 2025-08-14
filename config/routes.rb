@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   namespace :api do
     resources :users, only: [ :update ]
     get "users/me", to: "users#me"
+    delete "users/me", to: "users#destroy"
   end
 
   # Game functionality

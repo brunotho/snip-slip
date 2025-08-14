@@ -27,7 +27,12 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     stored_path = stored_location_for(resource)
-    stored_path || root_path
+    # Avoid redirecting to API endpoints or non-HTML paths when using Turbo
+    if stored_path.present? && stored_path.start_with?("/api/")
+      root_path
+    else
+      stored_path || root_path
+    end
   end
 
   def after_sign_out_path_for(resource_or_scope)

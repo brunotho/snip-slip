@@ -191,7 +191,7 @@ const GameInviteManager = () => {
 
           <div className={`lobby-card-players ${isHost ? 'is-host' : ''}`}>
             <div className="card-elevated lobby-card">
-              <div className="card-header-custom">Players Joined</div>
+              <div className="card-header-custom">Players</div>
               <div className="card-body-custom">
                 <PlayersList joinedPlayers={joinedPlayers} />
               </div>

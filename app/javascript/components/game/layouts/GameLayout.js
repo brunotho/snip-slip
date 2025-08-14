@@ -5,22 +5,16 @@ import GameProgressBar, { calculateProgressBarHeight } from "../progress/GamePro
 const GameLayout = ({
   mainContent,
   showProgressBar = false,
-  progressBarPlayers = {},
-  currentUserId = null,
-  isMultiplayer = false,
-  progressBarLoading = false
+  progressData = null
 }) => {
-  const progressBarHeight = showProgressBar ? calculateProgressBarHeight(Object.keys(progressBarPlayers).length) : 0;
+  const progressBarHeight = showProgressBar && progressData ? calculateProgressBarHeight(Object.keys(progressData.players).length) : 0;
   const topMargin = showProgressBar ? `${progressBarHeight}px` : '0px';
 
   return (
     <>
-      {showProgressBar && (
+      {showProgressBar && progressData && (
         <GameProgressBar 
-          players={progressBarPlayers}
-          currentUserId={currentUserId}
-          isMultiplayer={isMultiplayer}
-          loading={progressBarLoading}
+          progressData={progressData}
         />
       )}
       <div className="container-fluid mt-0 px-0">

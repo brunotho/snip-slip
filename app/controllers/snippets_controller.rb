@@ -14,7 +14,7 @@ class SnippetsController < ApplicationController
 
     if @lyric_snippet.save
       @snippet_data = @lyric_snippet.as_json.merge(
-        image: @lyric_snippet.image.url
+        image_url: @lyric_snippet.image.attached? ? @lyric_snippet.image.url : nil
       )
       render :thank_you
     else

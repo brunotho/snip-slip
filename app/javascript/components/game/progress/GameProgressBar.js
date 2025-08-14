@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faXmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faXmark, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export const calculateProgressBarHeight = (playerCount) => {
   const baseHeight = 28;
@@ -8,29 +8,26 @@ export const calculateProgressBarHeight = (playerCount) => {
   
   let rows;
   if (playerCount <= 2) rows = 1;
-  else if (playerCount <= 4) rows = 2;
-  else rows = Math.ceil(playerCount / 3);
+  else rows = Math.ceil(playerCount / 2);
   
   return baseHeight * rows + padding;
 };
 
-function GameProgressBar({ players, currentUserId, isMultiplayer = false, loading = false }) {
+function GameProgressBar({ progressData }) {
   const [expandedPlayer, setExpandedPlayer] = useState(null);
   
+  const { players, currentRound, totalRounds, isComplete, currentUserId } = progressData;
   const playerCount = Object.keys(players).length;
   const progressBarHeight = calculateProgressBarHeight(playerCount);
+  const isMultiplayer = playerCount > 1;
 
-  const getGridColumns = () => {
-    if (playerCount <= 2) return 'repeat(2, 1fr)';
-    if (playerCount <= 4) return 'repeat(2, 1fr)';
-    return 'repeat(auto-fit, minmax(125px, 1fr))';
-  };
+  const getGridColumns = () => 'repeat(2, minmax(0, 1fr))';
 
   const togglePlayer = (playerId) => {
     setExpandedPlayer(expandedPlayer === playerId ? null : playerId);
   };
 
-  if (loading || !players || Object.keys(players).length === 0) {
+  if (!progressData || !players || Object.keys(players).length === 0) {
     return null;
   }
 
@@ -69,10 +66,6 @@ function GameProgressBar({ players, currentUserId, isMultiplayer = false, loadin
                     ✓
                   </span>
                 )}
-                <FontAwesomeIcon 
-                  icon={isExpanded ? faChevronUp : faChevronDown}
-                  className="player-chevron"
-                />
               </div>
 
               {/* Expanded details */}

@@ -3,7 +3,7 @@ import React from 'react';
 function PlayAgainButton({ onPlayAgain, disabled = false }) {
   if (disabled) {
     return (
-      <div className="text-center">
+      <div className="text-center" style={{ marginBottom: '1.5rem' }}>
         <div className="card-elevated p-4">
           <div className="d-flex align-items-center justify-content-center">
             <span className="loading-ellipsis text-muted me-2">Waiting for other players</span>

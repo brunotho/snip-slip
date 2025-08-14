@@ -8,20 +8,32 @@
   background-color: #f8fafc;
   border-bottom: 2px solid #d1d5db;
   z-index: 1000;
-  padding: 0.375rem 0.75rem;
+  padding: 0.375rem 1rem; /* match constrained layout horizontal padding */
   overflow-x: hidden;
 }
 
 .game-progress-grid {
   display: grid;
   gap: 0.5rem;
-  justify-items: center;
-  max-width: 100%;
+  justify-items: stretch;
+  width: min(400px, 100%);
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
 
   &--single-player {
     grid-template-columns: 1fr;
     justify-items: center;
+    
+    > div {
+      width: auto; // don't force full-width wrapper in single player
+      min-width: 0;
+    }
+  }
+
+  > div {
+    width: 100%;
+    min-width: 0; // allow grid item to shrink within column
   }
 }
 
@@ -36,10 +48,12 @@
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 500;
-  min-width: 120px;
+  min-width: 0;
+  width: 100%;
   justify-content: center;
   opacity: 0.8;
   white-space: nowrap;
+  overflow: hidden;
 
   &--current-user {
     background-color: rgba($color-current-user, 0.1);
@@ -57,38 +71,45 @@
   }
 
   &--single-player {
+    width: 50%;
+    max-width: 200px;
     min-width: 160px;
-    max-width: 70%;
+    margin: 0 auto;
   }
 }
 
 .player-name {
+  flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 1;
   min-width: 0;
+  text-align: right;
 }
 
 .player-separator {
-  color: #6b7280;
-  font-size: 0.7rem;
+  color: inherit;
+  font-size: inherit;
   flex-shrink: 0;
 }
 
 .player-score {
-  font-weight: 600;
+  font-weight: inherit;
   flex-shrink: 0;
 }
 
 .player-rounds {
-  font-weight: 500;
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
   flex-shrink: 0;
+  max-width: 3.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &--complete {
-    color: #6b7280;
-    font-weight: 600;
+    color: inherit;
+    font-weight: inherit;
   }
 }
 
@@ -96,12 +117,6 @@
   color: #6b7280;
   font-size: 0.6rem;
   margin-left: 0.125rem;
-  flex-shrink: 0;
-}
-  
-.player-chevron {
-  font-size: 0.6rem;
-  color: #9ca3af;
   flex-shrink: 0;
 }
 

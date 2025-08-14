@@ -7,9 +7,10 @@ class User < ApplicationRecord
   has_many :game_session_participants, dependent: :destroy
   has_many :game_sessions, through: :game_session_participants
   has_many :rounds, dependent: :destroy
-  has_many :user_played_snippets
+  has_many :user_played_snippets, dependent: :destroy
   has_many :played_snippets, through: :user_played_snippets, source: :lyric_snippet
   has_many :snippet_reports, dependent: :destroy
+  has_many :report_votes, dependent: :destroy
 
   has_many :friendships, dependent: :destroy
   has_many :friends, -> { where(friendships: { status: :accepted }) }, through: :friendships, source: :friend
@@ -58,8 +59,8 @@ class User < ApplicationRecord
       errors.add(:name, "can't be blank")
     elsif name.length < 2
       errors.add(:name, "must be at least 2 characters long")
-    elsif name.length > 12
-      errors.add(:name, "must be 12 characters or less")
+    elsif name.length > 10
+      errors.add(:name, "must be 10 characters or less")
     end
   end
 
