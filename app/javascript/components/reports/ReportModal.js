@@ -34,7 +34,6 @@ function ReportModal({ snippet, onClose }) {
   // External Data
   const [languages, setLanguages] = useState([]);
   const [alternativeCovers, setAlternativeCovers] = useState([]);
-  const [userName, setUserName] = useState('');
   
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -56,15 +55,20 @@ function ReportModal({ snippet, onClose }) {
     fetchLanguages();
   }, [])
 
-  // Computed Values
+  useEffect(() => {
+    const difficultyChanged = suggestions.difficulty && suggestions.difficulty !== snippet?.difficulty;
+    if (difficultyChanged && !wrongFields.difficulty) {
+      setWrongFields(prev => ({...prev, difficulty: true}));
+    }
+  }, [suggestions.difficulty, snippet?.difficulty]);
+  
   const selectableLanguages = languages.filter(lang => lang !== snippet?.language);
 
-  // Utility/Helper Functions
   const buildFieldClasses = (fieldName) => {
     let classes = 'report-field';
     
-    if (isBoring) {
-      classes += ' report-field--disabled';
+    if (wrongFields[fieldName]) {
+      classes += ' report-field--selected';
     }
     
     return classes;
@@ -78,76 +82,52 @@ function ReportModal({ snippet, onClose }) {
     return matches.length / originalWords.length;
   };
 
-  const getCSRFToken = () => {
-    const meta = document.querySelector('meta[name="csrf-token"]');
+  const getMetaContent = (name) => {
+    const meta = document.querySelector(`meta[name="${name}"]`);
     return meta && meta.getAttribute('content');
   };
 
-  // Form Logic
   const toggleField = (field) => {
-    // Don't allow toggling difficulty since it's always visible
     if (field === 'difficulty') return;
     setWrongFields({...wrongFields, [field]: !wrongFields[field]});
   };
 
-  const validateSubmission = () => {
-    if (isBoring) {
-      return { valid: true, fieldErrors: {} };
-    }
-
+  const validateForm = () => {
     const errors = {};
     const needSuggestion = (field) => wrongFields[field] && !suggestions[field];
+
+    const difficultyChanged = suggestions.difficulty && suggestions.difficulty !== snippet?.difficulty;
+    if (difficultyChanged && !wrongFields.difficulty) {
+      setWrongFields(prev => ({...prev, difficulty: true}));
+    }
 
     if (needSuggestion('artist')) errors.artist = 'Please suggest the correct artist';
     if (needSuggestion('song')) errors.song = 'Please suggest the correct song';
     if (needSuggestion('snippet')) errors.snippet = 'Please suggest the corrected snippet';
+    
     if (wrongFields.snippet && suggestions.snippet) {
       const similarity = calculateWordSimilarity(snippet.snippet, suggestions.snippet);
       if (similarity < 0.5) errors.snippet = 'Keep at least half of the original words';
     }
-    // Difficulty validation - check if they've changed it from the original
-    if (suggestions.difficulty && suggestions.difficulty !== snippet?.difficulty) {
-      setWrongFields(prev => ({...prev, difficulty: true}));
-    }
+    
     if (wrongFields.language) {
       if (!suggestions.language) errors.language = 'Please select the correct language';
       else if (suggestions.language === snippet?.language) errors.language = 'Language must be different';
     }
 
-    const hasIssues = Object.values(wrongFields).some(Boolean);
+    const hasIssues = Object.values(wrongFields).some(Boolean) || difficultyChanged;
     if (!hasIssues) return { valid: false, fieldErrors: {}, message: 'Select at least one issue' };
 
     const valid = Object.keys(errors).length === 0;
-    return { valid, fieldErrors: errors, message: valid ? null : 'Please fix the highlighted fields' };
+    return { valid, fieldErrors: errors, message: valid ? null : 'Please fix 🤓' };
   };
 
-  const reportData = (wrongFields, suggestions, isBoring) => {
-    return {
-      snippet_report: {
-        is_boring: isBoring,
-        wrong_artist: wrongFields.artist || false,
-        wrong_song: wrongFields.song || false,
-        wrong_snippet: wrongFields.snippet || false,
-        wrong_difficulty: wrongFields.difficulty || false,
-        wrong_language: wrongFields.language || false,
-        wrong_image: wrongFields.image || false,
-        suggested_artist: suggestions.artist || null,
-        suggested_song: suggestions.song || null,
-        suggested_snippet: suggestions.snippet || null,
-        suggested_difficulty: suggestions.difficulty || null,
-        suggested_language: suggestions.language || null,
-        suggested_image: suggestions.image || null,
-      }
-    }
-  };
-
-  // API/Side Effects
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
     setFieldErrors({});
 
-    const validation = validateSubmission();
+    const validation = validateForm();
     if (!validation.valid) {
       setError(validation.message);
       if (validation.fieldErrors) {
@@ -181,7 +161,7 @@ function ReportModal({ snippet, onClose }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': getCSRFToken()
+          'X-CSRF-Token': getMetaContent('csrf-token')
         },
         body: JSON.stringify(payload)
       });
@@ -189,11 +169,34 @@ function ReportModal({ snippet, onClose }) {
       if (response.ok) {
         setShowThankYou(true);
       } else {
-        const errorData = await response.json();
-        if (errorData.errors) {
-          setFieldErrors(errorData.errors);
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          setError(`Server error (${response.status}) - please try again`);
+          setLoading(false);
+          return;
+        }
+        
+        if (response.status === 422) {
+          if (errorData.errors) {
+            setFieldErrors(errorData.errors);
+          }
+          
+          if (errorData.errors && errorData.errors.includes("User can only have one pending report per snippet")) {
+            setError('You have already reported this snippet. Each user can only report a snippet once.');
+          } else if (errorData.errors && errorData.errors.length > 0) {
+            setError(errorData.errors[0]);
+          } else {
+            setError('Please fix 🤓');
+          }
         } else {
-          setError(errorData.message || 'Failed to submit report');
+          if (errorData.errors) {
+            setFieldErrors(errorData.errors);
+            setError('Please fix 🤓');
+          } else {
+            setError('Failed to submit report');
+          }
         }
       }
     } catch (err) {
@@ -220,12 +223,12 @@ function ReportModal({ snippet, onClose }) {
   // Render Helpers
   const renderSuccessContent = () => {
     return (
-      <div className="modal-content">
+      <div className="report-success-content">
         <div className="modal-header">
-          <h3>Thank you!</h3>
+          <h3>Thank you! 😊</h3>
         </div>
         <div className="modal-body">
-          <p>Your report has been submitted successfully.</p>
+          <p>Your report has been submitted! 🎉</p>
         </div>
         <div className="modal-footer">
           <button className="btn btn-accent" onClick={onClose}>
@@ -241,11 +244,10 @@ function ReportModal({ snippet, onClose }) {
       <>
         <div className="modal-header-subtext">Tap a field to suggest a fix.</div>
         <div className={isBoring ? 'form-section--disabled' : ''}>
-          {error && Object.keys(fieldErrors || {}).length === 0 && (
+          {error && (
             <div className="inline-error">{error}</div>
           )}
 
-          {/* ARTIST */}
           <div 
             className={buildFieldClasses('artist')}
             onClick={() => !isBoring && toggleField('artist')}
@@ -266,7 +268,6 @@ function ReportModal({ snippet, onClose }) {
           )}
           {fieldErrors.artist && <div className="inline-error">{fieldErrors.artist}</div>}
 
-          {/* SONG */}
           <div 
             className={buildFieldClasses('song')}
             onClick={() => !isBoring && toggleField('song')}
@@ -287,7 +288,6 @@ function ReportModal({ snippet, onClose }) {
           )}
           {fieldErrors.song && <div className="inline-error">{fieldErrors.song}</div>}
 
-          {/* SNIPPET */}
           <div 
             className={buildFieldClasses('snippet')}
             onClick={() => !isBoring && toggleField('snippet')}
@@ -308,7 +308,6 @@ function ReportModal({ snippet, onClose }) {
           )}
           {fieldErrors.snippet && <div className="inline-error">{fieldErrors.snippet}</div>}
 
-          {/* DIFFICULTY */}
           <div className={`difficulty-section ${isBoring ? 'form-section--disabled' : ''}`}>
             <div className="difficulty-suggestion">
               <DifficultySlider 
@@ -319,36 +318,31 @@ function ReportModal({ snippet, onClose }) {
           </div>
           {fieldErrors.difficulty && <div className="inline-error">{fieldErrors.difficulty}</div>}
 
-          {/* LANGUAGE */}
           <div className={`form-section ${isBoring ? 'form-section--disabled' : ''}`}>
-            <div className="report-checkbox">
-              <input 
-                type="checkbox" 
-                id="language-checkbox"
-                className="form-check-input"
-                checked={wrongFields.language || false} 
-                onChange={() => !isBoring && toggleField('language')} 
-              />
-              <label htmlFor="language-checkbox">
-                Language: {snippet?.language}
-              </label>
+            <div className="report-field" onClick={() => !isBoring && toggleField('language')}>
+              <span className="report-field-label">Language:</span>
+              <span className={`report-field-content ${wrongFields.language ? 'report-field-content--selected' : ''}`}>
+                {snippet?.language}
+              </span>
+              {wrongFields.language && (
+                <div className="report-field-suggestion">
+                  <select 
+                    value={suggestions.language || ''} 
+                    onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
+                    className="modal-suggestion-input form-select"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="">Select correct language</option>
+                    {selectableLanguages.map(language => (
+                      <option key={language} value={language}>{language}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
-            {wrongFields.language && (
-              <select 
-                value={suggestions.language || ''} 
-                onChange={(e) => setSuggestions({...suggestions, language: e.target.value})}
-                className="modal-suggestion-input form-select"
-              >
-                <option value="">Select correct language</option>
-                {selectableLanguages.map(language => (
-                  <option key={language} value={language}>{language}</option>
-                ))}
-              </select>
-            )}
             {fieldErrors.language && <div className="inline-error">{fieldErrors.language}</div>}
           </div>
 
-          {/* IMAGE */}
           <div className="form-section">
             <div className="image-row">
               <div className="image-container">
@@ -400,23 +394,21 @@ function ReportModal({ snippet, onClose }) {
           />
         </div>
 
-        {/* BORING */}
         <div className='form-section'>
-          <div className="report-checkbox">
+          <div className="report-field" onClick={() => setIsBoring(!isBoring)}>
             <input 
               type="checkbox" 
               id="boring-checkbox"
-              className="form-check-input"
+              className="form-check-input visually-hidden"
               checked={isBoring} 
               onChange={(e) => setIsBoring(e.target.checked)} 
             />
-            <label htmlFor="boring-checkbox">
-              Too boring! - Delete!
-            </label>
+            <span className="report-field-content">
+              {isBoring ? 'Boring! Delete this snippet! 😈' : 'Boring! Delete this snippet!'}
+            </span>
           </div>
         </div>
 
-        {/* BUTTONS */}
         <div className='modal-button-group'> 
           <button 
             className='btn btn-neutral'
@@ -435,15 +427,23 @@ function ReportModal({ snippet, onClose }) {
 
   if (loading) {
     return (
-      <div className="report-modal-frame">
-        <Loading message="Loading report form..." />
+      <div className="report-modal-frame report-modal-frame--loading">
+        <div className="loading-container">
+          <Loading message="Loading report form..." />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="report-modal-frame">
-      {showThankYou ? renderSuccessContent() : renderFormContent()}
+      {showThankYou ? (
+        <div className="report-modal-frame--success">
+          {renderSuccessContent()}
+        </div>
+      ) : (
+        renderFormContent()
+      )}
     </div>
   );
 }

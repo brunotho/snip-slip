@@ -8,25 +8,11 @@ class SnippetReportsController < ApplicationController
     @snippet_report.status = :pending
 
     if @snippet_report.save
-      render json: {
-        status: "success",
-        message: "Report submitted successfully",
-        user_name: current_user.name
-      }
+      render json: { message: "Report submitted successfully" }
     else
-      if @snippet_report.errors.details[:user]&.any? { |e| e[:error] == :taken }
-        render json: {
-          status: "error",
-          message: "You have already reported this snippet",
-          errors: @snippet_report.errors.full_messages
-        }, status: :unprocessable_entity
-      else
-        render json: {
-          status: "error",
-          message: "Failed to submit report - snippet_reports_controller#create",
-          errors: @snippet_report.errors.full_messages
-        }, status: :unprocessable_entity
-      end
+      render json: {
+        errors: @snippet_report.errors.full_messages
+      }, status: :unprocessable_entity
     end
   end
 

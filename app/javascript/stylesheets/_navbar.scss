@@ -2,32 +2,37 @@
   background-color: $color-brand-secondary !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
-  border-bottom: 1px solid rgba($white, 0.1);
+  border-bottom: 1px solid rgba($color-white, 0.1);
   box-shadow: $shadow-sm;
 }
 
 .navbar-brand {
-  color: $white !important;
+  color: $color-white !important;
   font-weight: $font-weight-semibold;
   font-size: $font-size-lg;
-  text-decoration: none;
+  text-decoration: none !important;
   padding-left: $spacing-sm;
+  transition: all 0.2s ease;
   
   &:hover {
-    color: rgba($white, 0.9) !important;
+    color: rgba($color-white, 0.9) !important;
+  }
+  
+  &:active {
+    transform: scale(0.95);
   }
 }
 
 .navbar-toggler {
-  border: 2px solid rgba($white, 0.6) !important;
+  border: 2px solid rgba($color-white, 0.6) !important;
   border-radius: $radius-md;
   padding: $spacing-sm $spacing-md;
   margin-right: 0;
-  background-color: rgba($white, 0.1);
+  background-color: rgba($color-white, 0.1);
   
   &:hover {
-    border-color: $white !important;
-    background-color: rgba($white, 0.2);
+    border-color: $color-white !important;
+    background-color: rgba($color-white, 0.2);
   }
   
   &:focus {
@@ -42,7 +47,7 @@
 
 .offcanvas {
   background-color: $color-brand-secondary !important;
-  border-left: 1px solid rgba($white, 0.1);
+  border-left: 1px solid rgba($color-white, 0.1);
   width: 11rem !important;
 }
 
@@ -55,19 +60,30 @@
 }
 
 .nav-link {
-  color: rgba($white, 0.8) !important;
+  color: rgba($color-white, 0.8) !important;
   font-weight: $font-weight-medium;
   padding: $spacing-sm $spacing-md;
   border-radius: $radius-md;
   transition: all 0.2s ease;
   white-space: nowrap;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-style: none !important;
+  text-decoration-color: none !important;
   
   &:hover {
-    color: $white !important;
-    background-color: rgba($white, 0.1);
+    color: $color-white !important;
+    background-color: rgba($color-white, 0.1);
+    text-decoration: none !important;
   }
   
   &:active {
-    background-color: rgba($white, 0.15);
+    background-color: rgba($color-white, 0.15);
+    transform: scale(0.95);
+    text-decoration: none !important;
+  }
+  
+  &:focus {
+    text-decoration: none !important;
   }
 }

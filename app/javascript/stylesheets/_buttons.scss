@@ -146,7 +146,7 @@
 
 // Destructive actions
 .btn-danger {
-  @include button-variant($color-error, $white);
+  @include button-variant($color-brand-danger, $color-white);
 
   &:disabled,
   &.disabled {
@@ -157,21 +157,21 @@
 
 .btn-danger-outline {
   background-color: #ffffff;
-  color: rgba($color-error, 0.7);
-  border: 2px solid rgba($color-error, 0.7);
+  color: rgba($color-brand-danger, 0.7);
+  border: 2px solid rgba($color-brand-danger, 0.7);
   transition: all 0.2s ease;
   font-weight: 500;
 
   &:hover {
-    color: $white;
-    background-color: rgba($color-error, 0.9);
-    border-color: rgba($color-error, 0.9);
+    color: $color-white;
+    background-color: rgba($color-brand-danger, 0.9);
+    border-color: rgba($color-brand-danger, 0.9);
   }
 
   &:active {
-    color: $white;
-    background-color: rgba($color-error, 1);
-    border-color: rgba($color-error, 1);
+    color: $color-white;
+    background-color: rgba($color-brand-danger, 1);
+    border-color: rgba($color-brand-danger, 1);
   }
 }
 
@@ -190,7 +190,7 @@
 
 // Temporary success state styling for buttons
 .btn-saved {
-  box-shadow: 0 0 0 4px rgba($color-success, 0.2);
+  box-shadow: 0 0 0 4px rgba($color-brand-success, 0.2);
 }
 
 // Profile action buttons: force equal dimensions
@@ -220,13 +220,13 @@
     background-color: rgba(0, 0, 0, 0.05);
 
     .fa-plus {
-      color: $color-success !important;
+      color: $color-brand-success !important;
     }
     .fa-check {
-      color: $color-success !important;
+      color: $color-brand-success !important;
     }
     .fa-xmark {
-      color: $color-error !important;
+      color: $color-brand-danger !important;
     }
   }
 }
@@ -274,18 +274,10 @@
   }
 }
 
-@media (min-width: 992px) { // desktop
-  .bottom-nav-buttons {
-    left: 0;
-    right: 0;
-    justify-content: center;
-    gap: 16px;
-
-    .btn {
-      flex: 0 0 auto;
-      max-width: none;
-      min-width: 220px;
-    }
+@media (min-width: 992px) {
+  .btn-group-responsive {
+    flex-direction: row;
+    gap: 0.5rem;
   }
 }
 

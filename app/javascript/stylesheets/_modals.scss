@@ -60,10 +60,11 @@
 .report-modal-frame {
   background: white;
   padding: 1.5rem;
-  margin-top: 1rem;
+  margin: 1rem auto 0;
   border-radius: 8px;
   min-width: 300px;
   width: 90vw;
+  max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -84,6 +85,89 @@
       background: #999;
     }
   }
+  
+  &--loading,
+  &--success {
+    width: 90%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0 auto;
+  }
+  
+  &--loading {
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+}
+
+.report-success-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  
+  .modal-header {
+    flex: 0 0 auto;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-align: center;
+    
+    h3 {
+      margin: 0 !important;
+      text-align: center !important;
+      color: $color-gray-800;
+      font-size: 1.25rem;
+      font-weight: 600;
+      width: 100%;
+      display: block;
+      text-align-last: center;
+    }
+  }
+  
+  .modal-body {
+    flex: 1 1 auto;
+    text-align: center;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    p {
+      margin: 0 !important;
+      color: $color-gray-600;
+      font-size: 1rem;
+      line-height: 1.4;
+      width: 100%;
+      text-align: center !important;
+      display: block;
+      text-align-last: center;
+    }
+  }
+  
+  .modal-footer {
+    flex: 0 0 auto;
+    text-align: center;
+    width: 100%;
+    margin-top: 0.75rem;
+    
+    button {
+      margin: 0 auto;
+      display: block;
+    }
+  }
 }
 
 .modal-content-scroll {
@@ -98,7 +182,7 @@
 
 .modal-hint {
   font-size: 0.9rem;
-  color: $gray-600;
+  color: $color-gray-600;
   margin-bottom: 0.25rem;
 }
 
@@ -116,7 +200,7 @@
 
 .modal-header-subtext {
   font-weight: 600;
-  color: $gray-700;
+  color: $color-gray-700;
   margin-bottom: 0.75rem;
 }
 
@@ -141,6 +225,7 @@
     &--selected {
       text-decoration: line-through;
       color: #666;
+      font-weight: 600;
     }
   }
   
@@ -157,14 +242,67 @@
 }
 
 .report-field-label {
-  font-weight: 500;
-  color: #666;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #999;
   margin-right: 0.5rem;
 }
 
 .report-field-content {
-  font-weight: 400;
+  font-weight: 600;
   color: #333;
+  transition: all 0.3s ease;
+  text-rendering: optimizeLegibility;
+  
+  &.form-select {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+    
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+  
+  &--selected {
+    text-decoration: line-through;
+    color: #999;
+  }
+}
+
+.report-field-suggestion {
+  margin-top: 0.5rem;
+  
+  .form-select {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+    background: white;
+    font-size: 0.9rem;
+    
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 .report-checkbox {
@@ -280,36 +418,38 @@
   &::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    background: rgba(220, 53, 69, 0.9);
+    border-radius: $radius-md;
     pointer-events: none;
     z-index: 1;
   }
   
   &::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
       45deg,
-      transparent 45%,
-      rgba(35, 35, 35, 0.8) 47%,
-      rgba(35, 35, 35, 0.9) 50%,
-      rgba(35, 35, 35, 0.8) 53%,
-      transparent 55%
+      transparent calc(50% - 3px),
+      rgba(35, 35, 35, 0.95) calc(50% - 3px),
+      rgba(35, 35, 35, 0.95) calc(50% + 3px),
+      transparent calc(50% + 3px)
     );
-    transform: rotate(1deg);
   }
   
   &::after {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
       -45deg,
-      transparent 45%,
-      rgba(35, 35, 35, 0.8) 47%,
-      rgba(35, 35, 35, 0.9) 50%,
-      rgba(35, 35, 35, 0.8) 53%,
-      transparent 55%
+      transparent calc(50% - 3px),
+      rgba(35, 35, 35, 0.95) calc(50% - 3px),
+      rgba(35, 35, 35, 0.95) calc(50% + 3px),
+      transparent calc(50% + 3px)
     );
-    transform: rotate(-1deg);
   }
   
   img {

@@ -65,15 +65,15 @@
 .card-flat {
   @extend .card-base;
   box-shadow: none;
-  border: 2px solid $gray-300;
+  border: 2px solid $color-gray-300;
   padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 3vw, 2rem);
 }
 
 // Light card with subtle background
 .card-light {
   @extend .card-base;
-  background-color: $gray-50;
-  border: 1px solid $gray-100;
+  background-color: $color-gray-50;
+  border: 1px solid $color-gray-100;
 }
 
 // -----------------------------------------------------------------------------
@@ -82,13 +82,13 @@
 
 // Card header styling
 .card-header-custom {
-  background-color: $gray-50;
+  background-color: $color-gray-50;
   border-bottom: 2px solid rgba($color-brand-accent, 0.2);
   border-radius: $radius-lg $radius-lg 0 0;
   padding: $spacing-md $spacing-lg;
   margin: (-$spacing-lg) (-$spacing-lg) $spacing-md (-$spacing-lg);
   font-weight: $font-weight-semibold;
-  color: $gray-700;
+  color: $color-gray-700;
   
   @media (max-width: 576px) {
     margin: (-$spacing-md) (-$spacing-md) $spacing-md (-$spacing-md);
@@ -106,8 +106,8 @@
 
 // Card footer styling
 .card-footer-custom {
-  border-top: 1px solid $gray-200;
-  background-color: $gray-50;
+  border-top: 1px solid $color-gray-200;
+  background-color: $color-gray-50;
   border-radius: 0 0 $radius-lg $radius-lg;
   padding: $spacing-md $spacing-lg;
   margin: $spacing-md (-$spacing-lg) (-$spacing-lg) (-$spacing-lg);
@@ -168,5 +168,4 @@
     font-size: 0.8rem;
     line-height: 1.3;
   }
-}
- 
+} 

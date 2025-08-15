@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import { useLongPress } from '@uidotdev/usehooks';
 
 function SnippetCard({ snippet, onClick, onLongPress }) {
-  const [fontSize, setFontSize] = useState('clamp(0.95rem, 2.8vw, 1.35rem)')
+  const [fontSize, setFontSize] = useState('1.2rem')
   const textRef = useRef(null);
   const containerRef = useRef(null);
   

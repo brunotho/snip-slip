@@ -21,7 +21,6 @@
   box-shadow: 0 0 0 0.25rem rgba($color-brand-accent, 0.25) !important;
 }
 
-// color for include_blank of dropdown
 .form-select.select.required {
   color: #555 !important;
 }
@@ -43,7 +42,7 @@
 }
 
 @keyframes fieldSavedFlash {
-  0% { background-color: rgba($color-success, 0.15); }
+  0% { background-color: rgba($color-brand-success, 0.15); }
   100% { background-color: transparent; }
 }
 
@@ -60,7 +59,11 @@
 }
 
 .form-container {
-  @extend .card-accent;
+  background-color: $color-white;
+  border: 1px solid rgba($color-brand-accent, 0.2);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
   max-width: 400px;
   
   a {
@@ -84,9 +87,8 @@
   margin-bottom: $spacing-xl;
 }
 
-// Reserve space for inline feedback so layout doesn't jump
 .form-feedback-inline {
-  min-height: 1.25rem; // ~ one line of small text
+  min-height: 1.25rem;
   margin-top: 0.5rem;
   text-align: center;
 }
