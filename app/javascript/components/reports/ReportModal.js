@@ -177,7 +177,7 @@ function ReportModal({ snippet, onClose }) {
         suggested_image: suggestions.image || null
       };
 
-      const response = await fetch('/snippet_reports', {
+      const response = await fetch(`/snippets/${snippet.id}/reports`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
