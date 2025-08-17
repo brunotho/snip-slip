@@ -41,7 +41,7 @@ class SnippetsController < ApplicationController
 
   def alternative_album_covers
     snippet = LyricSnippet.find(params[:id])
-    alternative_album_covers = snippet.send(:find_alternative_album_covers)
+    alternative_album_covers = snippet.send(:combine_album_covers_and_artist_image)
     render json: alternative_album_covers
   end
 

@@ -16,7 +16,7 @@ function ImageSelector({ isOpen, onSelect, onClose, alternativeCovers, loadingCo
           background: 'white', 
           borderRadius: '8px' 
         }}>
-          <h3>Select Alternative Album Cover</h3>
+          <h3>What fits the best?</h3>
           
           {loadingCovers ? (
             <div style={{ 

@@ -41,6 +41,15 @@ class LyricSnippet < ApplicationRecord
     end
   end
 
+  def combine_album_covers_and_artist_image
+    alternative_album_covers = find_alternative_album_covers
+    artist_image = find_artist_image
+
+    result = alternative_album_covers.compact
+    result << artist_image if artist_image
+    result
+  end
+
   def normalize_artist_name(name)
     # todo: add äö!`^ etc
     name.downcase.gsub(/[^a-z0-9\s]/i, "").strip
@@ -76,9 +85,19 @@ class LyricSnippet < ApplicationRecord
       .uniq { |album| album["name"] }
       .reject { |album| album["name"].match?(/\((deluxe|remaster|edition)\)/i) }
       .map { |album| album.dig("images", 0, "url") }
-      .first(6)
+      .first(5)
 
     images
+  end
+
+  def find_artist_image
+    url = "https://api.spotify.com/v1/search?q=artist:#{artist.downcase}&type=artist&limit=1"
+    response = spotify_api_call(url)
+
+    artists = response.dig("artists", "items")
+    return nil unless artists&.any?
+
+    artists.first.dig("images", 0, "url")
   end
 
   def spotify_api_call(url)
