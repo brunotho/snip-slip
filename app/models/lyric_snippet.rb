@@ -73,21 +73,72 @@ class LyricSnippet < ApplicationRecord
   end
 
   def find_alternative_album_covers
-    url = "https://api.spotify.com/v1/search?q=artist:#{artist.downcase}&type=album&limit=20"
+    song_album = find_album_containing_song
+    other_albums = find_quality_artist_albums
+
+    all_albums = []
+    all_albums << song_album if song_album
+
+    other_albums.each do |album|
+      break if all_albums.length >= 5
+      unless all_albums.any? { |existing| existing[:name] == album[:name] }
+        all_albums << album
+      end
+    end
+
+    all_albums.map { |album| album[:image_url] }.compact
+  end
+
+  def find_album_containing_song
+    url = "https://api.spotify.com/v1/search?q=track:#{song.downcase}%20artist:#{artist.downcase}&type=track&limit=20"
+    response = spotify_api_call(url)
+
+    tracks = response.dig("tracks", "items")
+    return nil unless tracks&.any?
+
+    best_track = tracks.find do |track|
+      track["artists"].any? do |spotify_artist|
+        normalize_artist_name(spotify_artist["name"]) == normalize_artist_name(artist)
+      end
+    end
+
+    return nil unless best_track
+
+    album = best_track["album"]
+    return nil unless album && album["album_type"] == "album"
+
+    {
+      name: album["name"],
+      image_url: album.dig("images", 0, "url"),
+      popularity: album["popularity"] || 0,
+      relevance: "song_match"
+    }
+  end
+
+  def find_quality_artist_albums
+    url = "https://api.spotify.com/v1/search?q=artist:#{artist.downcase}&type=album&limit=50"
     response = spotify_api_call(url)
 
     albums = response.dig("albums", "items")
     return [] unless albums&.any?
 
-    log_spotify_response(response, artist, song)
+    quality_albums = albums
+      .select { |album| album["album_type"] == "album" }
+      .reject { |album| album["name"].match?(/\((deluxe|remaster|edition|live|compilation)\)/i) }
+      .reject { |album| album["name"].match?(/live|concert|unplugged/i) }
+      .map do |album|
+        {
+          name: album["name"],
+          image_url: album.dig("images", 0, "url"),
+          popularity: album["popularity"] || 0,
+          release_date: album["release_date"],
+          relevance: "artist_popular"
+        }
+      end
+      .sort_by { |album| [ -album[:popularity], album[:release_date] ] }
+      .first(10)
 
-    images = albums
-      .uniq { |album| album["name"] }
-      .reject { |album| album["name"].match?(/\((deluxe|remaster|edition)\)/i) }
-      .map { |album| album.dig("images", 0, "url") }
-      .first(5)
-
-    images
+    quality_albums
   end
 
   def find_artist_image
